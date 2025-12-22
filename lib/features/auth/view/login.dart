@@ -1,8 +1,8 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fura24.kz/features/auth/controller/auth_controller.dart';
-import 'package:fura24.kz/features/auth/view/widgets/auth_dial_code_selector.dart';
 import 'package:fura24.kz/features/auth/view/widgets/auth_input_field.dart';
 import 'package:fura24.kz/features/auth/view/widgets/auth_role_toggle.dart';
 import 'package:fura24.kz/router/routes.dart';
@@ -17,29 +17,85 @@ class SignInPageView extends ConsumerStatefulWidget {
 
 class _SignInPageViewState extends ConsumerState<SignInPageView> {
   final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController();
+  final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  String _dialCode = '+7';
   AuthRole _selectedRole = AuthRole.client;
+  bool _isPhoneMode = false;
 
-  String get _roleCode => _selectedRole == AuthRole.client ? 'SENDER' : 'DRIVER';
+  String get _roleCode =>
+      _selectedRole == AuthRole.client ? 'SENDER' : 'DRIVER';
 
-  Widget _buildCountryPicker() {
-    return AuthDialCodeSelector(
-      currentDialCode: _dialCode,
-      onDialCodeChanged: (value) {
-        if (_dialCode == value) return;
-        setState(() {
-          _dialCode = value;
-        });
-      },
-    );
+  String _handleLoginChanged(String value) {
+    final digits = _extractDigits(value);
+    final isPhone = digits.isNotEmpty && !value.contains('@');
+
+    if (_isPhoneMode != isPhone) {
+      setState(() {
+        _isPhoneMode = isPhone;
+      });
+    }
+
+    if (!isPhone) return value;
+    final normalized = _normalizePhoneDigits(digits);
+    return _formatPhone(normalized);
+  }
+
+  String _extractDigits(String value) =>
+      value.replaceAll(RegExp(r'[^0-9]'), '');
+
+  String _normalizePhoneDigits(String digits) {
+    if (digits.isEmpty) return '';
+    var cleaned = digits;
+    if (cleaned.length > 11) {
+      cleaned = cleaned.substring(0, 11);
+    }
+    if (cleaned.length == 11 &&
+        (cleaned.startsWith('7') || cleaned.startsWith('8'))) {
+      cleaned = cleaned.substring(1);
+    }
+    if (cleaned.length > 10) {
+      cleaned = cleaned.substring(0, 10);
+    }
+    return cleaned;
+  }
+
+  String _formatPhone(String digits) {
+    if (digits.isEmpty) return '';
+    final buffer = StringBuffer();
+    buffer.write('(');
+    final first = digits.substring(0, math.min(3, digits.length));
+    buffer.write(first);
+    if (digits.length <= 3) {
+      return buffer.toString();
+    }
+    buffer.write(') ');
+    final second = digits.substring(3, math.min(6, digits.length));
+    buffer.write(second);
+    if (digits.length <= 6) {
+      return buffer.toString();
+    }
+    buffer.write('-');
+    final third = digits.substring(6, math.min(8, digits.length));
+    buffer.write(third);
+    if (digits.length <= 8) {
+      return buffer.toString();
+    }
+    buffer.write('-');
+    final fourth = digits.substring(8, math.min(10, digits.length));
+    buffer.write(fourth);
+    return buffer.toString();
+  }
+
+  String _normalizePhoneValue(String value) {
+    final digits = _normalizePhoneDigits(_extractDigits(value));
+    if (digits.isEmpty) return value.trim();
+    return '+7$digits';
   }
 
   @override
   void dispose() {
-    _phoneController.dispose();
+    _loginController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -50,16 +106,21 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
     final success = await ref
         .read(authControllerProvider.notifier)
         .login(
-          phoneNumber: _dialCode + _phoneController.text.trim(),
+          login:
+              _isPhoneMode
+                  ? _normalizePhoneValue(_loginController.text)
+                  : _loginController.text.trim(),
           password: _passwordController.text,
           role: _roleCode,
         );
 
     if (!mounted) return;
     if (success) {
-      final session = await ref.read(authControllerProvider.notifier).readSession();
+      final session =
+          await ref.read(authControllerProvider.notifier).readSession();
       final role = session?.user.role.toUpperCase() ?? _roleCode;
-      final targetRoute = role == 'DRIVER' ? AppRoutes.driverHome : AppRoutes.home;
+      final targetRoute =
+          role == 'DRIVER' ? AppRoutes.driverHome : AppRoutes.home;
       if (!mounted) return;
       context.go(targetRoute);
     }
@@ -135,19 +196,48 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                 child: Column(
                   children: [
                     AuthInputField(
-                      controller: _phoneController,
-                      hintText: 'Номер телефона',
-                      icon: Icons.phone_iphone_outlined,
-                      prefix: _buildCountryPicker(),
-                      keyboardType: TextInputType.phone,
+                      controller: _loginController,
+                      hintText: 'Телефон или email',
+                      icon:
+                          _isPhoneMode ? null : Icons.alternate_email_outlined,
+                      prefix:
+                          _isPhoneMode
+                              ? Text(
+                                '+7',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              )
+                              : null,
+                      keyboardType:
+                          _isPhoneMode
+                              ? TextInputType.phone
+                              : TextInputType.emailAddress,
                       enabled: !isLoading,
+                      onChanged: _handleLoginChanged,
                       validator: (value) {
                         final trimmed = value?.trim() ?? '';
                         if (trimmed.isEmpty) {
-                          return 'Введите номер телефона';
+                          return 'Введите телефон или email';
                         }
-                        if (trimmed.length > 20) {
-                          return 'Макс. 20 символов';
+                        if (_isPhoneMode) {
+                          final digits = _normalizePhoneDigits(
+                            _extractDigits(trimmed),
+                          );
+                          if (digits.length < 10) {
+                            return 'Введите корректный телефон';
+                          }
+                          return null;
+                        }
+                        final emailRegex = RegExp(
+                          r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+                        );
+                        final phoneRegex = RegExp(r'^\+?[0-9]{6,20}$');
+                        if (!(emailRegex.hasMatch(trimmed) ||
+                            phoneRegex.hasMatch(trimmed))) {
+                          return 'Введите корректный телефон или email';
                         }
                         return null;
                       },
@@ -189,7 +279,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: () => context.go('/forgot-password'),
+                        onTap: () => context.go(AuthRoutes.forgotPassword),
                         child: Text(
                           'Забыли пароль?',
                           style: TextStyle(

@@ -60,10 +60,7 @@ class _DriverHomePlaceholderPageState
       icon: Icons.play_circle_outline,
       label: 'Отметить выезд',
     ),
-    _DriverQuickAction(
-      icon: Icons.fact_check_outlined,
-      label: 'Статус загрузки',
-    ),
+    _DriverQuickAction(icon: Icons.fact_check_outlined, label: 'Статус груза'),
     _DriverQuickAction(
       icon: Icons.local_gas_station_outlined,
       label: 'Добавить расход',
@@ -234,8 +231,8 @@ class _DriverHomePlaceholderPageState
 
   Widget _buildSummaryCard(ProfileState state, UserModel? user) {
     final greeting = _buildGreeting();
-    final nameFromProfile = (user?.username ?? '').trim();
-    final displayName = nameFromProfile.isEmpty ? 'Водитель' : nameFromProfile;
+    final profileName = user?.displayName.trim() ?? '';
+    final displayName = profileName.isEmpty ? 'Водитель' : profileName;
     final subtitle =
         state.isLoading && user == null
             ? 'Загружаем ваш профиль и текущий рейс...'

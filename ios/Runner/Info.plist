@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -9,7 +11,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<string>com.fura24.kz</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -24,6 +26,24 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Ваше местоположение нужно приложению, чтобы показывать карты и подбирать ближайшие точки.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Ваше местоположение нужно приложению, чтобы показывать карты и подбирать ближайшие точки.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Ваше местоположение нужно приложению, чтобы показывать карты и подбирать ближайшие точки.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Камера нужна, чтобы фотографировать документы и груз.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Доступ к фото нужен, чтобы прикреплять изображения и документы к заявкам.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Приложению нужен доступ для сохранения изображений в вашу галерею.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -41,15 +61,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Ваше местоположение нужно приложению, чтобы показывать карты и подбирать ближайшие точки.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Ваше местоположение нужно приложению, чтобы показывать карты и подбирать ближайшие точки.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Ваше местоположение нужно приложению, чтобы показывать карты и подбирать ближайшие точки.</string>
 </dict>
 </plist>

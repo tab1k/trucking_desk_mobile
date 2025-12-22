@@ -5,14 +5,16 @@ import 'package:fura24.kz/features/client/domain/models/create_order_request.dar
 
 final createOrderControllerProvider =
     StateNotifierProvider<CreateOrderController, AsyncValue<void>>((ref) {
-  final repository = ref.watch(orderRepositoryProvider);
-  return CreateOrderController(repository: repository);
-});
+      final repository = ref.watch(orderRepositoryProvider);
+      return CreateOrderController(
+        repository: repository,
+      );
+    });
 
 class CreateOrderController extends StateNotifier<AsyncValue<void>> {
-  CreateOrderController({required OrderRepository repository})
-      : _repository = repository,
-        super(const AsyncData(null));
+  CreateOrderController({
+    required OrderRepository repository,
+  }) : _repository = repository, super(const AsyncData(null));
 
   final OrderRepository _repository;
 
@@ -20,6 +22,26 @@ class CreateOrderController extends StateNotifier<AsyncValue<void>> {
     state = const AsyncLoading();
     try {
       await _repository.createOrder(request);
+      state = const AsyncData(null);
+      return true;
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+      return false;
+    }
+  }
+
+  Future<bool> updateOrder(
+    String orderId,
+    CreateOrderRequest request, {
+    bool includePhotos = false,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      await _repository.updateOrder(
+        orderId,
+        request,
+        includePhotos: includePhotos,
+      );
       state = const AsyncData(null);
       return true;
     } catch (error, stackTrace) {

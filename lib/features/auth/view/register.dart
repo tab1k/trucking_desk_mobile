@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,10 +19,11 @@ class SignUpPageView extends ConsumerStatefulWidget {
 
 class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
   final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController();
+  final _loginController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmController = TextEditingController();
+  final _referralController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscurePasswordConfirm = true;
@@ -29,6 +32,67 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
   AuthRole _selectedRole = AuthRole.client;
 
   String get _roleCode => _selectedRole == AuthRole.client ? 'SENDER' : 'DRIVER';
+  int get _dialCodeDigitsLength =>
+      _dialCode.replaceAll(RegExp(r'[^0-9]'), '').length;
+  int get _maxLocalDigits => math.max(0, 20 - _dialCodeDigitsLength);
+
+  String _extractDigits(String value) => value.replaceAll(RegExp(r'[^0-9]'), '');
+
+  String _normalizePhoneDigits(String digits) {
+    if (_dialCode == '+7') {
+      var cleaned = digits;
+      if (cleaned.length > 11) {
+        cleaned = cleaned.substring(0, 11);
+      }
+      if (cleaned.length == 11 &&
+          (cleaned.startsWith('7') || cleaned.startsWith('8'))) {
+        cleaned = cleaned.substring(1);
+      }
+      if (cleaned.length > 10) {
+        cleaned = cleaned.substring(0, 10);
+      }
+      return cleaned;
+    }
+    if (digits.isEmpty) return '';
+    return digits.substring(0, math.min(digits.length, _maxLocalDigits));
+  }
+
+  String _formatPhone(String digits) {
+    if (digits.isEmpty) return '';
+    final buffer = StringBuffer();
+    buffer.write('(');
+    final first = digits.substring(0, math.min(3, digits.length));
+    buffer.write(first);
+    if (digits.length <= 3) {
+      return buffer.toString();
+    }
+    buffer.write(') ');
+    final second = digits.substring(3, math.min(6, digits.length));
+    buffer.write(second);
+    if (digits.length <= 6) {
+      return buffer.toString();
+    }
+    buffer.write('-');
+    final third = digits.substring(6, math.min(8, digits.length));
+    buffer.write(third);
+    if (digits.length <= 8) {
+      return buffer.toString();
+    }
+    buffer.write('-');
+    final fourth = digits.substring(8, math.min(10, digits.length));
+    buffer.write(fourth);
+    if (digits.length <= 10) {
+      return buffer.toString();
+    }
+    buffer.write(' ');
+    buffer.write(digits.substring(10));
+    return buffer.toString();
+  }
+
+  String _handlePhoneChanged(String value) {
+    final digits = _normalizePhoneDigits(_extractDigits(value));
+    return _formatPhone(digits);
+  }
 
   Widget _buildCountryPicker() {
     return AuthDialCodeSelector(
@@ -44,10 +108,11 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
 
   @override
   void dispose() {
-    _phoneController.dispose();
+    _loginController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _passwordConfirmController.dispose();
+    _referralController.dispose();
     super.dispose();
   }
 
@@ -62,17 +127,19 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
       return;
     }
 
-    final success = await ref
-        .read(authControllerProvider.notifier)
-        .register(
-          phoneNumber: _dialCode + _phoneController.text.trim(),
+    final loginValue =
+        _dialCode +
+        _loginController.text.trim().replaceAll(RegExp(r'[^0-9]'), '');
+
+    final emailValue = _emailController.text.trim();
+
+    final success = await ref.read(authControllerProvider.notifier).register(
+          login: loginValue,
           password: _passwordController.text,
           passwordConfirm: _passwordConfirmController.text,
-          email:
-              _emailController.text.trim().isEmpty
-                  ? null
-                  : _emailController.text.trim(),
+          email: emailValue,
           role: _roleCode,
+          referralCode: _referralController.text.trim(),
         );
 
     if (!mounted) return;
@@ -117,7 +184,6 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20.h),
               Text(
                 'Создайте аккаунт',
                 style: TextStyle(
@@ -156,19 +222,26 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                 child: Column(
                   children: [
                     AuthInputField(
-                      controller: _phoneController,
+                      controller: _loginController,
                       hintText: 'Номер телефона *',
                       icon: Icons.phone_iphone_outlined,
                       prefix: _buildCountryPicker(),
                       keyboardType: TextInputType.phone,
                       enabled: !isLoading,
+                      onChanged: _handlePhoneChanged,
                       validator: (value) {
-                        final trimmed = value?.trim() ?? '';
-                        if (trimmed.isEmpty) {
+                        final raw = value?.trim() ?? '';
+                        if (raw.isEmpty) {
                           return 'Обязательное поле';
                         }
-                        if (trimmed.length > 20) {
-                          return 'Макс. 20 символов';
+                        final digitsOnly = raw.replaceAll(RegExp(r'[^0-9]'), '');
+                        if (digitsOnly.isEmpty) {
+                          return 'Введите корректный номер';
+                        }
+                        final combined = _dialCode + digitsOnly;
+                        final phoneRegex = RegExp(r'^\+?[0-9]{6,20}$');
+                        if (!phoneRegex.hasMatch(combined)) {
+                          return 'Введите корректный номер';
                         }
                         return null;
                       },
@@ -176,15 +249,17 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                     SizedBox(height: 10.h),
                     AuthInputField(
                       controller: _emailController,
-                      hintText: 'Электронная почта (необязательно)',
+                      hintText: 'Электронная почта *',
                       icon: Icons.mail_outlined,
                       keyboardType: TextInputType.emailAddress,
                       enabled: !isLoading,
                       validator: (value) {
                         final trimmed = value?.trim() ?? '';
-                        if (trimmed.isEmpty) return null;
+                        if (trimmed.isEmpty) {
+                          return 'Обязательное поле';
+                        }
                         final emailRegex = RegExp(
-                          r'^[\w\.-]+@([\w-]+\.)+[\w-]{2,4}$',
+                          r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
                         );
                         if (!emailRegex.hasMatch(trimmed)) {
                           return 'Некорректный email';
@@ -267,8 +342,24 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                                     _obscurePasswordConfirm =
                                         !_obscurePasswordConfirm;
                                   });
-                                },
+                        },
                       ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Divider(color: Colors.grey.shade300, thickness: 1),
+                    SizedBox(height: 10.h),
+                    AuthInputField(
+                      controller: _referralController,
+                      hintText: 'Реферальный код (необязательно)',
+                      enabled: !isLoading,
+                      validator: (value) {
+                        final trimmed = value?.trim() ?? '';
+                        if (trimmed.isEmpty) return null;
+                        if (trimmed.length > 10) {
+                          return 'Макс. 10 символов';
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 12.h),
                     Row(

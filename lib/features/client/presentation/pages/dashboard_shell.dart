@@ -3,11 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:fura24.kz/features/client/presentation/pages/home/home_tab.dart';
 import 'package:fura24.kz/features/client/presentation/pages/my_cargo/my_cargo_tab.dart';
 import 'package:fura24.kz/features/client/presentation/pages/profile/profile_tab.dart';
-import 'package:fura24.kz/features/client/presentation/pages/rides/rides_tab.dart';
+import 'package:fura24.kz/features/client/presentation/pages/favorites/favorites_tab.dart';
 import 'package:fura24.kz/features/client/presentation/providers/home_tab_provider.dart';
 
 class MyHomePageView extends ConsumerWidget {
@@ -32,7 +33,7 @@ class MyHomePageView extends ConsumerWidget {
           index: tabIndex,
           children: const [
             HomeTab(),
-            RidesTab(),
+            FavoritesTab(),
             MyCargoTab(),
             ProfileTab(),
           ],
@@ -81,28 +82,28 @@ class _CustomBottomNavBar extends StatelessWidget {
                   _NavBarItem(
                     icon: 'assets/svg/truck-check.svg',
                     activeIcon: 'assets/svg/truck-check-filled.svg',
-                    label: 'Заказ',
+                    label: tr('nav.order'),
                     isActive: currentIndex == 0,
                     onTap: () => onTap(0),
                   ),
                   _NavBarItem(
                     icon: 'assets/svg/heart.svg',
                     activeIcon: 'assets/svg/heart-filled.svg',
-                    label: 'Избранное',
+                    label: tr('nav.favorites'),
                     isActive: currentIndex == 1,
                     onTap: () => onTap(1),
                   ),
                   _NavBarItem(
-                    icon: 'assets/svg/dolly-flatbed.svg',
-                    activeIcon: 'assets/svg/dolly-flatbed-filled.svg',
-                    label: 'Мои грузы',
+                    icon: 'assets/svg/box.svg',
+                    activeIcon: 'assets/svg/box-filled.svg',
+                    label: tr('nav.cargo'),
                     isActive: currentIndex == 2,
                     onTap: () => onTap(2),
                   ),
                   _NavBarItem(
                     icon: 'assets/svg/circle-user.svg',
                     activeIcon: 'assets/svg/circle-user-filled.svg',
-                    label: 'Профиль',
+                    label: tr('nav.profile'),
                     isActive: currentIndex == 3,
                     onTap: () => onTap(3),
                   ),
@@ -156,14 +157,14 @@ class _NavBarItem extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 isActive ? activeIcon : icon,
-                width: 24.r,
-                height: 24.r,
+                width: 22.r,
+                height: 22.r,
                 colorFilter: ColorFilter.mode(
                   isActive ? theme.colorScheme.primary : theme.colorScheme.onSurface.withOpacity(0.6),
                   BlendMode.srcIn,
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 6.h),
               Text(
                 label,
                 style: TextStyle(

@@ -1,0 +1,771 @@
+{
+  "app_title": "Fura24.kz",
+  "common": {
+    "retry": "重试",
+    "back": "返回",
+    "next": "下一步",
+    "reset": "重置",
+    "cancel": "取消",
+    "error": "错误",
+    "months_short": {
+      "jan": "1月",
+      "feb": "2月",
+      "mar": "3月",
+      "apr": "4月",
+      "may": "5月",
+      "jun": "6月",
+      "jul": "7月",
+      "aug": "8月",
+      "sep": "9月",
+      "oct": "10月",
+      "nov": "11月",
+      "dec": "12月"
+    }
+  },
+  "wallet": {
+    "title": "钱包",
+    "balance": {
+      "available": "可用余额"
+    },
+    "badge": {
+      "unlimited": "无额度限制",
+      "bonus": "奖金充值"
+    },
+    "action": {
+      "top_up": "充值",
+      "soon": "即将上线"
+    },
+    "history": {
+      "title": "记录",
+      "placeholder": {
+        "title": "交易记录即将上线",
+        "subtitle": "我们会在下次更新中提供充值和提现明细。"
+      }
+    },
+    "error": {
+      "load": "钱包加载失败"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "language": {
+      "title": "语言"
+    }
+  },
+  "profile": {
+    "title": "个人资料",
+    "unavailable": "用户资料不可用",
+    "user_placeholder": "用户",
+    "contact": {
+      "title": "联系方式",
+      "phone": "电话",
+      "email": "邮箱",
+      "empty": "未填写"
+    },
+    "delete_account": "删除账户",
+    "delete": {
+      "title": "删除账户",
+      "prompt": "请输入密码以删除账户。此操作不可恢复。",
+      "password": "密码",
+      "cancel": "取消",
+      "confirm": "删除",
+      "success": "账户已删除",
+      "error_empty": "请输入密码",
+      "error_failed": "删除账户失败"
+    },
+    "delete_account": "删除账户",
+    "role": {
+      "unknown": "角色未指定",
+      "sender": "发货方",
+      "driver": "司机"
+    },
+    "error": {
+      "title": "加载错误"
+    }
+  },
+  "profile_edit": {
+    "title": "编辑资料",
+    "first_name": "名字",
+    "last_name": "姓氏",
+    "email": "邮箱",
+    "phone": "电话",
+    "edit": "编辑",
+    "change_photo": "选择照片",
+    "save": "保存",
+    "no_changes": "没有需要更新的内容",
+    "success": "资料已更新",
+    "error": "更新资料失败",
+    "first_name_required": "请输入名字",
+    "phone_required": "请输入电话",
+    "email_invalid": "邮箱格式错误"
+  },
+  "profile_tab": {
+    "title": "个人资料",
+    "error": "加载个人资料失败",
+    "balance_title": "总余额",
+    "top_up": "充值",
+    "transfer": "转账",
+    "referral": {
+      "title": "我的邀请码",
+      "copy": "复制",
+      "unavailable": "邀请码不可用",
+      "copied": "邀请码已复制"
+    },
+    "logout": "退出账号",
+    "logout_title": "退出账号",
+    "logout_question": "确定要退出账号吗？",
+    "logout_error": "退出时出错：{0}",
+    "app_version": "应用版本",
+    "settings": {
+      "profile": "个人资料",
+      "wallet": "钱包",
+      "settings": "设置",
+      "help": "帮助",
+      "terms": "使用条款",
+      "privacy": "隐私政策",
+      "user_agreement": "用户协议"
+    },
+    "support": {
+      "help_body": "需要帮助？通过下方联系方式与我们联系。",
+      "terms_body": "关于使用条款的问题，请联系支持团队。",
+      "privacy_body": "隐私政策链接即将上线。",
+      "close": "知道了"
+    },
+    "history": "历史",
+    "socials_title": "我们在社交媒体"
+  },
+  "favorites": {
+    "title": "收藏",
+    "empty": "你还没有添加收藏。"
+  },
+  "my_cargo": {
+    "title": "我的发布",
+    "filters": {
+      "all": "全部",
+      "active": "进行中",
+      "completed": "已完成",
+      "cancelled": "已取消",
+      "empty": "所选筛选条件下没有订单。"
+    },
+    "error": {
+      "load": "无法加载订单"
+    },
+    "bids": {
+      "title": "回应",
+      "empty": "暂无回应。",
+      "accepted": "已接受回应",
+      "declined": "回应已拒绝"
+    }
+  },
+  "cost_estimate": {
+    "title": "费用计算",
+    "loading_point": "装货点",
+    "unloading_point": "卸货点",
+    "picker_loading": "选择装货点",
+    "picker_unloading": "选择卸货点",
+    "button_calculate": "计算路线",
+    "button_loading": "正在计算…",
+    "prompt": "点击“计算路线”以获取距离和时间",
+    "error_select_points": "请选择装货和卸货点",
+    "error_no_coords": "所选地点没有坐标",
+    "error_request_failed": "无法获取路线: {0}",
+    "error_invalid_consumption": "请输入有效的油耗",
+    "error_invalid_price": "请输入有效的油价",
+    "distance": "距离: {} 公里",
+    "duration": "行程时间: {}",
+    "card_title": "预估费用",
+    "card_subtitle": "大致计算您的货运费用。",
+    "fuel_consumption": "油耗 (升/100 公里)",
+    "fuel_consumption_suffix": "升 / 100 公里",
+    "fuel_price": "每升价格",
+    "fuel_price_suffix": "₸/升",
+    "prompt_fuel": "填写油耗和每升价格即可查看预估费用。",
+    "result_title": "预估结果",
+    "from": "起点",
+    "to": "终点",
+    "distance_short": "距离",
+    "duration_short": "时间",
+    "result_consumption": "油耗",
+    "result_price": "油价",
+    "result_cost": "预估费用",
+    "result_cost_value": "{0} ₸",
+    "formula_hint": "s — 距离(公里)，x — 油耗(升/100公里)，y — 每升价格"
+  },
+  "nav": {
+    "order": "订单",
+    "favorites": "收藏",
+    "cargo": "发布",
+    "profile": "个人"
+  },
+  "driver_contact": {
+    "title": "联系司机",
+    "call": "拨打电话",
+    "whatsapp": "WhatsApp",
+    "call_error": "无法打开拨号应用",
+    "whatsapp_error": "无法打开 WhatsApp"
+  },
+  "create_order": {
+    "step_counter": "步骤 {}/{}",
+    "title": "创建发布",
+    "edit_title": "编辑发布",
+    "subtitle": "一步步填写，避免遗漏。",
+    "location": {
+      "pick_departure": "选择装货点",
+      "pick_destination": "选择卸货点"
+    },
+    "steps": {
+      "route": "路线",
+      "transport": "运输",
+      "payment": "时间与付款",
+      "cargo": "货物与备注",
+      "route_desc": "填写装货和卸货点。",
+      "transport_desc": "描述车辆及运输参数。",
+      "payment_desc": "选择日期和付款条件。",
+      "cargo_desc": "检查详情并留下备注。"
+    },
+    "route_points": {
+      "title": "路线途经点",
+      "optional": "可选",
+      "add": "添加",
+      "limit": "已达到上限",
+      "pick": "选择途经点"
+    },
+    "filters": {
+      "loading": {
+        "any": "任意装载方式",
+        "back": "后装",
+        "top": "顶装",
+        "side": "侧装",
+        "back_side_top": "后+侧+顶"
+      }
+    },
+    "creating": "发布中…",
+    "publish": "发布",
+    "errors": {
+      "pick_departure": "请选择装货点。",
+      "pick_destination": "请选择卸货点。",
+      "weight": "请输入货物重量（吨）。",
+      "amount": "请输入订单金额。",
+      "cargo_name": "请输入货物名称。",
+      "photos": "请至少添加 2 张货物照片。",
+      "transport_term": "运输期限应为 1–7 天。"
+    },
+    "same_city_note": "两个地点位于同一城市并从目录中选择，未在地图上精确标记，请补充提货和送货地址，以便司机清楚知道从哪里取货、送到哪里。",
+    "require_departure_address": "请填写所在城市的提货地址。",
+    "require_destination_address": "请填写所在城市的送货地址。",
+    "form": {
+      "route": {
+        "departure_point": "装货城市",
+        "destination_point": "卸货城市",
+        "departure_address": "城市内装货地址",
+        "destination_address": "城市内卸货地址",
+        "catalog_hint": "城市来自目录，请补充具体地址方便司机。"
+      },
+      "transport": {
+        "vehicle_type": "车辆类型",
+        "loading_type": "装载方式",
+        "weight": "重量 (吨)",
+        "volume": "体积 (m³)",
+        "length": "长度 (m)",
+        "width": "宽度 (m)",
+        "height": "高度 (m)"
+      },
+      "payment": {
+        "transport_date": "运输日期",
+        "transport_term": "运输时长，天 (1–7)",
+        "payment_type": "付款方式"
+      },
+      "cargo": {
+        "details_title": "货物详情",
+        "name": "货物名称",
+        "amount": "金额",
+        "currency": "币种",
+        "photos": "货物照片",
+        "photos_hint": "至少 2 张照片。支持 JPG、PNG、HEIC。",
+        "additional": "其他",
+        "note": "备注",
+        "contact_visibility_title": "向司机显示号码",
+        "contact_visibility_subtitle": "关闭后司机只会看到“回应”按钮，电话隐藏。"
+      },
+      "summary": {
+        "title": "摘要",
+        "route": "路线",
+        "transport": "运输",
+        "cargo": "货物",
+        "payment": "付款",
+        "note": "备注"
+      },
+      "validation": {
+        "select_city": "请选择城市",
+        "required": "必填字段"
+      },
+      "add_photo": "添加"
+    },
+    "payment_type": {
+      "cash": "现金",
+      "non_cash": "银行转账",
+      "card": "转账到卡"
+    },
+    "currency": {
+      "kzt": "坚戈 (₸)",
+      "usd": "美元 ($)",
+      "eur": "欧元 (€)",
+      "rub": "卢布 (₽)",
+      "kgs": "索姆 (c)"
+    },
+    "success": {
+      "created": "发布已创建",
+      "updated": "更改已保存"
+    },
+    "errors_extra": {
+      "pick_photos": "无法选择照片"
+    }
+  },
+  "vehicle_type": {
+    "any": "不限车辆",
+    "tent": "篷车",
+    "refrigerator": "冷藏车",
+    "isotherm": "保温车",
+    "covered": "厢式车",
+    "car_carrier": "轿运车",
+    "aerial_platform": "高空作业车",
+    "car_transporter": "汽车运输车",
+    "bulk": "散装车",
+    "fuel_tanker": "油罐车",
+    "bitumen_tanker": "沥青罐车",
+    "flatbed": "平板车",
+    "shalanda": "低平板（Shalanda）",
+    "trailer": "挂车",
+    "bus": "巴士",
+    "semi_trailer": "半挂车",
+    "container_carrier": "集装箱车",
+    "hyundai_porter": "现代 Porter",
+    "fish_truck": "鱼车",
+    "chemical_tank": "化工罐车",
+    "platform": "平台车",
+    "sewage": "吸污车",
+    "excavator": "挖掘机",
+    "glass": "玻璃运输车",
+    "incubator": "孵化车",
+    "roll_transporter": "卷材运输车",
+    "gazelle_passenger": "Gazelle 客车",
+    "gazelle_flatbed": "Gazelle 平板",
+    "cattle_truck": "牲畜车",
+    "garbage_truck": "垃圾车",
+    "mega_truck": "超大货车",
+    "diplomatic": "外交货运",
+    "flour_truck": "面粉车",
+    "open": "敞车",
+    "concrete_mixer": "搅拌车",
+    "gas": "气罐车",
+    "grain": "粮车",
+    "container_platform": "集装箱平台",
+    "feed": "饲料车",
+    "crane": "起重车",
+    "log_truck": "原木车",
+    "manipulator": "随车吊",
+    "minibus": "小巴",
+    "chip_truck": "木屑车",
+    "open_container": "敞口集装箱",
+    "panel_truck": "板材车",
+    "loader": "装载机",
+    "dump_truck": "自卸车",
+    "tractor": "牵引车",
+    "trailer_platform": "低板拖车",
+    "pipe_truck": "管材车",
+    "van": "厢式货车",
+    "cement_truck": "水泥罐车",
+    "food_tank": "食品罐车"
+  },
+  "home": {
+    "location": {
+      "error": {
+        "services_off": "定位服务已关闭。请开启 GPS 后重试。",
+        "denied": "定位权限被拒绝。请允许应用使用 GPS。",
+        "denied_forever": "定位权限被永久拒绝。请在设备设置中开启。",
+        "no_signal": "无法获取当前位置。请检查 GPS 后重试。",
+        "timeout": "请求超时。请检查 GPS 后重试。",
+        "unknown": "无法确定位置。"
+      }
+    },
+    "actions": {
+      "title": "快捷操作",
+      "subtitle": "选择一个选项继续。",
+      "create_order_title": "创建发布",
+      "create_order_subtitle": "按路线发送货物",
+      "find_transport_title": "寻找运输",
+      "find_transport_subtitle": "按路线选择车辆",
+      "my_cargo_title": "我的发布",
+      "history_title": "历史记录"
+    },
+    "active_orders": {
+      "empty": "暂无活跃订单",
+      "title": "活跃货物"
+    },
+    "route": {
+      "start": "起点",
+      "finish": "终点"
+    }
+  },
+  "find_transport_filters": {
+    "pick_city": "选择城市",
+    "request_date": "申请日期"
+  },
+  "find_transport": {
+    "title": "寻找运输",
+    "filters_applied": "已应用搜索筛选",
+    "filters": {
+      "title": "筛选",
+      "departure": "出发地",
+      "destination": "目的地",
+      "vehicle": "车型",
+      "vehicle_any": "任意车型",
+      "loading_title": "装载方式",
+      "loading": {
+        "any": "任意装载方式",
+        "back": "后部",
+        "top": "顶部",
+        "side": "侧面",
+        "back_side_top": "后部 + 侧面 + 顶部"
+      },
+      "weight_from": "重量从, 吨",
+      "weight_to": "重量至, 吨",
+      "volume_from": "体积从, m³",
+      "volume_to": "体积至, m³",
+      "date": "申请日期",
+      "apply": "应用"
+    },
+    "available": "可用运输",
+    "search_hint": "按城市、司机或备注搜索",
+    "empty": "未找到符合筛选条件的运输。请尝试重置筛选或调整搜索。",
+    "card": {
+      "price_on_request": "按需报价",
+      "driver_placeholder": "司机",
+      "created_at": "创建日期：{}",
+      "per_trip": "每次行程",
+      "contact": "联系",
+      "capacity_unit": "吨",
+      "volume_unit": "立方米"
+    },
+    "detail": {
+      "created_at": "创建日期：{}",
+      "route_title": "路线",
+      "transport_title": "车辆",
+      "cargo_title": "货物",
+      "status_title": "状态",
+      "show_listing": "显示发布",
+      "yes": "是",
+      "no": "否",
+      "vehicle": "车型",
+      "loading": "装载方式",
+      "capacity": "载重",
+      "volume": "体积",
+      "comment": "备注"
+    }
+  },
+  "history": {
+    "title": "订单历史",
+    "search_hint": "按编号、路线或公司搜索",
+    "reset": "重置",
+    "filters": {
+      "all": "全部",
+      "in_progress": "进行中",
+      "completed": "已完成",
+      "cancelled": "已取消"
+    },
+    "date_range": {
+      "select": "选择时间段",
+      "range": "{0} — {1}"
+    },
+    "empty": {
+      "title": "你的订单历史会显示在这里",
+      "subtitle": "试着调整筛选或创建新订单，列表就会出现。"
+    }
+  },
+  "calendar": {
+    "select_date": "选择日期",
+    "select_range": "选择时间段",
+    "hint_single": "点击日期进行选择。",
+    "hint_range": "点击两个日期设定时间段。",
+    "clear": "清除",
+    "confirm": "完成"
+  },
+  "order_detail": {
+    "photos": "货物照片",
+    "labels": {
+      "departure_date": "发车日期：{}",
+      "status": "状态：{0}"
+    },
+    "status": {
+      "title": "行程状态",
+      "current": "当前状态",
+      "reason_prefix": "原因：{0}"
+    },
+    "statuses": {
+      "waiting_driver_confirmation": "等待司机确认",
+      "accepted": "司机已指派",
+      "ready_for_pickup": "司机已到场",
+      "waiting_pickup_confirmation": "等待交接",
+      "in_progress": "运输中",
+      "waiting_delivery_confirmation": "等待送达确认",
+      "delivered": "已送达",
+      "cancelled": "已取消",
+      "waiting_bids": "等待响应",
+      "waiting_driver_decision": "等待司机决定",
+      "pending": "待处理"
+    },
+    "bid_status": {
+      "waiting_driver_decision": "等待司机确认",
+      "confirmed": "已确认",
+      "declined": "司机已拒绝",
+      "rejected": "发货方已拒绝",
+      "new": "回应"
+    },
+    "actions": {
+      "confirm_delivery": "确认送达",
+      "confirm_pickup": "确认交接",
+      "confirm_participation": "确认参与",
+      "decline_order": "放弃订单",
+      "picked_up": "已取货",
+      "track": "跟踪",
+      "edit": "编辑",
+      "repeat": "重复发布",
+      "delivered": "已送达",
+      "ready_pickup": "在装货点",
+      "send_location": "发送位置",
+      "release_driver": "放弃订单",
+      "cancel_title": "取消订单",
+      "cancel_message": "订单将变为“已取消”。",
+      "cancel_success": "订单已取消",
+      "change_driver_title": "更换司机",
+      "change_driver_message": "当前司机将收到通知。",
+      "driver_released": "司机已移除",
+      "status_updated": "状态已更新"
+    }
+  },
+  "driver_profile": {
+    "title": "个人资料",
+    "error_load": "无法加载个人资料",
+    "retry": "重试",
+    "stub": "即将开放",
+    "balance": {
+      "title": "总余额",
+      "top_up": "充值",
+      "transfer": "转账"
+    },
+    "referral": {
+      "title": "我的推荐码",
+      "copy": "复制",
+      "unavailable": "推荐码不可用",
+      "copied": "推荐码已复制"
+    },
+    "settings": {
+      "profile": "个人资料",
+      "wallet": "钱包",
+      "settings": "设置",
+      "help": "帮助",
+      "terms": "使用条款",
+      "privacy": "隐私政策",
+      "user_agreement": "用户协议"
+    },
+    "logout": {
+      "title": "退出账号",
+      "confirm": "确定要退出账号吗？",
+      "cancel": "取消",
+      "submit": "退出",
+      "button": "退出账号",
+      "error": "退出时出错"
+    },
+    "app_version": "应用版本",
+    "support": {
+      "close": "关闭",
+      "help_body": "需要帮助吗？请通过下方任意方式联系我们。"
+    }
+  },
+  "driver_tabs": {
+    "home": "主页",
+    "favorites": "收藏",
+    "profile": "个人资料",
+    "transport": "运输"
+  },
+  "driver_favorites": {
+    "title": "收藏",
+    "error": "无法加载收藏。下拉刷新。",
+    "empty": "收藏的订单会显示在这里。可在“寻找货物”页面添加喜欢的订单。",
+    "responded": "已发送回复给发货方"
+  },
+  "driver_home": {
+    "actions": {
+      "title": "工作操作",
+      "subtitle": "跟踪行程并标记关键事件。",
+      "find_cargo": "寻找货物",
+      "loading_status": "货物状态",
+      "expenses": "费用",
+      "transport": "我的运输",
+      "create_ad": "创建公告",
+      "fill_form": "填写表单",
+      "find_transport": "寻找运输",
+      "companion": "查看同行",
+      "my_ads": "我的公告",
+      "ads_subtitle": "运输公告",
+      "history": "历史"
+    }
+  },
+  "driver_transport": {
+    "title": "我的运输",
+    "error_load": "无法加载公告",
+    "edit": "编辑",
+    "created_at": "创建于 {0}",
+    "deleted": "公告已删除",
+    "delete_title": "删除运输？",
+    "delete_message": "运输将被永久删除。",
+    "cancel": "取消",
+    "delete": "删除",
+    "status_active": "启用",
+    "status_hidden": "隐藏",
+    "empty": "您还没有公告。",
+    "retry": "重试",
+    "create": {
+      "title_new": "添加运输",
+      "title_edit": "编辑运输",
+      "subtitle_new": "填写信息以发布运输。",
+      "subtitle_edit": "更新运输信息并保存。",
+      "step_of": "步骤 {}/{}",
+      "step_titles": {
+        "route": "路线",
+        "vehicle": "车辆",
+        "params": "参数"
+      },
+      "step_desc": {
+        "route": "选择起点、途经点和终点。",
+        "vehicle": "选择车辆和装载方式。",
+        "params": "填写载重、体积和备注。"
+      },
+      "from": "从",
+      "to": "到",
+      "departure_point": "出发点",
+      "destination_point": "到达点",
+      "waypoint_title": "途经点",
+      "vehicle_type": "车辆类型",
+      "loading_type": "装载方式",
+      "select_type": "选择",
+      "route_error": "请填写路线",
+      "route_required": "请填写路线",
+      "weight": "载重 (吨)",
+      "volume": "体积 (立方米)",
+      "comment": "备注",
+      "comment_hint": "可写运输要求或说明。",
+      "waypoints": {
+        "title": "路线点",
+        "subtitle": "可选 • 最多 3 个",
+        "add": "添加",
+        "limit": "上限"
+      },
+      "nav": {
+        "back": "返回",
+        "next": "下一步",
+        "save": "保存",
+        "publish": "发布"
+      },
+      "success": {
+        "updated": "已更新",
+        "published": "已发布"
+      },
+      "validation": {
+        "number": "请输入数字",
+        "positive": "请输入大于 0 的值"
+      },
+      "loading": {
+        "any": "任意",
+        "back": "后装",
+        "top": "顶装",
+        "side": "侧装",
+        "back_side_top": "任意方向"
+      },
+      "vehicle_types": {
+        "any": "任意车辆"
+      }
+    }
+  },
+  "driver_expenses": {
+    "title": "费用",
+    "stub": "费用记录功能将在下个版本提供。"
+  },
+  "driver_loading": {
+    "title": "货物状态",
+    "error": "无法加载状态。下拉刷新。",
+    "open": "打开",
+    "date": "日期",
+    "price_on_request": "价格面议",
+    "payment_per_trip": "每趟",
+    "status": {
+      "waiting_you": "等待你的确认",
+      "need_answer": "需要回复",
+      "to_pickup": "前往装货",
+      "accepted": "已确认",
+      "wait_pickup": "确认装货",
+      "in_progress": "运输中",
+      "wait_delivery": "确认交付",
+      "active": "进行中"
+    },
+    "notes": {
+      "waiting_you": "确认参与以锁定该订单。",
+      "need_answer": "接受或拒绝订单，如需澄清请打开详情。",
+      "to_pickup": "检查装货地址和时间，抵达后请标记。",
+      "accepted": "订单已确认，请关注装货通知。",
+      "wait_pickup": "确认装货以开始行程。",
+      "in_progress": "按路线行驶，抵达后确认交付。",
+      "wait_delivery": "确认交付以完成行程。",
+      "active": "状态会在你的操作后更新。"
+    },
+    "empty": {
+      "title": "暂无状态",
+      "subtitle": "当发货方接受你的回应后，这里会出现状态卡片。"
+    }
+  },
+  "driver_home_map": {
+    "marker": {
+      "pickup": "装货",
+      "delivery": "送达"
+    },
+    "error": {
+      "services_off": "定位服务已关闭。请开启 GPS 后重试。",
+      "denied": "定位权限被拒绝。请允许应用使用 GPS。",
+      "denied_forever": "定位权限被永久拒绝。请在系统设置中开启。",
+      "no_signal": "无法获取当前位置。",
+      "unknown": "无法确定位置。"
+    },
+    "status": {
+      "waiting_driver_confirmation": "等待司机确认",
+      "ready_for_pickup": "司机已到达",
+      "waiting_pickup_confirmation": "等待装货确认",
+      "waiting_delivery_confirmation": "等待交付确认",
+      "pending": "等待中",
+      "in_transit": "运输中",
+      "completed": "已完成",
+      "cancelled": "已取消"
+    }
+  },
+  "driver_orders": {
+    "card": {
+      "departure": "发货",
+      "favorite": "收藏",
+      "unfavorite": "取消收藏",
+      "respond": "回应",
+      "responded": "已回应"
+    }
+  },
+  "driver_find": {
+    "title": "寻找货物",
+    "error": "无法加载公告。请重试。",
+    "search_hint": "按路线或货物搜索",
+    "empty": "暂时没有合适的货物，请稍后再试。",
+    "empty_search": "未找到公告。请调整搜索或筛选条件。",
+    "retry_filters": "重试"
+  },
+  "locations": {
+    "search_hint": "搜索城市",
+    "pick_on_map": "在地图上标记",
+    "search_subtitle": "搜索城市或在地图上标记"
+  }
+}

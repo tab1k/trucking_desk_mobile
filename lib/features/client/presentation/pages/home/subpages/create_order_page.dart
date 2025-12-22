@@ -1,83 +1,76 @@
-import 'dart:io';
+import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fura24.kz/features/client/domain/models/create_order_request.dart';
+import 'package:fura24.kz/features/client/domain/models/order_detail.dart';
 import 'package:fura24.kz/features/client/presentation/providers/create_order_provider.dart';
+import 'package:fura24.kz/features/client/presentation/providers/my_orders_provider.dart';
 import 'package:fura24.kz/features/locations/data/models/location_model.dart';
 import 'package:fura24.kz/features/locations/presentation/widgets/location_picker_sheet.dart';
+import 'package:fura24.kz/features/transport/data/vehicle_type_options.dart';
+import 'package:fura24.kz/shared/widgets/app_date_picker.dart';
+import 'package:image/image.dart' as image_lib;
+import 'package:image_picker/image_picker.dart';
 
 class CreateOrderPage extends ConsumerStatefulWidget {
-  const CreateOrderPage({super.key});
+  const CreateOrderPage({super.key, this.editingOrder, this.prefilledOrder})
+    : assert(
+        editingOrder == null || prefilledOrder == null,
+        'Provide either editingOrder or prefilledOrder, not both.',
+      );
+
+  final OrderDetail? editingOrder;
+  final OrderDetail? prefilledOrder;
 
   @override
   ConsumerState<CreateOrderPage> createState() => _CreateOrderPageState();
 }
 
 class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
-  final List<GlobalKey<FormState>> _formKeys =
-      List.generate(4, (_) => GlobalKey<FormState>());
+  final List<GlobalKey<FormState>> _formKeys = List.generate(
+    4,
+    (_) => GlobalKey<FormState>(),
+  );
   final List<String> _stepTitles = const [
-    'Маршрут',
-    'Транспорт',
-    'Сроки и оплата',
-    'Груз и примечание',
+    'create_order.steps.route',
+    'create_order.steps.transport',
+    'create_order.steps.payment',
+    'create_order.steps.cargo',
   ];
   final List<String> _stepDescriptions = const [
-    'Уточните точки погрузки и разгрузки.',
-    'Расскажите о машине и параметрах перевозки.',
-    'Выберите дату и условия оплаты.',
-    'Проверьте детали и оставьте комментарий.',
-  ];
-
-  static const List<_DropdownOption<String>> _vehicleTypeOptions = [
-    _DropdownOption(value: 'ANY', label: 'Любой транспорт'),
-    _DropdownOption(value: 'TENT', label: 'Тент'),
-    _DropdownOption(value: 'REFRIGERATOR', label: 'Рефрижератор'),
-    _DropdownOption(value: 'FLATBED', label: 'Бортовой'),
-    _DropdownOption(value: 'OPEN', label: 'Открытая платформа'),
-    _DropdownOption(value: 'MANIPULATOR', label: 'Манипулятор'),
-  ];
-
-  static const List<_DropdownOption<String>> _loadingTypeOptions = [
-    _DropdownOption(value: 'ANY', label: 'Любой тип погрузки'),
-    _DropdownOption(value: 'BACK', label: 'Задняя'),
-    _DropdownOption(value: 'TOP', label: 'Верхняя'),
-    _DropdownOption(value: 'SIDE', label: 'Боковая'),
-    _DropdownOption(value: 'BACK_SIDE_TOP', label: 'Зад + бок + верх'),
-  ];
-
-  static const List<_DropdownOption<String>> _paymentTypeOptions = [
-    _DropdownOption(value: 'CASH', label: 'Наличными'),
-    _DropdownOption(value: 'NON_CASH', label: 'Безналичный расчёт'),
-    _DropdownOption(value: 'CARD', label: 'На карту'),
-  ];
-
-  static const List<_DropdownOption<String>> _currencyOptions = [
-    _DropdownOption(value: 'KZT', label: 'Тенге (₸)'),
-    _DropdownOption(value: 'USD', label: 'Доллар (\$)'),
-    _DropdownOption(value: 'EUR', label: 'Евро (€)'),
-    _DropdownOption(value: 'RUB', label: 'Рубли (₽)'),
-    _DropdownOption(value: 'KGS', label: 'Сом (с)'),
+    'create_order.steps.route_desc',
+    'create_order.steps.transport_desc',
+    'create_order.steps.payment_desc',
+    'create_order.steps.cargo_desc',
   ];
 
   static const int _maxPhotos = 6;
 
   int _currentStep = 0;
   DateTime? _selectedTransportationDate;
-  String _selectedVehicleType = _vehicleTypeOptions.first.value;
-  String _selectedLoadingType = _loadingTypeOptions.first.value;
-  String _selectedPaymentType = _paymentTypeOptions.first.value;
-  String _selectedCurrency = _currencyOptions.first.value;
+  String _selectedVehicleType = vehicleTypeOptions.first.value;
+  String _selectedLoadingType = 'ANY';
+  String _selectedPaymentType = 'CASH';
+  String _selectedCurrency = 'KZT';
   LocationModel? _departureLocation;
   LocationModel? _destinationLocation;
+  bool _departureSelectedOnMap = false;
+  bool _destinationSelectedOnMap = false;
+  String? _departureMapAddress;
+  String? _destinationMapAddress;
+  static const int _maxWaypoints = 5; // включая начало и конец
+  final List<_WaypointStop> _midPoints = [];
 
   final _departurePointController = TextEditingController();
+  final _departureAddressController = TextEditingController();
   final _destinationPointController = TextEditingController();
-  final _cargoTypeController = TextEditingController();
+  final _destinationAddressController = TextEditingController();
   final _weightController = TextEditingController();
   final _volumeController = TextEditingController();
   final _lengthController = TextEditingController();
@@ -88,10 +81,44 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
   final _cargoNameController = TextEditingController();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
+  bool _showPhoneToDrivers = true;
 
-  final List<File> _selectedPhotos = [];
+  bool get _isUrbanRoute {
+    if (_departureLocation == null || _destinationLocation == null)
+      return false;
+    return _departureLocation!.cityName.trim().toLowerCase() ==
+        _destinationLocation!.cityName.trim().toLowerCase();
+  }
+
+  bool get _requiresDepartureAddress =>
+      _isUrbanRoute && !_departureSelectedOnMap;
+
+  bool get _requiresDestinationAddress =>
+      _isUrbanRoute && !_destinationSelectedOnMap;
+
+  bool get _requiresManualAddresses =>
+      _requiresDepartureAddress || _requiresDestinationAddress;
+
+  final List<_PickedPhoto> _selectedPhotos = [];
+  final List<String> _existingPhotoUrls = [];
+  final FocusNode _disabledFocusNode = FocusNode(
+    skipTraversal: true,
+    canRequestFocus: false,
+  );
+
+  bool get _isEditing => widget.editingOrder != null;
+  bool get _isRepeating => !_isEditing && widget.prefilledOrder != null;
 
   @override
+  void initState() {
+    super.initState();
+    if (_isEditing) {
+      _populateFromDetail(widget.editingOrder!);
+    } else if (_isRepeating) {
+      _populateFromDetail(widget.prefilledOrder!, includePhotos: false);
+    }
+  }
+
   Widget build(BuildContext context) {
     final createOrderState = ref.watch(createOrderControllerProvider);
     final isSubmitting = createOrderState.isLoading;
@@ -114,6 +141,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
             child: Material(
               color: Colors.grey[200],
               shape: const CircleBorder(),
+              clipBehavior: Clip.antiAlias,
               child: IconButton(
                 icon: const Icon(Icons.arrow_back, size: 20),
                 color: Colors.black87,
@@ -124,10 +152,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
           ),
           title: Padding(
             padding: EdgeInsets.only(right: 16.w, left: 16.w),
-            child: SizedBox(
-              height: 8.h,
-              child: _buildProgressStatus(),
-            ),
+            child: SizedBox(height: 8.h, child: _buildProgressStatus()),
           ),
         ),
         body: SafeArea(
@@ -143,7 +168,9 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                       if (_currentStep == 0) ...[
                         SizedBox(height: 8.h),
                         Text(
-                          'Создание заказа',
+                          _isEditing
+                              ? tr('create_order.edit_title')
+                              : tr('create_order.title'),
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 28.sp,
@@ -153,7 +180,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                         ),
                         SizedBox(height: 8.h),
                         Text(
-                          'Заполним данные по шагам — так проще ничего не пропустить.',
+                          tr('create_order.subtitle'),
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 14.sp,
@@ -194,29 +221,79 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
   }
 
   Future<void> _pickLocation({required bool isDeparture}) async {
-    final selected = await showModalBottomSheet<LocationModel>(
+    final selected = await showModalBottomSheet<LocationPickerSelection>(
       context: context,
       isScrollControlled: true,
-      builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.85,
-        child: LocationPickerSheet(
-          title: isDeparture ? 'Выбор пункта загрузки' : 'Выбор пункта разгрузки',
-          excludeLocationId:
-              isDeparture ? _destinationLocation?.id : _departureLocation?.id,
-        ),
+      useRootNavigator: true,
+      useSafeArea: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
+      builder:
+          (context) => SizedBox(
+            height: MediaQuery.of(context).size.height * 0.85,
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+              child: LocationPickerSheet(
+                title:
+                    isDeparture
+                        ? tr('create_order.location.pick_departure')
+                        : tr('create_order.location.pick_destination'),
+              ),
+            ),
+          ),
     );
 
     if (selected == null) return;
 
     setState(() {
       if (isDeparture) {
-        _departureLocation = selected;
-        _departurePointController.text = selected.cityName;
+        _departureLocation = selected.location;
+        _departurePointController.text = selected.location.cityName;
+        _departureSelectedOnMap = selected.selectedOnMap;
+        _departureMapAddress =
+            selected.selectedOnMap ? selected.addressLabel : null;
+        if (_departureSelectedOnMap) {
+          _departureAddressController.clear();
+        }
       } else {
-        _destinationLocation = selected;
-        _destinationPointController.text = selected.cityName;
+        _destinationLocation = selected.location;
+        _destinationPointController.text = selected.location.cityName;
+        _destinationSelectedOnMap = selected.selectedOnMap;
+        _destinationMapAddress =
+            selected.selectedOnMap ? selected.addressLabel : null;
+        if (_destinationSelectedOnMap) {
+          _destinationAddressController.clear();
+        }
       }
+    });
+  }
+
+  Future<void> _pickMidLocation() async {
+    if (_midPoints.length >= (_maxWaypoints - 2)) return;
+    final selected = await showModalBottomSheet<LocationPickerSelection>(
+      context: context,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      useSafeArea: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder:
+          (context) => SizedBox(
+            height: MediaQuery.of(context).size.height * 0.85,
+              child: ClipRRect(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+                child: LocationPickerSheet(
+                  title: tr('create_order.route_points.pick'),
+                ),
+              ),
+            ),
+      );
+    if (selected == null) return;
+
+    setState(() {
+      _midPoints.add(_WaypointStop(location: selected.location));
     });
   }
 
@@ -234,6 +311,76 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
     );
   }
 
+  void _populateFromDetail(OrderDetail detail, {bool includePhotos = true}) {
+    _midPoints.clear();
+
+    final waypoints = detail.waypoints;
+    if (waypoints.length >= 2) {
+      final first = waypoints.first;
+      final last = waypoints.last;
+      _departureLocation = first.location;
+      _departurePointController.text = first.location.cityName;
+      _destinationLocation = last.location;
+      _destinationPointController.text = last.location.cityName;
+      _departureAddressController.text = first.addressDetail ?? '';
+      _destinationAddressController.text = last.addressDetail ?? '';
+      if (waypoints.length > 2) {
+        for (final wp in waypoints.sublist(1, waypoints.length - 1)) {
+          _midPoints.add(_WaypointStop(location: wp.location));
+        }
+      }
+    } else {
+      _departureLocation = detail.departurePoint;
+      _departurePointController.text = detail.departurePoint.cityName;
+      _destinationLocation = detail.destinationPoint;
+      _destinationPointController.text = detail.destinationPoint.cityName;
+      _departureAddressController.text = detail.departureAddressDetail ?? '';
+      _destinationAddressController.text =
+          detail.destinationAddressDetail ?? '';
+    }
+    _selectedVehicleType = detail.vehicleType;
+    _selectedLoadingType = detail.loadingType;
+    _weightController.text = _formatDecimal(detail.weightTons);
+    _volumeController.text = _formatDecimal(detail.volumeCubicMeters);
+    _lengthController.text = _formatDecimal(detail.lengthMeters);
+    _widthController.text = _formatDecimal(detail.widthMeters);
+    _heightController.text = _formatDecimal(detail.heightMeters);
+    _transportDateController.text = _formatDateForField(
+      detail.transportationDate,
+    );
+    _selectedTransportationDate = detail.transportationDate;
+    _transportDurationController.text =
+        detail.transportationTermDays?.toString() ?? '';
+    _selectedPaymentType = detail.paymentType;
+    _cargoNameController.text = detail.cargoName;
+    _amountController.text = _formatDecimal(detail.amount);
+    _selectedCurrency = detail.currency;
+    _notesController.text = detail.description ?? '';
+    _showPhoneToDrivers = detail.showPhoneToDrivers;
+    _existingPhotoUrls.clear();
+    if (includePhotos) {
+      _existingPhotoUrls.addAll(detail.photoUrls);
+    }
+  }
+
+  String _formatDecimal(num? value) {
+    if (value == null) return '';
+    var text = value.toString();
+    if (text.contains('.') && text.endsWith('0')) {
+      text = text.replaceFirst(RegExp(r'0+$'), '');
+      text = text.replaceFirst(RegExp(r'\.$'), '');
+    }
+    return text;
+  }
+
+  String _formatDateForField(DateTime? date) {
+    if (date == null) return '';
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year.toString();
+    return '$day.$month.$year';
+  }
+
   Widget _buildNavigationBar(bool isSubmitting) {
     final isFirstStep = _currentStep == 0;
     final isLastStep = _currentStep == _stepTitles.length - 1;
@@ -246,7 +393,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               offset: const Offset(0, -4),
               blurRadius: 12,
             ),
@@ -260,24 +407,22 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                   onPressed: _handleBack,
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.black87,
-                    side: BorderSide(
-                      color: Colors.grey[300]!,
-                      width: 1,
-                    ),
+                    side: BorderSide(color: Colors.grey[300]!, width: 1),
                     padding: EdgeInsets.symmetric(vertical: 16.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
-                  child: const Text('Назад'),
+                  child: Text(tr('common.back')),
                 ),
               ),
             if (!isFirstStep) SizedBox(width: 12.w),
             Expanded(
               child: ElevatedButton(
-                onPressed: isSubmitting
-                    ? null
-                    : () async => _handleNext(isLastStep: isLastStep),
+                onPressed:
+                    isSubmitting
+                        ? null
+                        : () async => _handleNext(isLastStep: isLastStep),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF00B2FF),
                   foregroundColor: Colors.white,
@@ -290,8 +435,10 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                 ),
                 child: Text(
                   isLastStep
-                      ? (isSubmitting ? 'Отправка…' : 'Отправить заявку')
-                      : 'Продолжить',
+                      ? (isSubmitting
+                          ? tr('create_order.creating')
+                          : tr('create_order.publish'))
+                      : tr('common.next'),
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
@@ -330,6 +477,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
   }
 
   Widget _buildStepContent(BuildContext context, int step) {
+    final theme = Theme.of(context);
     switch (step) {
       case 0:
         return _buildStepForm(
@@ -337,16 +485,51 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
           children: [
             _buildLocationField(
               controller: _departurePointController,
-              label: 'Пункт загрузки',
+              label: tr('create_order.form.route.departure_point'),
               onTap: () => _pickLocation(isDeparture: true),
             ),
-            SizedBox(height: 12.h),
+            if (_departureSelectedOnMap && _departureMapAddress != null) ...[
+              SizedBox(height: 4.h),
+              _buildMapLocationHint(_departureMapAddress!),
+            ],
+            SizedBox(height: 8.h),
+            _buildWaypointList(),
+            SizedBox(height: 8.h),
             _buildLocationField(
               controller: _destinationPointController,
-              label: 'Пункт разгрузки',
+              label: tr('create_order.form.route.destination_point'),
               onTap: () => _pickLocation(isDeparture: false),
             ),
-            SizedBox(height: 12.h),
+            if (_destinationSelectedOnMap &&
+                _destinationMapAddress != null) ...[
+              SizedBox(height: 4.h),
+              _buildMapLocationHint(_destinationMapAddress!),
+            ],
+            if (_requiresManualAddresses) ...[
+              SizedBox(height: 12.h),
+              _buildSameCityNote(theme),
+              if (_requiresDepartureAddress) ...[
+                SizedBox(height: 12.h),
+                _buildTextField(
+                  controller: _departureAddressController,
+                  label: tr('create_order.form.route.departure_address'),
+                  icon: Icons.home_outlined,
+                  isRequired: true,
+                ),
+              ],
+              if (_requiresDestinationAddress) ...[
+                SizedBox(height: 12.h),
+                _buildTextField(
+                  controller: _destinationAddressController,
+                  label: tr('create_order.form.route.destination_address'),
+                  icon: Icons.location_city_outlined,
+                  isRequired: true,
+                ),
+              ],
+            ],
+
+            SizedBox(height: 10.h),
+
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(12.w),
@@ -355,7 +538,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
-                'Выберите города из справочника — просто начните вводить название и выберите нужный вариант.',
+                tr('create_order.form.route.catalog_hint'),
                 style: TextStyle(fontSize: 12.sp, color: Colors.grey[700]),
               ),
             ),
@@ -365,39 +548,49 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
         return _buildStepForm(
           step,
           children: [
-            _buildDropdownField<String>(
-              label: 'Тип транспорта',
-              value: _selectedVehicleType,
-              options: _vehicleTypeOptions,
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() => _selectedVehicleType = value);
-              },
+            _buildSelectionField(
+              label: tr('create_order.form.transport.vehicle_type'),
+              value: _labelForOption(_vehicleOptions, _selectedVehicleType),
+              onTap:
+                  () => _pickOption<String>(
+                    title: tr('create_order.form.transport.vehicle_type'),
+                    options: _vehicleOptions,
+                    currentValue: _selectedVehicleType,
+                    onSelected:
+                        (value) => setState(() => _selectedVehicleType = value),
+                  ),
             ),
             SizedBox(height: 12.h),
-            _buildDropdownField<String>(
-              label: 'Тип погрузки',
-              value: _selectedLoadingType,
-              options: _loadingTypeOptions,
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() => _selectedLoadingType = value);
-              },
+            _buildSelectionField(
+              label: tr('create_order.form.transport.loading_type'),
+              value: _labelForOption(_loadingOptions, _selectedLoadingType),
+              onTap:
+                  () => _pickOption<String>(
+                    title: tr('create_order.form.transport.loading_type'),
+                    options: _loadingOptions,
+                    currentValue: _selectedLoadingType,
+                    onSelected:
+                        (value) => setState(() => _selectedLoadingType = value),
+                  ),
             ),
             SizedBox(height: 12.h),
             _buildTextField(
               controller: _weightController,
-              label: 'Вес (тонны)',
+              label: tr('create_order.form.transport.weight'),
               icon: Icons.scale_outlined,
               isRequired: true,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
             ),
             SizedBox(height: 12.h),
             _buildTextField(
               controller: _volumeController,
-              label: 'Объём (м³)',
+              label: tr('create_order.form.transport.volume'),
               icon: Icons.aspect_ratio_outlined,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
             ),
             SizedBox(height: 12.h),
             Row(
@@ -405,30 +598,33 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                 Expanded(
                   child: _buildTextField(
                     controller: _lengthController,
-                    label: 'Длина (м)',
+                    label: tr('create_order.form.transport.length'),
                     icon: Icons.straighten,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
                   child: _buildTextField(
                     controller: _widthController,
-                    label: 'Ширина (м)',
+                    label: tr('create_order.form.transport.width'),
                     icon: Icons.straighten,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
                   child: _buildTextField(
                     controller: _heightController,
-                    label: 'Высота (м)',
+                    label: tr('create_order.form.transport.height'),
                     icon: Icons.height,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ),
               ],
@@ -441,27 +637,30 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
           children: [
             _buildTextField(
               controller: _transportDateController,
-              label: 'Дата перевозки',
+              label: tr('create_order.form.payment.transport_date'),
               icon: Icons.calendar_today_outlined,
-              onTap: () => _selectDate(context),
+              onTap: _pickDate,
               readOnly: true,
             ),
             SizedBox(height: 12.h),
             _buildTextField(
               controller: _transportDurationController,
-              label: 'Срок перевозки, дней (1–7)',
+              label: tr('create_order.form.payment.transport_term'),
               icon: Icons.access_time_outlined,
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 24.h),
-            _buildDropdownField<String>(
-              label: 'Вид оплаты',
-              value: _selectedPaymentType,
-              options: _paymentTypeOptions,
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() => _selectedPaymentType = value);
-              },
+            _buildSelectionField(
+              label: tr('create_order.form.payment.payment_type'),
+              value: _labelForOption(_paymentTypeOptions, _selectedPaymentType),
+              onTap:
+                  () => _pickOption<String>(
+                    title: tr('create_order.form.payment.payment_type'),
+                    options: _paymentTypeOptions,
+                    currentValue: _selectedPaymentType,
+                    onSelected:
+                        (value) => setState(() => _selectedPaymentType = value),
+                  ),
             ),
           ],
         );
@@ -469,68 +668,70 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
         return _buildStepForm(
           step,
           children: [
-            _buildSectionTitle('Детали груза'),
+            _buildSectionTitle(tr('create_order.form.cargo.details_title')),
             SizedBox(height: 16.h),
             _buildTextField(
               controller: _cargoNameController,
-              label: 'Название груза',
+              label: tr('create_order.form.cargo.name'),
               icon: Icons.inventory_2_outlined,
               isRequired: true,
             ),
             SizedBox(height: 12.h),
-            _buildTextField(
-              controller: _cargoTypeController,
-              label: 'ID типа груза (опционально)',
-              icon: Icons.category_outlined,
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 12.h),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   flex: 2,
                   child: _buildTextField(
                     controller: _amountController,
-                    label: 'Сумма',
+                    label: tr('create_order.form.cargo.amount'),
                     icon: Icons.attach_money_outlined,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     isRequired: true,
                   ),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
                   flex: 1,
-                  child: _buildDropdownField<String>(
-                    value: _selectedCurrency,
-                    options: _currencyOptions,
-                    onChanged: (value) {
-                      if (value == null) return;
-                      setState(() => _selectedCurrency = value);
-                    },
+                  child: _buildSelectionField(
+                    label: tr('create_order.form.cargo.currency'),
+                    value: _labelForOption(_currencyOptions, _selectedCurrency),
+                    onTap:
+                        () => _pickOption<String>(
+                          title: tr('create_order.form.cargo.currency'),
+                          options: _currencyOptions,
+                          currentValue: _selectedCurrency,
+                          onSelected:
+                              (value) =>
+                                  setState(() => _selectedCurrency = value),
+                        ),
                   ),
                 ),
               ],
             ),
             SizedBox(height: 24.h),
-            _buildSectionTitle('Фото груза'),
+            _buildSectionTitle(tr('create_order.form.cargo.photos')),
             SizedBox(height: 12.h),
             _buildPhotoPicker(),
             SizedBox(height: 8.h),
             Text(
-              'Минимум 2 фото. Поддерживается JPG, PNG, HEIC.',
+              tr('create_order.form.cargo.photos_hint'),
               style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
             ),
             SizedBox(height: 24.h),
-            _buildSectionTitle('Дополнительно'),
+            _buildSectionTitle(tr('create_order.form.cargo.additional')),
             SizedBox(height: 16.h),
             _buildTextField(
               controller: _notesController,
-              label: 'Примечание',
+              label: tr('create_order.form.cargo.note'),
               icon: Icons.note_outlined,
               maxLines: 3,
             ),
-            SizedBox(height: 24.h),
+            SizedBox(height: 14.h),
+            _buildContactVisibilityTile(),
+            SizedBox(height: 14.h),
             _buildSummaryCard(context),
           ],
         );
@@ -547,7 +748,10 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Шаг ${step + 1} из ${_stepTitles.length}',
+            tr(
+              'create_order.step_counter',
+              args: ['${step + 1}', '${_stepTitles.length}'],
+            ),
             style: TextStyle(
               fontSize: 14.sp,
               color: Colors.grey[600],
@@ -556,7 +760,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
           ),
           SizedBox(height: 6.h),
           Text(
-            _stepTitles[step],
+            tr(_stepTitles[step]),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
@@ -565,11 +769,8 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
           ),
           SizedBox(height: 6.h),
           Text(
-            _stepDescriptions[step],
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: Colors.grey[600],
-            ),
+            tr(_stepDescriptions[step]),
+            style: TextStyle(fontSize: 13.sp, color: Colors.grey[600]),
           ),
           SizedBox(height: 24.h),
           ...children,
@@ -624,7 +825,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Выберите город';
+          return tr('create_order.form.validation.select_city');
         }
         return null;
       },
@@ -670,82 +871,424 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
           borderSide: const BorderSide(color: Color(0xFF00B2FF), width: 1.4),
         ),
       ),
-      style: TextStyle(
-        fontSize: 14.sp,
-        color: Colors.black87,
-      ),
-      validator: isRequired
-          ? (value) {
-              if (value == null || value.isEmpty) {
-                return 'Обязательное поле';
+      style: TextStyle(fontSize: 14.sp, color: Colors.black87),
+      validator:
+          isRequired
+              ? (value) {
+                if (value == null || value.isEmpty) {
+                  return tr('create_order.form.validation.required');
+                }
+                return null;
               }
-              return null;
-            }
-          : null,
+              : null,
     );
   }
 
-  Widget _buildDropdownField<T>({
-    required List<_DropdownOption<T>> options,
-    required ValueChanged<T?> onChanged,
-    T? value,
-    String? label,
+  Widget _buildSelectionField({
+    required String label,
+    required String value,
+    required VoidCallback onTap,
   }) {
-    return DropdownButtonFormField<T>(
-      value: value,
-      items: options
-          .map(
-            (option) => DropdownMenuItem<T>(
-              value: option.value,
-              child: Text(option.label, style: TextStyle(fontSize: 14.sp)),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: Colors.grey[200]!, width: 1),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                value,
+                style: TextStyle(fontSize: 14.sp, color: Colors.black87),
+              ),
             ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(
-          color: Colors.grey[600],
-          fontSize: 14.sp,
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              size: 20,
+              color: Colors.grey[500],
+            ),
+          ],
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: const BorderSide(color: Color(0xFF00B2FF), width: 1.4),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
-        ),
-        filled: true,
-        fillColor: Colors.grey[50],
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       ),
-      style: TextStyle(
-        fontSize: 14.sp,
-        color: Colors.black87,
-      ),
-      icon: Icon(Icons.arrow_drop_down, color: Colors.grey[500]),
-      isExpanded: true,
     );
+  }
+
+  Widget _buildSameCityNote(ThemeData theme) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.info_outline,
+            size: 18.w,
+            color: theme.colorScheme.primary,
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              tr('create_order.same_city_note'),
+              style: TextStyle(
+                fontSize: 12.5.sp,
+                color: theme.colorScheme.primary,
+                height: 1.35,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<_DropdownOption<String>> get _vehicleOptions => vehicleTypeOptions
+      .map(
+        (option) => _DropdownOption<String>(
+          value: option.value,
+          label: _vehicleLabel(option.value),
+        ),
+      )
+      .toList(growable: false);
+
+  List<_DropdownOption<String>> get _loadingOptions => [
+    _DropdownOption(
+      value: 'ANY',
+      label: tr('create_order.filters.loading.any'),
+    ),
+    _DropdownOption(
+      value: 'BACK',
+      label: tr('create_order.filters.loading.back'),
+    ),
+    _DropdownOption(
+      value: 'TOP',
+      label: tr('create_order.filters.loading.top'),
+    ),
+    _DropdownOption(
+      value: 'SIDE',
+      label: tr('create_order.filters.loading.side'),
+    ),
+    _DropdownOption(
+      value: 'BACK_SIDE_TOP',
+      label: tr('create_order.filters.loading.back_side_top'),
+    ),
+  ];
+
+  List<_DropdownOption<String>> get _paymentTypeOptions => [
+    _DropdownOption(value: 'CASH', label: tr('create_order.payment_type.cash')),
+    _DropdownOption(
+      value: 'NON_CASH',
+      label: tr('create_order.payment_type.non_cash'),
+    ),
+    _DropdownOption(value: 'CARD', label: tr('create_order.payment_type.card')),
+  ];
+
+  List<_DropdownOption<String>> get _currencyOptions => [
+    _DropdownOption(value: 'KZT', label: tr('create_order.currency.kzt')),
+    _DropdownOption(value: 'USD', label: tr('create_order.currency.usd')),
+    _DropdownOption(value: 'EUR', label: tr('create_order.currency.eur')),
+    _DropdownOption(value: 'RUB', label: tr('create_order.currency.rub')),
+    _DropdownOption(value: 'KGS', label: tr('create_order.currency.kgs')),
+  ];
+
+  Widget _buildWaypointList() {
+    final remaining = _maxWaypoints - 2 - _midPoints.length;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ..._midPoints.asMap().entries.map(
+          (entry) => Padding(
+            padding: EdgeInsets.only(bottom: 6.h),
+            child: TextFormField(
+              readOnly: true,
+              enableInteractiveSelection: false,
+              focusNode: _disabledFocusNode,
+              initialValue: entry.value.location.cityName,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.location_on_outlined, size: 18),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.close, size: 18),
+                  onPressed: () {
+                    setState(() {
+                      _midPoints.removeAt(entry.key);
+                    });
+                  },
+                ),
+                filled: true,
+                fillColor: Colors.grey[50],
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 12.h,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF00B2FF),
+                    width: 1.2,
+                  ),
+                ),
+              ),
+              style: TextStyle(fontSize: 14.sp, color: Colors.black87),
+            ),
+          ),
+        ),
+        if (_midPoints.isNotEmpty) SizedBox(height: 4.h),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    tr('create_order.route_points.title'),
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    tr('create_order.route_points.optional'),
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 12.w),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 160.w),
+              child: TextButton.icon(
+                onPressed: remaining > 0 ? _pickMidLocation : null,
+                icon: const Icon(Icons.add_circle_outline, size: 18),
+                label: Text(
+                  remaining > 0
+                      ? tr('create_order.route_points.add')
+                      : tr('create_order.route_points.limit'),
+                  style: TextStyle(fontSize: 13.sp),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+                  minimumSize: Size(0, 0),
+                  foregroundColor: Colors.black87,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 8.h),
+      ],
+    );
+  }
+
+  String _vehicleLabel(String value) {
+    final key = 'vehicle_type.${value.toLowerCase()}';
+    final translated = tr(key);
+    if (translated != key) return translated;
+    final match = vehicleTypeOptions.firstWhere(
+      (option) => option.value == value,
+      orElse: () => vehicleTypeOptions.first,
+    );
+    return match.label;
+  }
+
+  String _labelForOption(List<_DropdownOption<String>> options, String value) {
+    final match = options.firstWhere(
+      (option) => option.value == value,
+      orElse: () => options.first,
+    );
+    return match.label;
+  }
+
+  Future<void> _pickOption<T>({
+    required String title,
+    required List<_DropdownOption<T>> options,
+    required T currentValue,
+    required ValueChanged<T> onSelected,
+  }) async {
+    final sheetHeight = math.min(
+      MediaQuery.of(context).size.height * 0.6,
+      420.h,
+    );
+    final picked = await showModalBottomSheet<T>(
+      context: context,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return SizedBox(
+          height: sheetHeight,
+          child: Padding(
+            padding: EdgeInsets.only(top: 8.h),
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    Container(
+                      width: 48.w,
+                      height: 4.h,
+                      margin: EdgeInsets.only(top: 12.h),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              title,
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.grey[600],
+                              size: 20,
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(height: 1, color: Colors.grey[200]),
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: options.length,
+                        separatorBuilder:
+                            (_, __) =>
+                                Divider(height: 1, color: Colors.grey[200]),
+                        itemBuilder: (context, index) {
+                          final option = options[index];
+                          final isSelected = option.value == currentValue;
+                          return ListTile(
+                            title: Text(
+                              option.label,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight:
+                                    isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.normal,
+                                color:
+                                    isSelected ? Colors.black : Colors.black87,
+                              ),
+                            ),
+                            trailing: Icon(
+                              Icons.chevron_right,
+                              color: Colors.grey[500],
+                            ),
+                            onTap:
+                                () => Navigator.of(context).pop(option.value),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (picked != null) {
+      onSelected(picked);
+    }
   }
 
   Widget _buildPhotoPicker() {
+    final totalPhotos = _existingPhotoUrls.length + _selectedPhotos.length;
+    final remainingSlots = _maxPhotos - totalPhotos;
     return Wrap(
       spacing: 12.w,
       runSpacing: 12.h,
       children: [
+        for (final url in _existingPhotoUrls) _RemotePhotoPreview(url: url),
         for (final entry in _selectedPhotos.asMap().entries)
           _PhotoPreview(
-            file: entry.value,
+            photo: entry.value,
             onRemove: () => _removePhoto(entry.key),
           ),
-        if (_selectedPhotos.length < _maxPhotos)
-          _AddPhotoTile(onTap: _pickPhotos),
+        if (remainingSlots > 0) _AddPhotoTile(onTap: _pickPhotos),
       ],
+    );
+  }
+
+  Widget _buildContactVisibilityTile() {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F9FC),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tr('create_order.form.cargo.contact_visibility_title'),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                Text(
+                  tr('create_order.form.cargo.contact_visibility_subtitle'),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey[600],
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch.adaptive(
+            value: _showPhoneToDrivers,
+            activeColor: theme.colorScheme.primary,
+            onChanged: (value) => setState(() => _showPhoneToDrivers = value),
+          ),
+        ],
+      ),
     );
   }
 
@@ -767,7 +1310,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Краткий итог',
+            tr('create_order.form.summary.title'),
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -777,28 +1320,31 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
           SizedBox(height: 12.h),
           _buildSummaryRow(
             icon: Icons.alt_route,
-            title: 'Маршрут',
+            title: tr('create_order.form.summary.route'),
             value:
                 '${fallbackText(_departurePointController.text)} → ${fallbackText(_destinationPointController.text)}',
           ),
           SizedBox(height: 12.h),
           _buildSummaryRow(
             icon: Icons.local_shipping,
-            title: 'Транспорт',
-            value: _vehicleTypeOptions
-                .firstWhere((option) => option.value == _selectedVehicleType)
-                .label,
+            title: tr('create_order.form.summary.transport'),
+            value:
+                _vehicleOptions
+                    .firstWhere(
+                      (option) => option.value == _selectedVehicleType,
+                    )
+                    .label,
           ),
           SizedBox(height: 12.h),
           _buildSummaryRow(
             icon: Icons.inventory_2,
-            title: 'Груз',
+            title: tr('create_order.form.summary.cargo'),
             value: fallbackText(_cargoNameController.text),
           ),
           SizedBox(height: 12.h),
           _buildSummaryRow(
             icon: Icons.payment,
-            title: 'Оплата',
+            title: tr('create_order.form.summary.payment'),
             value:
                 '${fallbackText(_amountController.text)} ${_currencyOptions.firstWhere((option) => option.value == _selectedCurrency).label} • ${_paymentTypeOptions.firstWhere((option) => option.value == _selectedPaymentType).label}',
           ),
@@ -806,7 +1352,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
             SizedBox(height: 12.h),
             _buildSummaryRow(
               icon: Icons.note,
-              title: 'Примечание',
+              title: tr('create_order.form.summary.note'),
               value: _notesController.text.trim(),
             ),
           ],
@@ -862,29 +1408,27 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedTransportationDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF00B2FF),
-            ),
-          ),
-          child: child!,
-        );
-      },
+  Widget _buildMapLocationHint(String text) {
+    return Text(
+      text,
+      style: TextStyle(fontSize: 12.sp, color: Colors.blueGrey[700]),
     );
-    if (picked != null) {
-      _selectedTransportationDate = picked;
-      _transportDateController.text =
-          '${picked.day.toString().padLeft(2, '0')}.${picked.month.toString().padLeft(2, '0')}.${picked.year}';
-      setState(() {});
-    }
+  }
+
+  Future<void> _pickDate() async {
+    final now = DateTime.now();
+    final initial = _selectedTransportationDate ?? now;
+    final selected = await showAppDatePicker(
+      context,
+      title: tr('create_order.form.payment.transport_date'),
+      initialDate: initial,
+      firstDate: initial.isBefore(now) ? initial : now,
+    );
+    if (selected == null) return;
+    setState(() {
+      _selectedTransportationDate = selected;
+      _transportDateController.text = _formatDateForField(selected);
+    });
   }
 
   Future<void> _pickPhotos() async {
@@ -892,24 +1436,31 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       final result = await FilePicker.platform.pickFiles(
         allowMultiple: true,
         type: FileType.image,
+        withData: true,
       );
       if (result == null) return;
 
-      final files = result.files
-          .where((file) => file.path != null)
-          .map((file) => File(file.path!))
-          .toList();
-
-      if (files.isEmpty) return;
+      final normalizedFiles = <_PickedPhoto>[];
+      for (final file in result.files) {
+        final xfile =
+            file.path != null
+                ? XFile(file.path!, name: file.name)
+                : XFile.fromData(file.bytes ?? Uint8List(0), name: file.name);
+        final normalized = await _normalizePickedImage(
+          xfile,
+          fallbackBytes: file.bytes,
+        );
+        normalizedFiles.add(normalized);
+      }
 
       setState(() {
-        _selectedPhotos.addAll(files);
+        _selectedPhotos.addAll(normalizedFiles);
         if (_selectedPhotos.length > _maxPhotos) {
           _selectedPhotos.removeRange(_maxPhotos, _selectedPhotos.length);
         }
       });
     } catch (_) {
-      _showError('Не удалось выбрать фотографии');
+      _showError(tr('create_order.errors_extra.pick_photos'));
     }
   }
 
@@ -920,43 +1471,113 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
     });
   }
 
+  Future<_PickedPhoto> _normalizePickedImage(
+    XFile file, {
+    Uint8List? fallbackBytes,
+  }) async {
+    try {
+      final sourceBytes = fallbackBytes ?? await file.readAsBytes();
+      if (sourceBytes.isEmpty) {
+        return _PickedPhoto(file: file, bytes: sourceBytes);
+      }
+
+      final decoded = image_lib.decodeImage(sourceBytes);
+      if (decoded == null) {
+        return _PickedPhoto(file: file, bytes: sourceBytes);
+      }
+
+      final encoded = image_lib.encodeJpg(decoded, quality: 85);
+      final bytes = Uint8List.fromList(encoded);
+      final normalized = XFile.fromData(
+        bytes,
+        name: file.name.isNotEmpty ? file.name : 'photo.jpg',
+        mimeType: 'image/jpeg',
+        length: bytes.length,
+      );
+      return _PickedPhoto(file: normalized, bytes: bytes);
+    } catch (_) {
+      final safeBytes = fallbackBytes ?? await _readSafeBytes(file);
+      return _PickedPhoto(file: file, bytes: safeBytes);
+    }
+  }
+
+  Future<Uint8List> _readSafeBytes(XFile file) async {
+    try {
+      return await file.readAsBytes();
+    } catch (_) {
+      return Uint8List(0);
+    }
+  }
+
   Future<void> _submitForm() async {
     final departure = _departureLocation;
     final destination = _destinationLocation;
     final weight = double.tryParse(_weightController.text.trim());
     final amount = double.tryParse(_amountController.text.trim());
-    final transportTerm = _transportDurationController.text.trim().isEmpty
-        ? null
-        : int.tryParse(_transportDurationController.text.trim());
+    final transportTerm =
+        _transportDurationController.text.trim().isEmpty
+            ? null
+            : int.tryParse(_transportDurationController.text.trim());
 
     if (departure == null) {
-      _showError('Выберите пункт загрузки.');
+      _showError(tr('create_order.errors.pick_departure'));
       return;
     }
     if (destination == null) {
-      _showError('Выберите пункт разгрузки.');
+      _showError(tr('create_order.errors.pick_destination'));
       return;
     }
     if (weight == null || weight <= 0) {
-      _showError('Введите вес груза в тоннах.');
+      _showError(tr('create_order.errors.weight'));
       return;
     }
     if (amount == null || amount <= 0) {
-      _showError('Введите сумму заказа.');
+      _showError(tr('create_order.errors.amount'));
       return;
     }
     if (_cargoNameController.text.trim().isEmpty) {
-      _showError('Введите название груза.');
+      _showError(tr('create_order.errors.cargo_name'));
       return;
     }
-    if (_selectedPhotos.length < 2) {
-      _showError('Добавьте минимум 2 фото груза.');
+    if (_requiresDepartureAddress &&
+        _departureAddressController.text.trim().isEmpty) {
+      _showError(tr('create_order.require_departure_address'));
+      return;
+    }
+    if (_requiresDestinationAddress &&
+        _destinationAddressController.text.trim().isEmpty) {
+      _showError(tr('create_order.require_destination_address'));
+      return;
+    }
+    final totalPhotos = _existingPhotoUrls.length + _selectedPhotos.length;
+    final requiresPhotos = !_isEditing || totalPhotos > 0;
+    if (requiresPhotos && totalPhotos < 2) {
+      _showError(tr('create_order.errors.photos'));
       return;
     }
     if (transportTerm != null && (transportTerm < 1 || transportTerm > 7)) {
-      _showError('Срок перевозки должен быть от 1 до 7 дней.');
+      _showError(tr('create_order.errors.transport_term'));
       return;
     }
+
+    final waypoints =
+        _midPoints.isEmpty
+            ? <OrderWaypointRequest>[]
+            : <OrderWaypointRequest>[
+              OrderWaypointRequest(locationId: departure.id, sequence: 1),
+              ..._midPoints.asMap().entries.map((entry) {
+                final idx = entry.key;
+                final wp = entry.value;
+                return OrderWaypointRequest(
+                  locationId: wp.location.id,
+                  sequence: idx + 2,
+                );
+              }),
+              OrderWaypointRequest(
+                locationId: destination.id,
+                sequence: _midPoints.length + 2,
+              ),
+            ];
 
     final request = CreateOrderRequest(
       departurePointId: departure.id,
@@ -970,24 +1591,47 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       widthMeters: _parseDouble(_widthController.text),
       heightMeters: _parseDouble(_heightController.text),
       description:
-          _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+          _notesController.text.trim().isEmpty
+              ? null
+              : _notesController.text.trim(),
       transportationDate: _selectedTransportationDate,
       transportationTermDays: transportTerm,
       amount: amount,
       paymentType: _selectedPaymentType,
       currency: _selectedCurrency,
-      cargoTypeId: _parseInt(_cargoTypeController.text),
-      photos: List<File>.from(_selectedPhotos),
+      photos: _selectedPhotos.map((photo) => photo.file).toList(),
+      showPhoneToDrivers: _showPhoneToDrivers,
+      departureAddressDetail:
+          _departureAddressController.text.trim().isEmpty
+              ? null
+              : _departureAddressController.text.trim(),
+      destinationAddressDetail:
+          _destinationAddressController.text.trim().isEmpty
+              ? null
+              : _destinationAddressController.text.trim(),
+      waypoints: waypoints,
     );
 
+    final controller = ref.read(createOrderControllerProvider.notifier);
     final success =
-        await ref.read(createOrderControllerProvider.notifier).submit(request);
+        _isEditing
+            ? await controller.updateOrder(
+              widget.editingOrder!.id,
+              request,
+              includePhotos: _selectedPhotos.isNotEmpty,
+            )
+            : await controller.submit(request);
     if (!mounted) return;
 
     if (success) {
+      ref.refresh(myOrdersProvider);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Заявка отправлена'),
+        SnackBar(
+          content: Text(
+            _isEditing
+                ? tr('create_order.success.updated')
+                : tr('create_order.success.created'),
+          ),
           backgroundColor: Colors.green,
         ),
       );
@@ -1013,18 +1657,16 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
   void _showError(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.redAccent,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
     );
   }
 
   @override
   void dispose() {
     _departurePointController.dispose();
+    _departureAddressController.dispose();
     _destinationPointController.dispose();
-    _cargoTypeController.dispose();
+    _destinationAddressController.dispose();
     _weightController.dispose();
     _volumeController.dispose();
     _lengthController.dispose();
@@ -1035,6 +1677,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
     _cargoNameController.dispose();
     _amountController.dispose();
     _notesController.dispose();
+    _disabledFocusNode.dispose();
     super.dispose();
   }
 }
@@ -1046,10 +1689,23 @@ class _DropdownOption<T> {
   final String label;
 }
 
-class _PhotoPreview extends StatelessWidget {
-  const _PhotoPreview({required this.file, required this.onRemove});
+class _WaypointStop {
+  _WaypointStop({required this.location});
 
-  final File file;
+  final LocationModel location;
+}
+
+class _PickedPhoto {
+  _PickedPhoto({required this.file, required this.bytes});
+
+  final XFile file;
+  final Uint8List bytes;
+}
+
+class _PhotoPreview extends StatelessWidget {
+  const _PhotoPreview({required this.photo, required this.onRemove});
+
+  final _PickedPhoto photo;
   final VoidCallback onRemove;
 
   @override
@@ -1063,10 +1719,10 @@ class _PhotoPreview extends StatelessWidget {
             width: 96.w,
             height: 96.w,
             color: Colors.grey[200],
-            child: Image.file(
-              file,
-              fit: BoxFit.cover,
-            ),
+            child:
+                photo.bytes.isEmpty
+                    ? const Icon(Icons.image_not_supported_outlined)
+                    : Image.memory(photo.bytes, fit: BoxFit.cover),
           ),
         ),
         Positioned(
@@ -1080,15 +1736,42 @@ class _PhotoPreview extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               padding: const EdgeInsets.all(4),
-              child: const Icon(
-                Icons.close,
-                size: 14,
-                color: Colors.white,
-              ),
+              child: const Icon(Icons.close, size: 14, color: Colors.white),
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _RemotePhotoPreview extends StatelessWidget {
+  const _RemotePhotoPreview({required this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12.r),
+      child: Container(
+        width: 96.w,
+        height: 96.w,
+        color: Colors.grey[200],
+        child: Image.network(
+          url,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, progress) {
+            if (progress == null) return child;
+            return const Center(
+              child: CircularProgressIndicator(strokeWidth: 2),
+            );
+          },
+          errorBuilder:
+              (_, __, ___) =>
+                  const Center(child: Icon(Icons.broken_image_outlined)),
+        ),
+      ),
     );
   }
 }
@@ -1114,11 +1797,13 @@ class _AddPhotoTile extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.add_photo_alternate_outlined,
-                color: Color(0xFF00B2FF)),
+            const Icon(
+              Icons.add_photo_alternate_outlined,
+              color: Color(0xFF00B2FF),
+            ),
             SizedBox(height: 6.h),
             Text(
-              'Добавить',
+              tr('create_order.form.add_photo'),
               style: TextStyle(
                 fontSize: 12.sp,
                 color: const Color(0xFF00B2FF),

@@ -4,7 +4,7 @@
 
 ## Ключевые возможности
 - **Для клиентов**: карта с текущим местоположением и активными рейсами, быстрые действия (создать заказ, найти транспорт, история), отслеживание груза и драг‑шторка с деталями (`lib/features/client/presentation/pages/home/home_tab.dart`).
-- **Мастер создания заявки**: 4 шага с контекстными подсказками, загрузкой до 6 фотографий, выбором транспорта, оплаты и валюты; отправка формируется в `CreateOrderRequest` и уходит в `OrderRepository` через Dio (`lib/features/client/presentation/pages/home/subpages/create_order_page.dart`).
+- **Мастер создания объявления**: 4 шага с контекстными подсказками, загрузкой до 6 фотографий, выбором транспорта, оплаты и валюты; отправка формируется в `CreateOrderRequest` и уходит в `OrderRepository` через Dio (`lib/features/client/presentation/pages/home/subpages/create_order_page.dart`).
 - **Локации и карты**: OpenStreetMap через `flutter_map`, геолокация и фоновые обновления от `geolocator`, ручной выбор города с поиском и дебаунсом (см. `lib/features/locations`).
 - **Роли и аутентификация**: единый экран входа/регистрации с переключением «Грузоотправитель / Водитель», хранение сессии в `SharedPreferences`, автоматическое обновление токена (`lib/features/auth`).
 - **Кабинет водителя**: отдельный `DriverDashboardShell` с вкладками «Главная», «Рейсы», «Кошелёк», «Профиль» (`lib/features/driver/view`).

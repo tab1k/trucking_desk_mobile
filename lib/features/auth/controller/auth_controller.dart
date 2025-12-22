@@ -3,6 +3,7 @@ import 'package:fura24.kz/core/exceptions/api_exception.dart';
 import 'package:fura24.kz/features/auth/model/auth_response.dart';
 import 'package:fura24.kz/features/auth/repositories/auth_repository.dart';
 import 'package:fura24.kz/features/auth/repositories/auth_storage.dart';
+import 'package:fura24.kz/services/push_notification_service.dart';
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
@@ -26,16 +27,44 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
   final AuthStorage storage;
 
   Future<bool> login({
-    required String phoneNumber,
+    required String login,
     required String password,
     String role = 'SENDER',
   }) async {
     state = const AsyncLoading();
     try {
       final response = await repository.login(
-        phoneNumber: phoneNumber,
+        login: login,
         password: password,
         role: role.toUpperCase(),
+      );
+      await _persistSession(response);
+      await PushNotificationService.syncTokenWithBackend();
+      state = const AsyncData(null);
+      return true;
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+      return false;
+    }
+  }
+
+  Future<bool> register({
+    required String login,
+    required String password,
+    required String passwordConfirm,
+    String? email,
+    String role = 'SENDER',
+    String? referralCode,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      final response = await repository.register(
+        login: login,
+        password: password,
+        passwordConfirm: passwordConfirm,
+        email: email?.isEmpty ?? true ? null : email,
+        role: role.toUpperCase(),
+        referralCode: referralCode?.isEmpty ?? true ? null : referralCode,
       );
       await _persistSession(response);
       state = const AsyncData(null);
@@ -46,23 +75,46 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  Future<bool> register({
-    required String phoneNumber,
-    required String password,
-    required String passwordConfirm,
-    String? email,
-    String role = 'SENDER',
+  Future<Map<String, String?>> requestPasswordReset({required String email}) async {
+    state = const AsyncLoading();
+    try {
+      final data = await repository.requestPasswordReset(email: email.trim());
+      state = const AsyncData(null);
+      return data;
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+      return {};
+    }
+  }
+
+  Future<bool> confirmPasswordReset({
+    required String uid,
+    required String token,
+    required String newPassword,
+    required String newPasswordConfirm,
   }) async {
     state = const AsyncLoading();
     try {
-      final response = await repository.register(
-        phoneNumber: phoneNumber,
-        password: password,
-        passwordConfirm: passwordConfirm,
-        email: email?.isEmpty ?? true ? null : email,
-        role: role.toUpperCase(),
+      await repository.confirmPasswordReset(
+        uid: uid,
+        token: token,
+        newPassword: newPassword,
+        newPasswordConfirm: newPasswordConfirm,
       );
-      await _persistSession(response);
+      state = const AsyncData(null);
+      return true;
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+      return false;
+    }
+  }
+
+  Future<bool> deleteAccount({required String password}) async {
+    state = const AsyncLoading();
+    try {
+      await repository.deleteAccount(password: password);
+      await storage.clearSession();
+      _applyAuthToken(null);
       state = const AsyncData(null);
       return true;
     } catch (error, stackTrace) {

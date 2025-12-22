@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LocationErrorBanner extends StatelessWidget {
   const LocationErrorBanner({
@@ -35,7 +36,7 @@ class LocationErrorBanner extends StatelessWidget {
             ),
             TextButton(
               onPressed: onRetry,
-              child: const Text('Обновить'),
+              child: Text(tr('common.retry')),
             ),
           ],
         ),

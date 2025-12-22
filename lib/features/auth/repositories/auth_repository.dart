@@ -24,14 +24,14 @@ class AuthRepository {
   }
 
   Future<AuthResponse> login({
-    required String phoneNumber,
+    required String login,
     required String password,
     String role = 'SENDER',
   }) async {
     return _postAuth(
       endpoint: 'auth/login/',
       data: {
-        'phone_number': phoneNumber,
+        'login': login,
         'password': password,
         'role': role,
       },
@@ -39,22 +39,70 @@ class AuthRepository {
   }
 
   Future<AuthResponse> register({
-    required String phoneNumber,
+    required String login,
     required String password,
     required String passwordConfirm,
     String? email,
     String role = 'SENDER',
+    String? referralCode,
   }) async {
     return _postAuth(
       endpoint: 'auth/register/',
       data: {
-        'phone_number': phoneNumber,
-        'email': email,
+        'login': login,
         'password': password,
         'password_confirm': passwordConfirm,
         'role': role,
+        if (email != null) 'email': email,
+        if (referralCode != null && referralCode.isNotEmpty)
+          'referral_code': referralCode,
       },
     );
+  }
+
+  Future<Map<String, String?>> requestPasswordReset({required String email}) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        'auth/password/reset/',
+        data: {'email': email},
+      );
+      final body = response.data ?? {};
+      return {
+        'uid': body['uid'] as String?,
+        'token': body['token'] as String?,
+      };
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+      final message = _extractErrorMessage(e);
+      throw ApiException(message, statusCode: statusCode);
+    } catch (_) {
+      throw ApiException('Не удалось отправить письмо для сброса пароля');
+    }
+  }
+
+  Future<void> confirmPasswordReset({
+    required String uid,
+    required String token,
+    required String newPassword,
+    required String newPasswordConfirm,
+  }) async {
+    try {
+      await _dio.post(
+        'auth/password/reset/confirm/',
+        data: {
+          'uid': uid,
+          'token': token,
+          'new_password': newPassword,
+          'new_password_confirm': newPasswordConfirm,
+        },
+      );
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+      final message = _extractErrorMessage(e);
+      throw ApiException(message, statusCode: statusCode);
+    } catch (_) {
+      throw ApiException('Не удалось сбросить пароль. Попробуйте снова.');
+    }
   }
 
   Future<AuthResponse> refreshTokens({
@@ -115,6 +163,21 @@ class AuthRepository {
       throw ApiException(message, statusCode: statusCode);
     } catch (e) {
       throw ApiException('Не удалось выполнить запрос. Попробуйте позже.');
+    }
+  }
+
+  Future<void> deleteAccount({required String password}) async {
+    try {
+      await _dio.post(
+        'auth/profile/delete/',
+        data: {'password': password},
+      );
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+      final message = _extractErrorMessage(e);
+      throw ApiException(message, statusCode: statusCode);
+    } catch (_) {
+      throw ApiException('Не удалось удалить аккаунт. Попробуйте снова.');
     }
   }
 

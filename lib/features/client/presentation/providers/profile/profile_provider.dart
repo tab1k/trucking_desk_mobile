@@ -1,8 +1,10 @@
 // Состояние профиля
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/features/auth/repositories/auth_storage.dart';
+import 'package:fura24.kz/features/auth/model/auth_response.dart';
 import 'package:fura24.kz/features/auth/model/user_model.dart';
 import 'package:fura24.kz/features/client/data/repositories/profile_repository.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileState {
   final UserModel? user;
@@ -61,12 +63,19 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   }
 
   // Обновить профиль
-  Future<void> updateProfile(Map<String, dynamic> updates) async {
+  Future<void> updateProfile(
+    Map<String, dynamic> updates, {
+    XFile? avatarFile,
+  }) async {
     state = state.copyWith(isLoading: true, error: null);
     
     try {
-      final updatedUser = await _repository.updateProfile(updates);
+      final updatedUser = await _repository.updateProfile(
+        updates: updates,
+        avatarFile: avatarFile,
+      );
       state = state.copyWith(user: updatedUser, isLoading: false);
+      await _persistUser(updatedUser);
     } catch (e) {
       state = state.copyWith(error: e.toString(), isLoading: false);
     }
@@ -80,6 +89,22 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   // Локальное обновление (без API)
   void updateUserLocally(UserModel newUser) {
     state = state.copyWith(user: newUser);
+  }
+
+  Future<void> _persistUser(UserModel user) async {
+    try {
+      final storage = _ref.read(authStorageProvider);
+      final session = await storage.readSession();
+      if (session == null) return;
+
+      await storage.saveSession(AuthResponse(
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+        user: user,
+      ));
+    } catch (_) {
+      // Тихо игнорируем ошибки сохранения, чтобы не ломать основной флоу
+    }
   }
 }
 

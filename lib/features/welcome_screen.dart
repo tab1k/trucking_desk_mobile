@@ -80,7 +80,7 @@ class WelcomeScreenWithImage extends StatelessWidget {
                         ),
                         SizedBox(height: 12.h),
                         Text(
-                          'Оформляйте заявки, следите за статусами и управляйте перевозками в одном приложении.',
+                          'Создавайте объявления, следите за статусами и управляйте перевозками в одном приложении.',
                           style: textTheme.bodyLarge?.copyWith(
                             color: Colors.white70,
                             height: 1.4,

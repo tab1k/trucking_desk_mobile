@@ -6,24 +6,26 @@ class AuthInputField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hintText,
-    required this.icon,
+    this.icon,
     this.keyboardType,
     this.validator,
     this.obscureText = false,
     this.enabled = true,
     this.trailing,
     this.prefix,
+    this.onChanged,
   });
 
   final TextEditingController controller;
   final String hintText;
-  final IconData icon;
+  final IconData? icon;
   final TextInputType? keyboardType;
   final FormFieldValidator<String>? validator;
   final bool obscureText;
   final bool enabled;
   final Widget? trailing;
   final Widget? prefix;
+  final String Function(String value)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -48,30 +50,38 @@ class AuthInputField extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.grey.shade50,
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(
-                    color: Colors.grey.shade200,
-                    width: 1,
-                  ),
+                  border: Border.all(color: Colors.grey.shade200, width: 1),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 4.h,
+                  ),
                   child: Row(
                     children: [
                       if (prefix != null) ...[
                         prefix!,
                         SizedBox(width: 12.w),
-                      ] else ...[
-                        Icon(
-                          icon,
-                          color: Colors.grey.shade500,
-                          size: 20.w,
-                        ),
+                      ] else if (icon != null) ...[
+                        Icon(icon, color: Colors.grey.shade500, size: 20.w),
                         SizedBox(width: 12.w),
                       ],
                       Expanded(
                         child: TextField(
                           controller: controller,
-                          onChanged: state.didChange,
+                          onChanged: (value) {
+                            final next =
+                                onChanged != null ? onChanged!(value) : value;
+                            if (next != value) {
+                              controller.value = controller.value.copyWith(
+                                text: next,
+                                selection: TextSelection.collapsed(
+                                  offset: next.length,
+                                ),
+                              );
+                            }
+                            state.didChange(next);
+                          },
                           enabled: enabled,
                           keyboardType: keyboardType,
                           obscureText: obscureText,

@@ -49,7 +49,7 @@ class DriverFinancesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _backgroundColor,
-      appBar: SingleAppbar(title: 'Кошелек'),
+      appBar: const SingleAppbar(title: 'Кошелек'),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 22.h),
         physics: const BouncingScrollPhysics(),

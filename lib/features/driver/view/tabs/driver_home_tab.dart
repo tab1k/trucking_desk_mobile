@@ -2,19 +2,24 @@ import 'dart:async';
 
 import 'dart:math' as math;
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
 import 'package:fura24.kz/features/client/presentation/pages/home/widgets/location_error_banner.dart';
 import 'package:fura24.kz/features/driver/view/widgets/driver_home_bottom_sheet.dart';
 import 'package:fura24.kz/features/client/presentation/pages/home/widgets/user_location_marker.dart';
 import 'package:fura24.kz/features/client/state/tracked_cargo_notifier.dart';
+import 'package:fura24.kz/features/driver/providers/driver_assigned_orders_provider.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:latlong2/latlong.dart';
+
+const Distance _driverDistance = Distance();
 
 class _LocationException implements Exception {
   const _LocationException(this.message);
@@ -35,22 +40,8 @@ class DriverHomeTab extends ConsumerStatefulWidget {
 class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
   final MapController _mapController = MapController();
   final LatLng _fallbackLocation = const LatLng(51.1694, 71.4491);
-  final List<_ActiveCargoInfo> _activeCargos = const [
-    _ActiveCargoInfo(
-      id: 'CARGO-001',
-      origin: LatLng(43.2389, 76.8897),
-      destination: LatLng(51.1694, 71.4491),
-      routeLabel: 'Алматы → Астана',
-      progress: 0.58,
-    ),
-    _ActiveCargoInfo(
-      id: 'CARGO-1520',
-      origin: LatLng(42.3167, 69.5958),
-      destination: LatLng(50.2839, 57.1670),
-      routeLabel: 'Шымкент → Актобе',
-      progress: 0.35,
-    ),
-  ];
+  List<_ActiveCargoInfo> _activeCargos = const [];
+  ProviderSubscription<AsyncValue<List<OrderSummary>>>? _ordersSubscription;
 
   LatLng? _currentLocation;
   bool _isLocationLoading = false;
@@ -60,7 +51,6 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
   double _currentSheetExtent = _minExtent;
   bool _sheetExtentUpdateScheduled = false;
   bool _pendingMapRecenter = false;
-  bool _showActiveOverlay = true;
 
   @override
   void initState() {
@@ -69,12 +59,18 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
     _currentSheetExtent = _midExtent;
     _initLocation();
     trackedCargoIdNotifier.addListener(_onTrackedCargoChanged);
+    _ordersSubscription = ref.listenManual<AsyncValue<List<OrderSummary>>>(
+      driverAssignedOrdersProvider,
+      (previous, next) => next.whenData(_updateActiveCargos),
+      fireImmediately: true,
+    );
   }
 
   @override
   void dispose() {
     trackedCargoIdNotifier.removeListener(_onTrackedCargoChanged);
     _positionSubscription?.cancel();
+    _ordersSubscription?.close();
     _mapController.dispose();
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
@@ -111,7 +107,7 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
       if (!mounted) return;
       setState(() {
         _isLocationLoading = false;
-        _locationError = _mapLocationError(error);
+        _locationError = tr(_mapLocationError(error));
       });
     }
   }
@@ -119,9 +115,7 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
   Future<Position> _determinePosition() async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      throw const _LocationException(
-        'Службы геолокации отключены. Включите GPS и попробуйте снова.',
-      );
+      throw const _LocationException('driver_home_map.error.services_off');
     }
 
     var permission = await Geolocator.checkPermission();
@@ -130,15 +124,11 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
     }
 
     if (permission == LocationPermission.denied) {
-      throw const _LocationException(
-        'Доступ к геолокации отклонён. Разрешите приложению использовать GPS.',
-      );
+      throw const _LocationException('driver_home_map.error.denied');
     }
 
     if (permission == LocationPermission.deniedForever) {
-      throw const _LocationException(
-        'Доступ к геолокации заблокирован. Разрешите его в настройках устройства.',
-      );
+      throw const _LocationException('driver_home_map.error.denied_forever');
     }
 
     try {
@@ -149,9 +139,7 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
     } on TimeoutException catch (_) {
       final lastKnown = await Geolocator.getLastKnownPosition();
       if (lastKnown != null) return lastKnown;
-      throw const _LocationException(
-        'Не удалось получить текущее местоположение. Проверьте GPS и попробуйте снова.',
-      );
+      throw const _LocationException('driver_home_map.error.no_signal');
     } catch (error) {
       final lastKnown = await Geolocator.getLastKnownPosition();
       if (lastKnown != null) return lastKnown;
@@ -177,7 +165,7 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
       onError: (error) {
         if (!mounted) return;
         setState(() {
-          _locationError = _mapLocationError(error);
+          _locationError = tr(_mapLocationError(error));
         });
       },
     );
@@ -290,7 +278,6 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
     _mapController.move(_mapController.camera.center, currentZoom - 1);
   }
 
-
   String _mapLocationError(Object error) {
     if (error is _LocationException) return error.message;
     return _humanizeLocationError(error);
@@ -298,16 +285,155 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
 
   String _humanizeLocationError(Object error) {
     if (error is PermissionDeniedException) {
-      return 'Доступ к геолокации отклонён. Разрешите его в настройках устройства.';
+      return 'driver_home_map.error.denied';
     }
     if (error is LocationServiceDisabledException) {
-      return 'Службы геолокации отключены. Включите GPS и попробуйте снова.';
+      return 'driver_home_map.error.services_off';
     }
-    final message = error.toString();
-    if (message.startsWith('Exception: ')) {
-      return message.replaceFirst('Exception: ', '');
+    return 'driver_home_map.error.unknown';
+  }
+
+  void _updateActiveCargos(List<OrderSummary> orders) {
+    final mapped =
+        orders
+            .where(
+              (order) =>
+                  order.status != CargoStatus.completed &&
+                  order.status != CargoStatus.cancelled,
+            )
+            .map(_activeCargoFromOrder)
+            .whereType<_ActiveCargoInfo>()
+            .toList();
+
+    if (!mounted) return;
+    setState(() {
+      _activeCargos = mapped;
+      if (_activeCargos.isEmpty) {
+        trackedCargoIdNotifier.value = null;
+      } else if (trackedCargoIdNotifier.value != null &&
+          !_activeCargos.any(
+            (cargo) => cargo.id == trackedCargoIdNotifier.value,
+          )) {
+        trackedCargoIdNotifier.value = _activeCargos.first.id;
+      } else if (trackedCargoIdNotifier.value == null) {
+        trackedCargoIdNotifier.value = _activeCargos.first.id;
+      }
+    });
+  }
+
+  _ActiveCargoInfo? _activeCargoFromOrder(OrderSummary order) {
+    final origin = _latLngOrNull(
+      order.departureLatitude,
+      order.departureLongitude,
+    );
+    final destination = _latLngOrNull(
+      order.destinationLatitude,
+      order.destinationLongitude,
+    );
+    if (origin == null || destination == null) return null;
+
+    final waypointPoints =
+        order.waypoints.toList()
+          ..sort((a, b) => a.sequence.compareTo(b.sequence));
+    final routePoints = <LatLng>[
+      origin,
+      ...waypointPoints
+          .map(
+            (w) => _latLngOrNull(
+              _parseNum(w.location['latitude'])?.toDouble(),
+              _parseNum(w.location['longitude'])?.toDouble(),
+            ),
+          )
+          .whereType<LatLng>(),
+      destination,
+    ];
+    final routeNames = <String>[
+      order.departureCity,
+      ...waypointPoints.map((w) => _cityFromLocation(w.location)),
+      order.destinationCity,
+    ];
+    final resolvedNames = routeNames.take(routePoints.length).toList();
+
+    return _ActiveCargoInfo(
+      id: order.id,
+      origin: origin,
+      destination: destination,
+      routePoints: routePoints,
+      routeNames: resolvedNames,
+      routeLabel: order.routeLabel,
+      progress: _progressFromStatus(order.rawStatus, order.status),
+      status: order.status,
+      rawStatus: order.rawStatus,
+      statusLabel: _statusLabel(order.status, order.rawStatus),
+    );
+  }
+
+  LatLng? _latLngOrNull(double? lat, double? lng) {
+    if (lat == null || lng == null) return null;
+    if (lat == 0 && lng == 0) return null;
+    if (!lat.isFinite || !lng.isFinite) return null;
+    if (lat.abs() > 90 || lng.abs() > 180) return null;
+    return LatLng(lat, lng);
+  }
+
+  double? _parseNum(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    if (value is String && value.trim().isNotEmpty) {
+      return double.tryParse(value.trim());
     }
-    return 'Не удалось определить местоположение.';
+    return null;
+  }
+
+  double _progressFromStatus(String rawStatus, CargoStatus status) {
+    switch (rawStatus) {
+      case 'WAITING_DRIVER_CONFIRMATION':
+      case 'ACCEPTED':
+        return 0.05;
+      case 'READY_FOR_PICKUP':
+        return 0.15;
+      case 'WAITING_PICKUP_CONFIRMATION':
+        return 0.35;
+      case 'IN_PROGRESS':
+        return 0.6;
+      case 'WAITING_DELIVERY_CONFIRMATION':
+        return 0.85;
+      case 'DELIVERED':
+        return 1;
+    }
+    switch (status) {
+      case CargoStatus.pending:
+        return 0.1;
+      case CargoStatus.inTransit:
+        return 0.6;
+      case CargoStatus.completed:
+        return 1;
+      case CargoStatus.cancelled:
+        return 0;
+    }
+  }
+
+  String _statusLabel(CargoStatus status, String rawStatus) {
+    switch (rawStatus) {
+      case 'WAITING_DRIVER_CONFIRMATION':
+        return tr('driver_home_map.status.waiting_driver_confirmation');
+      case 'READY_FOR_PICKUP':
+        return tr('driver_home_map.status.ready_for_pickup');
+      case 'WAITING_PICKUP_CONFIRMATION':
+        return tr('driver_home_map.status.waiting_pickup_confirmation');
+      case 'WAITING_DELIVERY_CONFIRMATION':
+        return tr('driver_home_map.status.waiting_delivery_confirmation');
+    }
+    switch (status) {
+      case CargoStatus.pending:
+        return tr('driver_home_map.status.pending');
+      case CargoStatus.inTransit:
+        return tr('driver_home_map.status.in_transit');
+      case CargoStatus.completed:
+        return tr('driver_home_map.status.completed');
+      case CargoStatus.cancelled:
+        return tr('driver_home_map.status.cancelled');
+    }
   }
 
   @override
@@ -317,11 +443,33 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
         (_activeCargos.isNotEmpty
             ? _activeCargos.first.midpoint
             : _fallbackLocation);
-    final trackedId = trackedCargoIdNotifier.value;
-    final overlayCargos =
-        trackedId == null
-            ? _activeCargos
-            : _activeCargos.where((cargo) => cargo.id == trackedId).toList();
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final sheetHeight = screenHeight * _currentSheetExtent;
+    final safeBottomInset = mediaQuery.padding.bottom;
+    final topSafeArea = mediaQuery.padding.top;
+    final bool isCollapsedSheet = _isSheetCollapsed;
+    final bool isFullSheet = _currentSheetExtent >= _maxExtent - 0.01;
+    final double zoomControlsHeight = (48.w * 2) + 1;
+    final double locationButtonHeight = 48.w;
+    final double languageButtonHeight = 48.w;
+    final double controlsSpacing = 12.h;
+    final double controlsColumnHeight =
+        languageButtonHeight +
+        controlsSpacing +
+        zoomControlsHeight +
+        controlsSpacing +
+        locationButtonHeight;
+    final double baseControlsBottom = 120.h;
+    final double minControlsBottom = sheetHeight + safeBottomInset + 24.h;
+    final double maxControlsBottom = math.max(
+      0,
+      screenHeight - topSafeArea - controlsColumnHeight - 16.h,
+    );
+    final double controlsBottom = math.min(
+      maxControlsBottom,
+      math.max(baseControlsBottom, minControlsBottom),
+    );
 
     return Scaffold(
       body: Stack(
@@ -371,29 +519,37 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
               ),
             ),
 
-          if (_showActiveOverlay &&
-              !_isSheetCollapsed &&
-              overlayCargos.isNotEmpty)
-            Positioned(
-              top:
-                  MediaQuery.of(context).padding.top +
-                  (_locationError != null ? 96.h : 16.h),
-              left: 16.w,
+          if (!isFullSheet && !isCollapsedSheet)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              bottom: controlsBottom,
               right: 16.w,
-              child: _ActiveCargoOverlay(
-                cargos: overlayCargos,
-                onClose: () {
-                  trackedCargoIdNotifier.value = null;
-                  setState(() {
-                    _showActiveOverlay = false;
-                  });
-                },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildLanguageButton(),
+                  SizedBox(height: controlsSpacing),
+                  _buildZoomControls(),
+                  SizedBox(height: controlsSpacing),
+                  _buildLocationButton(),
+                ],
               ),
             ),
 
-          Positioned(bottom: 120.h, right: 16.w, child: _buildLocationButton()),
-
-          Positioned(top: 300.h, right: 16.w, child: _buildZoomControls()),
+          if (isCollapsedSheet) ...[
+            Positioned(
+              bottom: 120.h,
+              right: 16.w,
+              child: _buildLocationButton(),
+            ),
+            Positioned(
+              top: 90.h,
+              right: 16.w,
+              child: _buildLanguageButton(),
+            ),
+            Positioned(top: 300.h, right: 16.w, child: _buildZoomControls()),
+          ],
 
           Positioned.fill(
             child: NotificationListener<DraggableScrollableNotification>(
@@ -403,7 +559,9 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
                         .clamp(_minExtent, _maxExtent)
                         .toDouble();
                 if ((extent - _currentSheetExtent).abs() > 0.001) {
-                  _currentSheetExtent = extent;
+                  setState(() {
+                    _currentSheetExtent = extent;
+                  });
                   if (!_sheetExtentUpdateScheduled) {
                     _sheetExtentUpdateScheduled = true;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -447,74 +605,65 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
 
   List<Polyline> _buildCargoPolylines() {
     final trackedId = trackedCargoIdNotifier.value;
-    return _activeCargos.expand((cargo) {
-      final progressPoint = cargo.currentPosition;
-      final baseLine = Polyline(
-        points: [cargo.origin, cargo.destination],
-        strokeWidth: 4,
-        color: const Color(0xFF0B1220).withOpacity(0.15),
-      );
+    final cargos =
+        trackedId != null
+            ? _activeCargos.where((c) => c.id == trackedId).toList()
+            : (_activeCargos.isNotEmpty ? [_activeCargos.first] : const []);
 
-      final progressLine = Polyline(
-        points: [cargo.origin, progressPoint],
-        strokeWidth: 5.5,
-        color: const Color(0xFF00B2FF).withOpacity(0.85),
-      );
+    if (cargos.isEmpty) return const [];
 
-      final remainingLine = Polyline(
-        points: [progressPoint, cargo.destination],
+    final cargo = cargos.first;
+    final points =
+        cargo.routePoints.length >= 2
+            ? cargo.routePoints
+            : <LatLng>[cargo.origin, cargo.destination];
+
+    return [
+      Polyline(
+        points: points,
         strokeWidth: 4.5,
-        color: const Color(0xFF00B2FF).withOpacity(0.25),
-      );
-
-      final isTracked = trackedId == null || trackedId == cargo.id;
-
-      return [
-        baseLine,
-        if (isTracked) progressLine,
-        if (isTracked) remainingLine,
-      ];
-    }).toList();
+        color: const Color(0xFF00B2FF).withValues(alpha: 0.9),
+      ),
+    ];
   }
 
   List<Marker> _buildCargoMarkers() {
     final trackedId = trackedCargoIdNotifier.value;
     return _activeCargos.expand((cargo) {
-      final markers = <Marker>[
-        Marker(
-          width: 48.w,
-          height: 64.h,
-          point: cargo.origin,
-          alignment: Alignment.topCenter,
-          child: _CargoMapPin(
-            assetPath: 'assets/svg/a.svg',
-            label: 'Старт',
-            color: const Color(0xFF00B2FF),
-          ),
-        ),
-        Marker(
-          width: 48.w,
-          height: 64.h,
-          point: cargo.destination,
-          alignment: Alignment.topCenter,
-          child: _CargoMapPin(
-            assetPath: 'assets/svg/b.svg',
-            label: 'Финиш',
-            color: const Color(0xFF2EB872),
-          ),
-        ),
-      ];
-
-      final shouldShowTruck =
+      final isTracked =
           trackedId == null || trackedId == cargo.id || _isSheetCollapsed;
-      if (shouldShowTruck) {
+      if (!isTracked) return <Marker>[];
+
+      final route =
+          cargo.routePoints.isNotEmpty
+              ? cargo.routePoints
+              : [cargo.origin, cargo.destination];
+      final markers = <Marker>[];
+      for (var i = 0; i < route.length; i++) {
+        final point = route[i];
+        final letter = _letterForIndex(i);
+        final name =
+            i < cargo.routeNames.length && cargo.routeNames[i].isNotEmpty
+                ? cargo.routeNames[i]
+                : letter;
+        final isFirst = i == 0;
+        final isLast = i == route.length - 1;
+        final color =
+            isLast
+                ? const Color(0xFF2EB872)
+                : const Color(0xFF00B2FF);
         markers.add(
           Marker(
-            width: 56.w,
-            height: 56.w,
-            point: cargo.currentPosition,
-            alignment: Alignment.center,
-            child: const _ActiveCargoTruckMarker(),
+            width: 48.w,
+            height: 64.h,
+            point: point,
+            alignment: Alignment.topCenter,
+            child: _RouteLetterPin(
+              letter: letter,
+              subtitle: name,
+              color: color,
+              emphasize: isFirst || isLast,
+            ),
           ),
         );
       }
@@ -532,14 +681,26 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
     if (selected.isEmpty) return;
 
     final firstCargo = selected.first;
-    final combinedBounds = LatLngBounds.fromPoints([
-      firstCargo.origin,
-      firstCargo.destination,
-    ]);
+    final combinedBounds = LatLngBounds.fromPoints(
+      firstCargo.routePoints.isNotEmpty
+          ? firstCargo.routePoints
+          : [firstCargo.origin, firstCargo.destination],
+    );
+
+    if (_samePoint(firstCargo.origin, firstCargo.destination)) {
+      _mapController.move(firstCargo.origin, 13);
+      return;
+    }
 
     for (final cargo in selected.skip(1)) {
-      combinedBounds.extend(cargo.origin);
-      combinedBounds.extend(cargo.destination);
+      if (cargo.routePoints.isNotEmpty) {
+        for (final p in cargo.routePoints) {
+          combinedBounds.extend(p);
+        }
+      } else {
+        combinedBounds.extend(cargo.origin);
+        combinedBounds.extend(cargo.destination);
+      }
     }
 
     final padding = EdgeInsets.only(
@@ -556,11 +717,6 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
 
   void _onTrackedCargoChanged() {
     if (!mounted) return;
-    setState(() {
-      if (trackedCargoIdNotifier.value != null) {
-        _showActiveOverlay = true;
-      }
-    });
     if (_isSheetCollapsed && trackedCargoIdNotifier.value != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -576,10 +732,10 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
       height: 48.w,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(50.r),
+        borderRadius: BorderRadius.circular(14.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -587,9 +743,9 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(50.r),
+        borderRadius: BorderRadius.circular(14.r),
         child: InkWell(
-          borderRadius: BorderRadius.circular(50.r),
+          borderRadius: BorderRadius.circular(14.r),
           onTap: _isLocationLoading ? null : _moveToCurrentLocation,
           child: Center(
             child:
@@ -618,10 +774,10 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(14.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -632,13 +788,13 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
           Material(
             color: Colors.transparent,
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24.r),
-              topRight: Radius.circular(24.r),
+              topLeft: Radius.circular(14.r),
+              topRight: Radius.circular(14.r),
             ),
             child: InkWell(
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(24.r),
-                topRight: Radius.circular(24.r),
+                topLeft: Radius.circular(14.r),
+                topRight: Radius.circular(14.r),
               ),
               onTap: _zoomIn,
               child: SizedBox(
@@ -651,18 +807,18 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
           Container(
             width: 32.w,
             height: 1,
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.grey.withValues(alpha: 0.3),
           ),
           Material(
             color: Colors.transparent,
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(24.r),
-              bottomRight: Radius.circular(24.r),
+              bottomLeft: Radius.circular(14.r),
+              bottomRight: Radius.circular(14.r),
             ),
             child: InkWell(
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(24.r),
-                bottomRight: Radius.circular(24.r),
+                bottomLeft: Radius.circular(14.r),
+                bottomRight: Radius.circular(14.r),
               ),
               onTap: _zoomOut,
               child: SizedBox(
@@ -676,135 +832,105 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
       ),
     );
   }
+
+  Widget _buildLanguageButton() {
+    return Container(
+      width: 48.w,
+      height: 48.w,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(14.r),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14.r),
+          onTap: _showLanguageSheet,
+          child: Center(
+            child: SvgPicture.asset(
+              'assets/svg/world.svg',
+              width: 22.w,
+              height: 22.w,
+              colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showLanguageSheet() async {
+    final current = context.locale;
+    final selected = await showModalBottomSheet<_LocaleOption>(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                ..._localeOptions.map(
+                  (option) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(option.label),
+                    trailing:
+                        option.locale.languageCode == current.languageCode
+                            ? const Icon(Icons.radio_button_checked,
+                                color: Color(0xFF64B5F6))
+                            : const Icon(Icons.radio_button_off),
+                    onTap: () => Navigator.of(context).pop(option),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selected != null) {
+      await context.setLocale(selected.locale);
+      setState(() {});
+    }
+  }
 }
+
+const _localeOptions = <_LocaleOption>[
+  _LocaleOption(locale: Locale('ru'), label: 'Русский'),
+  _LocaleOption(locale: Locale('kk'), label: 'Қазақша'),
+  _LocaleOption(locale: Locale('en'), label: 'English'),
+  _LocaleOption(locale: Locale('zh'), label: '中文'),
+];
 
 const double _minExtent = 0.12;
 const double _midExtent = 0.5;
 const double _maxExtent = 0.9;
 
-class _ActiveCargoOverlay extends StatelessWidget {
-  const _ActiveCargoOverlay({required this.cargos, required this.onClose});
-
-  final List<_ActiveCargoInfo> cargos;
-  final VoidCallback onClose;
-
-  @override
-  Widget build(BuildContext context) {
-    if (cargos.isEmpty) return const SizedBox.shrink();
-
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
-        borderRadius: BorderRadius.circular(18.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                'Активные грузы',
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                ),
-              ),
-              const Spacer(),
-              IconButton(
-                onPressed: onClose,
-                icon: Icon(Icons.close, size: 18.w, color: Colors.grey[500]),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          _ActiveCargoCard(info: cargos.first, onClose: onClose),
-        ],
-      ),
-    );
-  }
-}
-
-class _ActiveCargoCard extends StatelessWidget {
-  const _ActiveCargoCard({required this.info, required this.onClose});
-
-  final _ActiveCargoInfo info;
-  final VoidCallback onClose;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 42.w,
-            height: 42.w,
-            decoration: BoxDecoration(
-              color: const Color(0xFF00B2FF).withOpacity(0.15),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Icon(
-              Icons.local_shipping,
-              color: const Color(0xFF00B2FF),
-              size: 22.w,
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  info.id,
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  info.routeLabel,
-                  style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'В пути',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF00B2FF),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+class _LocaleOption {
+  const _LocaleOption({required this.locale, required this.label});
+  final Locale locale;
+  final String label;
 }
 
 class _ActiveCargoInfo {
@@ -812,15 +938,25 @@ class _ActiveCargoInfo {
     required this.id,
     required this.origin,
     required this.destination,
+    required this.routePoints,
+    required this.routeNames,
     required this.routeLabel,
     required this.progress,
+    required this.status,
+    required this.rawStatus,
+    required this.statusLabel,
   });
 
   final String id;
   final LatLng origin;
   final LatLng destination;
+  final List<LatLng> routePoints;
+  final List<String> routeNames;
   final String routeLabel;
   final double progress;
+  final CargoStatus status;
+  final String rawStatus;
+  final String statusLabel;
 
   LatLng get midpoint => LatLng(
     (origin.latitude + destination.latitude) / 2,
@@ -828,29 +964,78 @@ class _ActiveCargoInfo {
   );
 
   LatLng get currentPosition {
-    final t = progress.clamp(0.0, 1.0);
-    return LatLng(
-      origin.latitude + (destination.latitude - origin.latitude) * t,
-      origin.longitude + (destination.longitude - origin.longitude) * t,
-    );
+    final route = routePoints.length >= 2 ? routePoints : [origin, destination];
+    return _positionOnRoute(route, progress);
   }
 }
 
-class _CargoMapPin extends StatelessWidget {
-  const _CargoMapPin({
-    this.icon,
-    this.assetPath,
-    required this.label,
-    required this.color,
-  }) : assert(
-         icon != null || assetPath != null,
-         'Provide either icon or assetPath',
-       );
+bool _samePoint(LatLng a, LatLng b) {
+  return (a.latitude - b.latitude).abs() < 0.0001 &&
+      (a.longitude - b.longitude).abs() < 0.0001;
+}
 
-  final IconData? icon;
-  final String? assetPath;
-  final String label;
+LatLng _positionOnRoute(List<LatLng> route, double t) {
+  if (route.isEmpty) return const LatLng(48.0196, 66.9237);
+  if (route.length == 1) return route.first;
+  final clamped = t.clamp(0.0, 1.0);
+  final totalLength = _routeLength(route);
+  if (totalLength <= 0) return route.first;
+
+  final target = totalLength * clamped;
+  var traversed = 0.0;
+  for (var i = 0; i < route.length - 1; i++) {
+    final a = route[i];
+    final b = route[i + 1];
+    final segment = _driverDistance.distance(a, b);
+    if (traversed + segment >= target) {
+      final remain = target - traversed;
+      final ratio = segment == 0 ? 0.0 : remain / segment;
+      return LatLng(
+        a.latitude + (b.latitude - a.latitude) * ratio,
+        a.longitude + (b.longitude - a.longitude) * ratio,
+      );
+    }
+    traversed += segment;
+  }
+  return route.last;
+}
+
+double _routeLength(List<LatLng> route) {
+  var total = 0.0;
+  for (var i = 0; i < route.length - 1; i++) {
+    total += _driverDistance.distance(route[i], route[i + 1]);
+  }
+  return total;
+}
+
+String _cityFromLocation(Map<String, dynamic>? location) {
+  return (location?['city_name'] as String?)?.trim() ?? '';
+}
+
+String _letterForIndex(int index) {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (index < 0) return '';
+  var n = index;
+  var result = '';
+  do {
+    result = letters[n % 26] + result;
+    n = (n ~/ 26) - 1;
+  } while (n >= 0);
+  return result;
+}
+
+class _RouteLetterPin extends StatelessWidget {
+  const _RouteLetterPin({
+    required this.letter,
+    required this.subtitle,
+    required this.color,
+    this.emphasize = false,
+  });
+
+  final String letter;
+  final String subtitle;
   final Color color;
+  final bool emphasize;
 
   @override
   Widget build(BuildContext context) {
@@ -860,79 +1045,38 @@ class _CargoMapPin extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10.r),
+            shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.16),
+                color: Colors.black.withValues(alpha: 0.16),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
             ],
+            border: Border.all(color: color, width: emphasize ? 3 : 2),
           ),
-          padding: EdgeInsets.all(6.w),
-          child:
-              assetPath != null
-                  ? SvgPicture.asset(
-                    assetPath!,
-                    width: 18.w,
-                    height: 18.w,
-                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                  )
-                  : Icon(icon, size: 18.w, color: color),
-        ),
-        SizedBox(height: 2.h),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.r),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
+          width: emphasize ? 34.w : 30.w,
+          height: emphasize ? 34.w : 30.w,
+          alignment: Alignment.center,
           child: Text(
-            label,
+            letter,
             style: TextStyle(
-              fontSize: 9.sp,
-              fontWeight: FontWeight.w600,
+              fontSize: emphasize ? 14.sp : 12.sp,
+              fontWeight: FontWeight.w700,
               color: color,
             ),
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _ActiveCargoTruckMarker extends StatelessWidget {
-  const _ActiveCargoTruckMarker();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 32.w,
-      height: 32.w,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 6,
-            offset: const Offset(0, 4),
+        SizedBox(height: 6.h),
+        Text(
+          subtitle,
+          style: TextStyle(
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w700,
+            color: color,
           ),
-        ],
-      ),
-      alignment: Alignment.center,
-      child: Icon(
-        Icons.local_shipping,
-        color: const Color(0xFF00B2FF),
-        size: 25.w,
-      ),
+        ),
+      ],
     );
   }
 }

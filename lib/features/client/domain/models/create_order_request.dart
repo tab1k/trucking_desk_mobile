@@ -1,4 +1,14 @@
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+
+class OrderWaypointRequest {
+  const OrderWaypointRequest({
+    required this.locationId,
+    this.sequence,
+  });
+
+  final int locationId;
+  final int? sequence;
+}
 
 /// DTO с типизированными полями для создания заявки на перевозку.
 class CreateOrderRequest {
@@ -13,7 +23,6 @@ class CreateOrderRequest {
     required this.paymentType,
     required this.currency,
     required this.photos,
-    this.cargoTypeId,
     this.volumeCubicMeters,
     this.lengthMeters,
     this.widthMeters,
@@ -24,6 +33,10 @@ class CreateOrderRequest {
     this.distanceKm,
     this.estimatedTimeHours,
     this.totalCost,
+    this.departureAddressDetail,
+    this.destinationAddressDetail,
+    this.showPhoneToDrivers = true,
+    this.waypoints = const [],
   });
 
   final int departurePointId;
@@ -45,6 +58,9 @@ class CreateOrderRequest {
   final double amount;
   final String paymentType;
   final String currency;
-  final int? cargoTypeId;
-  final List<File> photos;
+  final List<XFile> photos;
+  final String? departureAddressDetail;
+  final String? destinationAddressDetail;
+  final bool showPhoneToDrivers;
+  final List<OrderWaypointRequest> waypoints;
 }

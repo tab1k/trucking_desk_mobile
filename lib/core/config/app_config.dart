@@ -6,6 +6,6 @@ class AppConfig {
 
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://192.168.31.99:8000/api/v1',
+    defaultValue: 'https://fura24.kz/api/v1',
   );
 }

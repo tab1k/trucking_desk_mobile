@@ -1,11 +1,21 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fura24.kz/features/client/data/repositories/banner_repository.dart';
+import 'package:fura24.kz/features/client/domain/models/banner_model.dart';
+import 'package:fura24.kz/core/config/app_config.dart';
 import 'package:fura24.kz/features/client/presentation/pages/home/models/home_quick_action.dart';
+import 'package:fura24.kz/features/client/presentation/pages/home/subpages/cost_estimate_page.dart';
 import 'package:fura24.kz/features/client/presentation/pages/home/widgets/action_card.dart';
 import 'package:fura24.kz/features/client/presentation/pages/home/widgets/calculate_card.dart';
+import 'package:fura24.kz/features/client/presentation/providers/my_orders_provider.dart';
+import 'package:fura24.kz/features/notifications/providers/notifications_provider.dart';
+import 'package:fura24.kz/features/notifications/view/notifications_page.dart';
+import 'package:fura24.kz/router/utils/navigation_utils.dart';
 
-class HomeBottomSheet extends StatelessWidget {
+class HomeBottomSheet extends ConsumerWidget {
   const HomeBottomSheet({
     super.key,
     required this.scrollController,
@@ -16,8 +26,21 @@ class HomeBottomSheet extends StatelessWidget {
   final ValueChanged<HomeQuickAction> onQuickActionSelected;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final notificationsAsync = ref.watch(notificationsControllerProvider);
+    final myOrdersAsync = ref.watch(myOrdersProvider);
+    final unreadCount =
+        notificationsAsync.maybeWhen(
+          data: (items) => items.where((n) => !n.isRead).length,
+          orElse: () => 0,
+        );
+    final newBidsCount =
+        myOrdersAsync.maybeWhen(
+          data: (orders) => orders.where((o) => o.hasNewBids).length,
+          orElse: () => 0,
+        );
+    final totalBadgeCount = unreadCount + newBidsCount;
 
     return Container(
       decoration: BoxDecoration(
@@ -44,6 +67,7 @@ class HomeBottomSheet extends StatelessWidget {
             _HomeSheetContent(
               scrollController: scrollController,
               onQuickActionSelected: onQuickActionSelected,
+              unreadCount: totalBadgeCount,
             ),
             Positioned(
               top: 8,
@@ -76,10 +100,12 @@ class _HomeSheetContent extends StatelessWidget {
   const _HomeSheetContent({
     required this.scrollController,
     required this.onQuickActionSelected,
+    required this.unreadCount,
   });
 
   final ScrollController scrollController;
   final ValueChanged<HomeQuickAction> onQuickActionSelected;
+  final int unreadCount;
 
   @override
   Widget build(BuildContext context) {
@@ -96,14 +122,14 @@ class _HomeSheetContent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Ваши действия',
+                    tr('home.actions.title'),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   SizedBox(height: 5.h),
                   Text(
-                    'Выберите подходящую опцию, чтобы продолжить работу.',
+                    tr('home.actions.subtitle'),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurface.withOpacity(0.7),
                     ),
@@ -112,24 +138,39 @@ class _HomeSheetContent extends StatelessWidget {
               ),
             ),
             SizedBox(width: 12.w),
-            Container(
-              width: 48.w,
-              height: 48.w,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(14.r),
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/svg/ticket.svg',
-                  width: 22.w,
-                  height: 22.h,
-                  colorFilter: ColorFilter.mode(
-                    theme.colorScheme.primary,
-                    BlendMode.srcIn,
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Material(
+                  color: theme.colorScheme.primary.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(14.r),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(14.r),
+                    onTap: () => NavigationUtils.navigateWithBottomSheetAnimation(
+                      context,
+                      const NotificationsPage(),
+                    ),
+                    child: SizedBox(
+                      width: 48.w,
+                      height: 48.w,
+                      child: Center(
+                        child: SvgPicture.asset(
+                          'assets/svg/notifications.svg',
+                          width: 22.w,
+                          height: 22.h,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                if (unreadCount > 0)
+                  Positioned(
+                    top: -4.h,
+                    right: -4.w,
+                    child: _NotificationBadge(count: unreadCount),
+                  ),
+              ],
             ),
           ],
         ),
@@ -141,7 +182,7 @@ class _HomeSheetContent extends StatelessWidget {
                 Expanded(
                   child: HomeActionCard(
                     iconAsset: 'assets/svg/plus.svg',
-                    title: 'Создать заказ',
+                    title: tr('home.actions.create_order_title'),
                     onTap: () =>
                         onQuickActionSelected(HomeQuickAction.createOrder),
                   ),
@@ -150,7 +191,7 @@ class _HomeSheetContent extends StatelessWidget {
                 Expanded(
                   child: HomeActionCard(
                     iconAsset: 'assets/svg/search.svg',
-                    title: 'Найти транспорт',
+                    title: tr('home.actions.find_transport_title'),
                     onTap: () =>
                         onQuickActionSelected(HomeQuickAction.findRide),
                   ),
@@ -163,18 +204,16 @@ class _HomeSheetContent extends StatelessWidget {
                 Expanded(
                   child: HomeActionCard(
                     iconAsset: 'assets/svg/box.svg',
-                    title: 'Мои грузы',
-                    onTap: () =>
-                        onQuickActionSelected(HomeQuickAction.myCargo),
+                    title: tr('home.actions.my_cargo_title'),
+                    onTap: () => onQuickActionSelected(HomeQuickAction.myCargo),
                   ),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
                   child: HomeActionCard(
                     iconAsset: 'assets/svg/history.svg',
-                    title: 'История',
-                    onTap: () =>
-                        onQuickActionSelected(HomeQuickAction.history),
+                    title: tr('home.actions.history_title'),
+                    onTap: () => onQuickActionSelected(HomeQuickAction.history),
                   ),
                 ),
               ],
@@ -182,89 +221,95 @@ class _HomeSheetContent extends StatelessWidget {
           ],
         ),
         SizedBox(height: 18.h),
-        const HomeStoriesStrip(),
+        const BannerStoriesStrip(),
         SizedBox(height: 12.h),
-        const HomeCalculateCard(),
+        HomeCalculateCard(
+          onTap: () => NavigationUtils.navigateWithBottomSheetAnimation(
+            context,
+            const CostEstimatePage(),
+          ),
+        ),
       ],
     );
   }
 }
 
-class HomeStoryItem {
-  const HomeStoryItem({
-    required this.title,
-    required this.imageUrl,
-    this.subtitle,
-    this.isNew = false,
-  });
+class BannerStoriesStrip extends ConsumerWidget {
+  const BannerStoriesStrip({super.key});
 
-  final String title;
-  final String imageUrl;
-  final String? subtitle;
-  final bool isNew;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bannersAsync = ref.watch(activeBannersProvider);
+    return bannersAsync.when(
+      data: (banners) {
+        if (banners.isEmpty) return const SizedBox.shrink();
+        return SizedBox(
+          height: 130.h,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: banners.length,
+            separatorBuilder: (_, __) => SizedBox(width: 12.w),
+            itemBuilder: (context, index) =>
+                _BannerStoryCard(banner: banners[index]),
+          ),
+        );
+      },
+      loading: () => SizedBox(
+        height: 130.h,
+        child: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
 }
 
-const List<HomeStoryItem> homeStories = [
-  HomeStoryItem(
-    title: 'Лайфхаки по заказам',
-    subtitle: 'Как быстро оформить груз',
-    imageUrl:
-        'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=900&q=80',
-    isNew: true,
-  ),
-  HomeStoryItem(
-    title: 'Новые направления',
-    subtitle: 'Астана ↔︎ Алматы',
-    imageUrl:
-        'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
-  ),
-  HomeStoryItem(
-    title: 'Советы водителей',
-    subtitle: 'Что учесть при загрузке',
-    imageUrl:
-        'https://images.unsplash.com/photo-1541417904950-b855846fe074?auto=format&fit=crop&w=900&q=80',
-  ),
-  HomeStoryItem(
-    title: 'Команда Fura24',
-    subtitle: 'Познакомьтесь ближе',
-    imageUrl:
-        'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=900&q=80',
-  ),
-  HomeStoryItem(
-    title: 'Акции и бонусы',
-    subtitle: 'Скидки для постоянных',
-    imageUrl:
-        'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80',
-    isNew: true,
-  ),
-];
+class _NotificationBadge extends StatelessWidget {
+  const _NotificationBadge({required this.count});
 
-class HomeStoriesStrip extends StatelessWidget {
-  const HomeStoriesStrip({super.key});
+  final int count;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 130.h,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.zero,
-        itemBuilder: (context, index) {
-          final story = homeStories[index];
-          return HomeStoryCard(item: story);
-        },
-        separatorBuilder: (_, __) => SizedBox(width: 12.w),
-        itemCount: homeStories.length,
+    final display = count > 99 ? '99+' : '$count';
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        display,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 11.sp,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
 }
 
-class HomeStoryCard extends StatelessWidget {
-  const HomeStoryCard({super.key, required this.item});
+class _BannerStoryCard extends StatelessWidget {
+  const _BannerStoryCard({required this.banner});
 
-  final HomeStoryItem item;
+  final BannerModel banner;
+
+  ImageProvider _imageProvider() {
+    final url = banner.imageUrl;
+    if (url == null) {
+      return const AssetImage('assets/img/truck.jpg');
+    }
+    if (url.startsWith('asset:')) {
+      final assetPath = url.replaceFirst('asset:', '');
+      return AssetImage(assetPath);
+    }
+    if (url.contains('via.placeholder.com')) {
+      return const AssetImage('assets/img/truck.jpg');
+    }
+    return NetworkImage(_resolveImageUrl(url));
+  }
 
   void _openStory(BuildContext context) {
     showDialog<void>(
@@ -280,18 +325,12 @@ class HomeStoryCard extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Image.network(
-                    item.imageUrl,
+                  child: Image(
+                    image: _imageProvider(),
                     fit: BoxFit.cover,
-                    loadingBuilder: (context, child, progress) {
-                      if (progress == null) return child;
-                      return Container(
-                        color: Colors.black.withOpacity(0.2),
-                        child: const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        ),
-                      );
-                    },
+                    errorBuilder: (_, __, ___) => Container(
+                      color: Colors.grey.shade900,
+                    ),
                   ),
                 ),
                 Positioned(
@@ -318,28 +357,12 @@ class HomeStoryCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (item.subtitle != null)
-                          Text(
-                            item.subtitle!,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.white.withOpacity(0.85),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          item.title,
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      banner.title,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
@@ -378,23 +401,9 @@ class HomeStoryCard extends StatelessWidget {
                   child: Stack(
                     children: [
                       Positioned.fill(
-                        child: Image.network(
-                          item.imageUrl,
+                        child: Image(
+                          image: _imageProvider(),
                           fit: BoxFit.cover,
-                          loadingBuilder: (context, child, progress) {
-                            if (progress == null) return child;
-                            return Container(
-                              color: Colors.grey.shade200,
-                              alignment: Alignment.center,
-                              child: const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                            );
-                          },
                           errorBuilder: (_, __, ___) => Container(
                             color: Colors.grey.shade300,
                             alignment: Alignment.center,
@@ -420,7 +429,7 @@ class HomeStoryCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (item.isNew)
+                      if (banner.link != null && banner.link!.isNotEmpty)
                         Positioned(
                           top: 10.h,
                           left: 10.w,
@@ -434,14 +443,16 @@ class HomeStoryCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(999),
                               boxShadow: [
                                 BoxShadow(
-                                  color: theme.colorScheme.primary.withOpacity(0.4),
+                                  color: theme.colorScheme.primary.withOpacity(
+                                    0.4,
+                                  ),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
                             child: Text(
-                              'NEW',
+                              'PRO',
                               style: theme.textTheme.labelSmall?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
@@ -455,7 +466,7 @@ class HomeStoryCard extends StatelessWidget {
                         right: 12.w,
                         bottom: 12.h,
                         child: Text(
-                          item.title,
+                          banner.title,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -472,11 +483,9 @@ class HomeStoryCard extends StatelessWidget {
             ),
             SizedBox(height: 6.h),
             Text(
-              item.subtitle ?? item.title,
+              banner.title,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(
-                  item.subtitle != null ? 0.65 : 0.85,
-                ),
+                color: theme.colorScheme.onSurface.withOpacity(0.85),
                 fontSize: 12.sp,
               ),
               maxLines: 2,
@@ -487,4 +496,15 @@ class HomeStoryCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _resolveImageUrl(String raw) {
+  if (raw.startsWith('http://') || raw.startsWith('https://')) {
+    return raw;
+  }
+  final uri = Uri.parse(AppConfig.apiBaseUrl);
+  final base =
+      '${uri.scheme}://${uri.host}${uri.hasPort ? ':${uri.port}' : ''}';
+  final normalized = raw.startsWith('/') ? raw : '/$raw';
+  return '$base$normalized';
 }

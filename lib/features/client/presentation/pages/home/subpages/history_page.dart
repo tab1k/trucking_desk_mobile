@@ -1,31 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
+import 'package:fura24.kz/features/client/presentation/providers/my_orders_provider.dart';
+import 'package:fura24.kz/shared/widgets/app_date_picker.dart';
 
-class HistoryPage extends StatefulWidget {
-  const HistoryPage({super.key});
+class HistoryPage extends ConsumerStatefulWidget {
+  const HistoryPage({
+    super.key,
+    this.onBackAction,
+  });
+
+  final VoidCallback? onBackAction;
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  ConsumerState<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _HistoryPageState extends ConsumerState<HistoryPage> {
   final TextEditingController _searchController = TextEditingController();
 
   HistoryStatus _selectedStatus = HistoryStatus.all;
   DateTimeRange? _selectedRange;
-  late final List<_HistoryItem> _allItems;
-  late List<_HistoryItem> _visibleItems;
 
   @override
   void initState() {
     super.initState();
-    _allItems = _mockHistoryItems;
-    _visibleItems = List.of(_allItems);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final _ = ref.refresh(myOrdersProvider);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ordersAsync = ref.watch(myOrdersProvider);
+    final items = ordersAsync.value ?? const <OrderSummary>[];
+    final filteredItems = _applyFilters(items);
 
     return ClipRRect(
       borderRadius: BorderRadius.only(
@@ -45,18 +57,19 @@ class _HistoryPageState extends State<HistoryPage> {
             child: Material(
               color: Colors.grey[200],
               shape: const CircleBorder(),
+              clipBehavior: Clip.antiAlias,
               child: IconButton(
                 icon: const Icon(Icons.arrow_back, size: 20),
                 color: Colors.black87,
                 padding: EdgeInsets.zero,
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: widget.onBackAction ?? () => Navigator.of(context).pop(),
               ),
             ),
           ),
           title: Padding(
             padding: EdgeInsets.only(left: 10.w),
             child: Text(
-              'История заказов',
+              tr('history.title'),
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -70,7 +83,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 _searchController.text.trim().isNotEmpty)
               TextButton(
                 onPressed: _resetFilters,
-                child: const Text('Сбросить'),
+                child: Text(tr('history.reset')),
               ),
             SizedBox(width: 4.w),
           ],
@@ -87,12 +100,14 @@ class _HistoryPageState extends State<HistoryPage> {
               SizedBox(height: 12.h),
               _buildDateRangeButton(theme),
               SizedBox(height: 20.h),
-              if (_visibleItems.isEmpty)
+              if (ordersAsync.isLoading)
+                const Center(child: CircularProgressIndicator())
+              else if (filteredItems.isEmpty)
                 _buildEmptyState(theme)
               else
-                ..._visibleItems.map((item) => Padding(
+                ...filteredItems.map((order) => Padding(
                       padding: EdgeInsets.only(bottom: 16.h),
-                      child: _HistoryCard(item: item),
+                      child: _HistoryCard(summary: order),
                     )),
               SizedBox(height: MediaQuery.of(context).padding.bottom + 24.h),
             ],
@@ -105,9 +120,9 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget _buildSearchField(ThemeData theme) {
     return TextField(
       controller: _searchController,
-      onChanged: (_) => _applyFilters(),
+      onChanged: (_) => setState(() {}),
       decoration: InputDecoration(
-        hintText: 'Поиск по номеру, маршруту или компании',
+        hintText: tr('history.search_hint'),
         prefixIcon: Icon(Icons.search, size: 20, color: Colors.grey[500]),
         suffixIcon: _searchController.text.isEmpty
             ? null
@@ -116,7 +131,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 color: Colors.grey[500],
                 onPressed: () {
                   _searchController.clear();
-                  _applyFilters();
+                  setState(() {});
                 },
               ),
         filled: true,
@@ -155,7 +170,6 @@ class _HistoryPageState extends State<HistoryPage> {
             setState(() {
               _selectedStatus = status;
             });
-            _applyFilters();
           },
           labelStyle: TextStyle(
             fontSize: 13.sp,
@@ -179,8 +193,14 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget _buildDateRangeButton(ThemeData theme) {
     final label = _selectedRange == null
-        ? 'Выбрать период'
-        : '${_formatDate(_selectedRange!.start)} — ${_formatDate(_selectedRange!.end)}';
+        ? tr('history.date_range.select')
+        : tr(
+            'history.date_range.range',
+            args: [
+              _formatDate(_selectedRange!.start),
+              _formatDate(_selectedRange!.end),
+            ],
+          );
 
     return OutlinedButton.icon(
       onPressed: _pickDateRange,
@@ -212,7 +232,7 @@ class _HistoryPageState extends State<HistoryPage> {
           Icon(Icons.history, size: 48.w, color: Colors.grey[400]),
           SizedBox(height: 12.h),
           Text(
-            'Здесь будет история ваших заказов',
+            tr('history.empty.title'),
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -222,7 +242,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
           SizedBox(height: 8.h),
           Text(
-            'Попробуйте изменить фильтры или создать новый заказ, чтобы он появился в списке.',
+            tr('history.empty.subtitle'),
             style: TextStyle(
               fontSize: 13.sp,
               color: Colors.grey[600],
@@ -236,50 +256,43 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Future<void> _pickDateRange() async {
-    final now = DateTime.now();
-    final picked = await showDateRangePicker(
-      context: context,
-      initialDateRange: _selectedRange ?? DateTimeRange(start: now.subtract(const Duration(days: 7)), end: now),
-      firstDate: now.subtract(const Duration(days: 365)),
-      lastDate: now.add(const Duration(days: 365)),
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(primary: Color(0xFF00B2FF)),
-          ),
-          child: child!,
-        );
-      },
+    final picked = await showAppDateRangePicker(
+      context,
+      initialRange: _selectedRange,
     );
-
     if (picked != null) {
       setState(() {
         _selectedRange = picked;
       });
-      _applyFilters();
     }
   }
 
-  void _applyFilters() {
+  List<OrderSummary> _applyFilters(List<OrderSummary> orders) {
     final query = _searchController.text.trim().toLowerCase();
+    return orders.where((order) {
+      final matchesStatus = _selectedStatus == HistoryStatus.all ||
+          (_selectedStatus == HistoryStatus.completed &&
+              order.status == CargoStatus.completed) ||
+          (_selectedStatus == HistoryStatus.cancelled &&
+              order.status == CargoStatus.cancelled);
 
-    setState(() {
-      _visibleItems = _allItems.where((item) {
-        final matchesStatus = _selectedStatus == HistoryStatus.all ||
-            item.status == _selectedStatus;
+      final matchesDate =
+          _selectedRange == null || _orderMatchesRange(order, _selectedRange!);
 
-        final matchesDate = _selectedRange == null ||
-            (item.date.isAfter(_selectedRange!.start.subtract(const Duration(days: 1))) &&
-                item.date.isBefore(_selectedRange!.end.add(const Duration(days: 1))));
+      final matchesQuery = query.isEmpty ||
+          order.id.toLowerCase().contains(query) ||
+          order.routeLabel.toLowerCase().contains(query);
 
-        final matchesQuery = query.isEmpty ||
-            item.id.toLowerCase().contains(query) ||
-            item.route.toLowerCase().contains(query) ||
-            item.company.toLowerCase().contains(query);
+      return matchesStatus && matchesDate && matchesQuery;
+    }).toList();
+  }
 
-        return matchesStatus && matchesDate && matchesQuery;
-      }).toList();
-    });
+  bool _orderMatchesRange(OrderSummary order, DateTimeRange range) {
+    final baseDate = order.transportationDate ?? order.createdAt;
+    if (baseDate == null) return false;
+    final start = DateTime(range.start.year, range.start.month, range.start.day);
+    final end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59, 59);
+    return !baseDate.isBefore(start) && !baseDate.isAfter(end);
   }
 
   void _resetFilters() {
@@ -287,18 +300,17 @@ class _HistoryPageState extends State<HistoryPage> {
       _searchController.clear();
       _selectedStatus = HistoryStatus.all;
       _selectedRange = null;
-      _visibleItems = List.of(_allItems);
     });
   }
 
-  String _statusLabel(HistoryStatus status) {
+String _statusLabel(HistoryStatus status) {
     switch (status) {
       case HistoryStatus.all:
-        return 'Все';
+        return tr('history.filters.all');
       case HistoryStatus.completed:
-        return 'Завершено';
+        return tr('history.filters.completed');
       case HistoryStatus.cancelled:
-        return 'Отменено';
+        return tr('history.filters.cancelled');
     }
   }
 
@@ -319,14 +331,16 @@ class _HistoryPageState extends State<HistoryPage> {
 
 enum HistoryStatus { all, completed, cancelled }
 
-class _HistoryCard extends StatelessWidget {
-  const _HistoryCard({required this.item});
 
-  final _HistoryItem item;
+class _HistoryCard extends StatelessWidget {
+  const _HistoryCard({required this.summary});
+
+  final OrderSummary summary;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final transportDate = summary.transportationDate ?? summary.createdAt;
 
     return Container(
       decoration: BoxDecoration(
@@ -348,7 +362,7 @@ class _HistoryCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                item.id,
+                '№${summary.id}',
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
@@ -359,15 +373,15 @@ class _HistoryCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: _statusBackground(item.status),
+                  color: _statusBackground(summary.status),
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
-                  _statusTitle(item.status),
+                  _statusTitle(summary.status),
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: _statusColor(item.status),
+                    color: _statusColor(summary.status),
                   ),
                 ),
               ),
@@ -375,7 +389,7 @@ class _HistoryCard extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           Text(
-            item.route,
+            summary.routeLabel,
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -384,7 +398,9 @@ class _HistoryCard extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'Отправка: ${_formatDate(item.date)}',
+            transportDate != null
+                ? 'Отправка: ${_formatDate(transportDate)}'
+                : 'Дата: ${summary.dateLabel}',
             style: TextStyle(
               fontSize: 13.sp,
               color: Colors.grey[600],
@@ -398,7 +414,7 @@ class _HistoryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.company,
+                      summary.senderName,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -407,7 +423,7 @@ class _HistoryCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      item.cargo,
+                      summary.cargoName,
                       style: TextStyle(
                         fontSize: 13.sp,
                         color: Colors.grey[600],
@@ -420,7 +436,7 @@ class _HistoryCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    item.price,
+                    summary.priceLabel,
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
@@ -429,7 +445,7 @@ class _HistoryCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'Оплата: ${item.payment}',
+                    summary.paymentTypeLabel,
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: Colors.grey[500],
@@ -439,7 +455,17 @@ class _HistoryCard extends StatelessWidget {
               ),
             ],
           ),
-          if (item.notes.isNotEmpty) ...[
+          SizedBox(height: 12.h),
+          Row(
+            children: [
+              _Chip(label: summary.weightLabel),
+              SizedBox(width: 8.w),
+              _Chip(label: summary.volumeLabel),
+              SizedBox(width: 8.w),
+              _Chip(label: summary.vehicleTypeLabel),
+            ],
+          ),
+          if (summary.description.isNotEmpty) ...[
             SizedBox(height: 12.h),
             Container(
               width: double.infinity,
@@ -449,7 +475,7 @@ class _HistoryCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
-                item.notes,
+                summary.description,
                 style: TextStyle(
                   fontSize: 13.sp,
                   color: Colors.grey[700],
@@ -464,19 +490,13 @@ class _HistoryCard extends StatelessWidget {
               Icon(Icons.schedule, size: 16.w, color: Colors.grey[500]),
               SizedBox(width: 6.w),
               Text(
-                'Создано: ${_formatDateTime(item.createdAt)}',
+                summary.createdAt != null
+                    ? 'Создано: ${_formatDateTime(summary.createdAt!)}'
+                    : 'Создано: ${summary.dateLabel}',
                 style: TextStyle(
                   fontSize: 12.sp,
                   color: Colors.grey[500],
                 ),
-              ),
-              const Spacer(),
-              TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  foregroundColor: theme.colorScheme.primary,
-                ),
-                child: const Text('Подробнее'),
               ),
             ],
           ),
@@ -485,18 +505,34 @@ class _HistoryCard extends StatelessWidget {
     );
   }
 
-  Color _statusColor(HistoryStatus status) {
-    if (status == HistoryStatus.completed) {
-      return const Color(0xFF2EB872);
+  Color _statusColor(CargoStatus status) {
+    switch (status) {
+      case CargoStatus.completed:
+        return const Color(0xFF2EB872);
+      case CargoStatus.cancelled:
+        return const Color(0xFFEA5B5B);
+      case CargoStatus.inTransit:
+        return const Color(0xFFFF9800);
+      case CargoStatus.pending:
+        return const Color(0xFF6B6B6B);
     }
-    if (status == HistoryStatus.cancelled) {
-      return const Color(0xFFEA5B5B);
-    }
-    return const Color(0xFF6B6B6B);
   }
 
-  Color _statusBackground(HistoryStatus status) {
+  Color _statusBackground(CargoStatus status) {
     return _statusColor(status).withValues(alpha: 0.12);
+  }
+
+  String _statusTitle(CargoStatus status) {
+    switch (status) {
+      case CargoStatus.completed:
+        return 'Завершено';
+      case CargoStatus.cancelled:
+        return 'Отменено';
+      case CargoStatus.inTransit:
+        return 'В пути';
+      case CargoStatus.pending:
+        return 'Ожидает';
+    }
   }
 
   String _formatDate(DateTime date) {
@@ -511,91 +547,25 @@ class _HistoryCard extends StatelessWidget {
     final time = '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
     return '${_formatDate(date)} · $time';
   }
+}
 
-  String _statusTitle(HistoryStatus status) {
-    switch (status) {
-      case HistoryStatus.completed:
-        return 'Завершено';
-      case HistoryStatus.cancelled:
-        return 'Отменено';
-      case HistoryStatus.all:
-        return 'Все';
-    }
+class _Chip extends StatelessWidget {
+  const _Chip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEFF4FF),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600),
+      ),
+    );
   }
 }
-
-class _HistoryItem {
-  const _HistoryItem({
-    required this.id,
-    required this.date,
-    required this.route,
-    required this.company,
-    required this.cargo,
-    required this.price,
-    required this.payment,
-    required this.status,
-    required this.createdAt,
-    this.notes = '',
-  });
-
-  final String id;
-  final DateTime date;
-  final String route;
-  final String company;
-  final String cargo;
-  final String price;
-  final String payment;
-  final HistoryStatus status;
-  final DateTime createdAt;
-  final String notes;
-}
-
-final List<_HistoryItem> _mockHistoryItems = [
-  _HistoryItem(
-    id: 'ORD-1482',
-    date: DateTime.now().subtract(const Duration(days: 2)),
-    route: 'Алматы → Астана',
-    company: 'ТОО «KazTrans»',
-    cargo: 'Фрукты · 18 т · Рефрижератор',
-    price: '480 000 ₸',
-    payment: 'Безнал',
-    status: HistoryStatus.completed,
-    createdAt: DateTime.now().subtract(const Duration(days: 8, hours: 4)),
-    notes: 'Доставка прошла без задержек. Водитель связался за сутки до прибытия.',
-  ),
-  _HistoryItem(
-    id: 'ORD-1520',
-    date: DateTime.now().subtract(const Duration(days: 1)),
-    route: 'Шымкент → Караганда',
-    company: 'Asia Freight',
-    cargo: 'Стройматериалы · 20 т · Тент',
-    price: '360 000 ₸',
-    payment: 'Наличными',
-    status: HistoryStatus.completed,
-    createdAt: DateTime.now().subtract(const Duration(days: 3, hours: 6)),
-    notes: 'Ожидается прибытие на выгрузку завтра вечером.',
-  ),
-  _HistoryItem(
-    id: 'ORD-1395',
-    date: DateTime.now().subtract(const Duration(days: 5)),
-    route: 'Астана → Костанай',
-    company: 'North Cargo',
-    cargo: 'Металлоконструкции · 15 т · Платформа',
-    price: '410 000 ₸',
-    payment: 'Безнал',
-    status: HistoryStatus.cancelled,
-    createdAt: DateTime.now().subtract(const Duration(days: 6, hours: 2)),
-    notes: 'Заказ отменён из-за переносов сроков погрузки. Средства возвращены.',
-  ),
-  _HistoryItem(
-    id: 'ORD-1440',
-    date: DateTime.now().subtract(const Duration(days: 9)),
-    route: 'Усть-Каменогорск → Алматы',
-    company: 'Logex KZ',
-    cargo: 'Оборудование · 8 т · Фургон',
-    price: '295 000 ₸',
-    payment: 'Предоплата',
-    status: HistoryStatus.completed,
-    createdAt: DateTime.now().subtract(const Duration(days: 15)),
-  ),
-];

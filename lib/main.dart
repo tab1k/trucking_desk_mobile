@@ -4,26 +4,43 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fura24.kz/router/app_router.dart';
+import 'package:fura24.kz/services/push_notification_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
+  await PushNotificationService.initialize(
+    onNotificationClick: (payload) {
+      final route = payload['route'] as String?;
+      if (route == null || route.isEmpty) return;
+      try {
+        appRouter.go(route, extra: payload);
+      } catch (_) {
+        // Если роут не найден, просто игнорируем клик по пушу.
+      }
+    },
+  );
+  
+
   timeago.setLocaleMessages('ru', timeago.RuMessages());
 
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('ru'), Locale('en'), Locale('kk')],
+      supportedLocales: const [
+        Locale('ru'),
+        Locale('en'),
+        Locale('kk'),
+        Locale('zh'),
+      ],
       path: 'assets/translations',
       fallbackLocale: const Locale('ru'),
-      child: const ProviderScope(
-        child: FuraApp(),
-      ),
+      startLocale: const Locale('ru'),
+      child: const ProviderScope(child: FuraApp()),
     ),
   );
 }
-
 
 class FuraApp extends ConsumerWidget {
   const FuraApp({super.key});
@@ -57,6 +74,18 @@ class FuraApp extends ConsumerWidget {
             onSurface: Colors.black,
             onBackground: Colors.black,
             outline: const Color(0xFFEEEEEE),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: Colors.grey[100],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 12.h,
+            ),
           ),
           useMaterial3: false,
         );

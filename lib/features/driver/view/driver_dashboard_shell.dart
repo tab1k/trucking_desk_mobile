@@ -1,48 +1,84 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
+import 'package:fura24.kz/features/driver/providers/driver_assigned_orders_provider.dart';
 import 'package:fura24.kz/features/driver/providers/driver_dashboard_tab_provider.dart';
+import 'package:fura24.kz/features/driver/providers/driver_location_sharing_provider.dart';
 import 'package:fura24.kz/features/driver/view/tabs/driver_home_tab.dart';
-import 'package:fura24.kz/features/driver/view/tabs/driver_finances_tab.dart';
-import 'package:fura24.kz/features/driver/view/tabs/driver_trips_tab.dart';
 import 'package:fura24.kz/features/driver/view/driver_profile_page.dart';
+import 'package:fura24.kz/features/driver/view/driver_favorites_page.dart';
+import 'package:fura24.kz/features/driver/view/driver_transport_page.dart';
 
-class DriverDashboardShellPage extends ConsumerWidget {
+class DriverDashboardShellPage extends ConsumerStatefulWidget {
   const DriverDashboardShellPage({super.key});
 
-  static final List<_DriverTabItem> _tabs = [
-    _DriverTabItem(
-      label: 'Главная',
-      iconAsset: 'assets/svg/house-blank.svg',
-      activeIconAsset: 'assets/svg/house-blank-filled.svg',
-      builder: const DriverHomeTab(),
-    ),
-    _DriverTabItem(
-      label: 'Рейсы',
-      iconAsset: 'assets/svg/truck-check.svg',
-      activeIconAsset: 'assets/svg/truck-check-filled.svg',
-      builder: const DriverTripsTab(),
-    ),
-    _DriverTabItem(
-      label: 'Кошелек',
-      iconAsset: 'assets/svg/wallet.svg',
-      activeIconAsset: 'assets/svg/wallet.svg',
-      builder: const DriverFinancesTab(),
-    ),
-    _DriverTabItem(
-      label: 'Профиль',
-      iconAsset: 'assets/svg/circle-user.svg',
-      activeIconAsset: 'assets/svg/circle-user-filled.svg',
-      builder: const DriverProfilePage(),
-    ),
-  ];
+  @override
+  ConsumerState<DriverDashboardShellPage> createState() =>
+      _DriverDashboardShellPageState();
+}
+
+class _DriverDashboardShellPageState
+    extends ConsumerState<DriverDashboardShellPage> {
+  ProviderSubscription<AsyncValue<List<OrderSummary>>>? _ordersSubscription;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    _ordersSubscription = ref.listenManual(
+      driverAssignedOrdersProvider,
+      (previous, next) {
+        next.whenData(
+          (orders) =>
+              ref.read(driverLocationSharingProvider).updateOrders(orders),
+        );
+      },
+      fireImmediately: true,
+    );
+  }
+
+  @override
+  void dispose() {
+    _ordersSubscription?.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final tabIndex = ref.watch(driverDashboardTabIndexProvider);
+    final localeKey = context.locale.languageCode;
+    final tabs = [
+      _DriverTabItem(
+        label: tr('driver_tabs.home'),
+        iconAsset: 'assets/svg/house-blank.svg',
+        activeIconAsset: 'assets/svg/house-blank-filled.svg',
+        builder: DriverHomeTab(key: ValueKey('driver-home-$localeKey')),
+      ),
+      _DriverTabItem(
+        label: tr('driver_tabs.favorites'),
+        iconAsset: 'assets/svg/heart.svg',
+        activeIconAsset: 'assets/svg/heart-filled.svg',
+        builder: DriverFavoritesPage(key: ValueKey('driver-fav-$localeKey')),
+      ),
+      _DriverTabItem(
+        label: tr('driver_tabs.transport'),
+        iconAsset: 'assets/svg/cars.svg',
+        activeIconAsset: 'assets/svg/cars.svg',
+        builder:
+            DriverTransportPage(key: ValueKey('driver-transport-$localeKey')),
+      ),
+      _DriverTabItem(
+        label: tr('driver_tabs.profile'),
+        iconAsset: 'assets/svg/circle-user.svg',
+        activeIconAsset: 'assets/svg/circle-user-filled.svg',
+        builder:
+            DriverProfilePage(key: ValueKey('driver-profile-$localeKey')),
+      ),
+    ];
 
     final overlayStyle =
         Theme.of(context).brightness == Brightness.dark
@@ -60,7 +96,7 @@ class DriverDashboardShellPage extends ConsumerWidget {
         extendBody: false,
         body: IndexedStack(
           index: tabIndex,
-          children: _tabs.map((tab) => tab.builder).toList(),
+          children: tabs.map((tab) => tab.builder).toList(),
         ),
         bottomNavigationBar: _DriverBottomNavigationBar(
           currentIndex: tabIndex,
@@ -68,7 +104,7 @@ class DriverDashboardShellPage extends ConsumerWidget {
               (index) =>
                   ref.read(driverDashboardTabIndexProvider.notifier).state =
                       index,
-          items: _tabs,
+          items: tabs,
         ),
       ),
     );
@@ -110,7 +146,10 @@ class _DriverBottomNavigationBar extends StatelessWidget {
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
             border: Border(
-              top: BorderSide(color: Colors.black.withOpacity(0.05), width: 1),
+              top: BorderSide(
+                color: Colors.black.withValues(alpha: 0.05),
+                width: 1,
+              ),
             ),
           ),
           child: SafeArea(
@@ -135,7 +174,10 @@ class _DriverBottomNavigationBar extends StatelessWidget {
           top: 0,
           left: 0,
           right: 0,
-          child: Container(height: 2.h, color: Colors.black.withOpacity(0.05)),
+          child: Container(
+            height: 2.h,
+            color: Colors.black.withValues(alpha: 0.05),
+          ),
         ),
       ],
     );
@@ -171,12 +213,12 @@ class _DriverNavItem extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 isActive ? item.activeIconAsset : item.iconAsset,
-                width: 24.r,
-                height: 24.r,
+                width: 22.r,
+                height: 22.r,
                 colorFilter: ColorFilter.mode(
                   isActive
                       ? theme.colorScheme.primary
-                      : theme.colorScheme.onSurface.withOpacity(0.6),
+                      : theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   BlendMode.srcIn,
                 ),
               ),
@@ -189,7 +231,7 @@ class _DriverNavItem extends StatelessWidget {
                   color:
                       isActive
                           ? theme.colorScheme.primary
-                          : theme.colorScheme.onSurface.withOpacity(0.6),
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ],

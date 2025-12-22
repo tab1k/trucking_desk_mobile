@@ -1,43 +1,46 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:fura24.kz/features/client/data/repositories/driver_announcement_repository.dart';
+import 'package:fura24.kz/features/client/domain/models/driver_announcement.dart';
+import 'package:fura24.kz/features/client/domain/models/driver_announcement_filters.dart';
+import 'package:fura24.kz/features/client/presentation/pages/home/subpages/find_transport_filters_page.dart';
+import 'package:fura24.kz/features/client/presentation/providers/driver_announcements_provider.dart';
+import 'package:fura24.kz/features/client/presentation/widgets/driver_announcement_card.dart';
+import 'package:fura24.kz/features/driver/view/widgets/driver_announcement_detail_sheet.dart';
 
-class FindTransportPage extends StatefulWidget {
+class FindTransportPage extends ConsumerStatefulWidget {
   const FindTransportPage({super.key});
 
   @override
-  State<FindTransportPage> createState() => _FindTransportPageState();
+  ConsumerState<FindTransportPage> createState() => _FindTransportPageState();
 }
 
-class _FindTransportPageState extends State<FindTransportPage> {
-  final _loadingPointController = TextEditingController();
-  final _unloadingPointController = TextEditingController();
-  final _vehicleTypeController = TextEditingController();
-  final _loadingTypeController = TextEditingController();
-
-  bool _showAdvancedFilters = false;
-  final _weightFromController = TextEditingController();
-  final _weightToController = TextEditingController();
-  final _volumeFromController = TextEditingController();
-  final _volumeToController = TextEditingController();
-  final _dateController = TextEditingController();
-  final _durationController = TextEditingController();
-
-  DateTime? _selectedDate;
-
-  late final List<_TransportOffer> _allOffers;
-  late List<_TransportOffer> _visibleOffers;
+class _FindTransportPageState extends ConsumerState<FindTransportPage> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _allOffers = _mockOffers;
-    _visibleOffers = List.of(_allOffers);
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final filters = ref.watch(driverAnnouncementFiltersProvider);
+    final hasFilters = filters.toQueryParameters().isNotEmpty;
+    final announcementsAsync = ref.watch(driverAnnouncementsProvider);
 
     return ClipRRect(
       borderRadius: BorderRadius.only(
@@ -57,6 +60,7 @@ class _FindTransportPageState extends State<FindTransportPage> {
             child: Material(
               color: Colors.grey[200],
               shape: const CircleBorder(),
+              clipBehavior: Clip.antiAlias,
               child: IconButton(
                 icon: const Icon(Icons.arrow_back, size: 20),
                 color: Colors.black87,
@@ -68,25 +72,28 @@ class _FindTransportPageState extends State<FindTransportPage> {
           title: Padding(
             padding: EdgeInsets.only(left: 12.w),
             child: Text(
-              'Поиск транспорта',
+              tr('find_transport.title'),
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
             ),
-          )
+          ),
         ),
         body: SafeArea(
           top: false,
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             children: [
-              SizedBox(height: 16.h),
-              _buildFilterCard(theme),
-              SizedBox(height: 24.h),
+              _buildSearchRow(hasFilters),
+              if (hasFilters) ...[
+                SizedBox(height: 10.h),
+                _buildFiltersBadge(filters),
+              ],
+              SizedBox(height: 20.h),
               Text(
-                'Доступные варианты',
+                tr('find_transport.available'),
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
@@ -94,52 +101,8 @@ class _FindTransportPageState extends State<FindTransportPage> {
                 ),
               ),
               SizedBox(height: 12.h),
-              if (_visibleOffers.isEmpty)
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(color: Colors.grey[200]!),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 36.w,
-                        width: 36.w,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Icon(
-                          Icons.info_outline,
-                          color: theme.colorScheme.primary,
-                          size: 20.w,
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: Text(
-                          'По выбранным параметрам пока нет подходящих машин. Попробуйте изменить фильтры.',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.black87,
-                            height: 1.4,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              else
-                ..._visibleOffers.map((offer) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 16.h),
-                    child: _TransportOfferCard(offer: offer),
-                  );
-                }),
-              SizedBox(height: MediaQuery.of(context).padding.bottom + 24.h),
+              ..._buildAnnouncementWidgets(theme, announcementsAsync),
+              SizedBox(height: _bottomSpacing(context)),
             ],
           ),
         ),
@@ -147,239 +110,69 @@ class _FindTransportPageState extends State<FindTransportPage> {
     );
   }
 
-  Widget _buildFilterCard(ThemeData theme) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Colors.grey[200]!),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Фильтры',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  setState(() {
-                    _showAdvancedFilters = !_showAdvancedFilters;
-                  });
-                },
-                icon: Icon(
-                  _showAdvancedFilters
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
-                  size: 20,
-                ),
-                label: Text(
-                  _showAdvancedFilters ? 'Скрыть' : 'Расширенные фильтры',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w),
-                  foregroundColor: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 5.h),
-          _buildInputField(
-            controller: _loadingPointController,
-            label: 'Пункт загрузки',
-            icon: Icons.location_on_outlined,
-          ),
-          SizedBox(height: 12.h),
-          _buildInputField(
-            controller: _unloadingPointController,
-            label: 'Пункт разгрузки',
-            icon: Icons.flag_outlined,
-          ),
-          if (_showAdvancedFilters) ...[
-            SizedBox(height: 12.h),
-            _buildInputField(
-              controller: _vehicleTypeController,
-              label: 'Тип машины',
-              icon: Icons.local_shipping_outlined,
-            ),
-            SizedBox(height: 12.h),
-            _buildInputField(
-              controller: _loadingTypeController,
-              label: 'Погрузка',
-              icon: Icons.precision_manufacturing_outlined,
-            ),
-            SizedBox(height: 16.h),
-            _buildRangeRow(
-              leftController: _weightFromController,
-              rightController: _weightToController,
-              leftLabel: 'Вес от (кг)',
-              rightLabel: 'Вес до (кг)',
-              icon: Icons.scale_outlined,
-            ),
-            SizedBox(height: 12.h),
-            _buildRangeRow(
-              leftController: _volumeFromController,
-              rightController: _volumeToController,
-              leftLabel: 'Объём от (м³)',
-              rightLabel: 'Объём до (м³)',
-              icon: Icons.aspect_ratio_outlined,
-            ),
-            SizedBox(height: 12.h),
-            _buildDateField(),
-            SizedBox(height: 12.h),
-            _buildInputField(
-              controller: _durationController,
-              label: 'Срок перевозки',
-              icon: Icons.access_time_outlined,
-            ),
-          ],
-          SizedBox(height: 20.h),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: _applyFilters,
-              icon: const Icon(Icons.search, size: 18),
-              label: Text(
-                'Искать машину',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00B2FF),
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
-                elevation: 0,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-  }) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: label,
-        prefixIcon: Icon(icon, size: 20, color: Colors.grey[500]),
-        filled: true,
-        fillColor: Colors.grey[50],
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: const BorderSide(color: Color(0xFF00B2FF), width: 1.4),
-        ),
-      ),
-      style: TextStyle(
-        fontSize: 14.sp,
-        color: Colors.black87,
-      ),
-    );
-  }
-
-  Widget _buildRangeRow({
-    required TextEditingController leftController,
-    required TextEditingController rightController,
-    required String leftLabel,
-    required String rightLabel,
-    required IconData icon,
-  }) {
+  Widget _buildSearchRow(bool hasFilters) {
+    final hasQuery = _searchQuery.isNotEmpty;
     return Row(
       children: [
         Expanded(
           child: TextField(
-            controller: leftController,
-            keyboardType: TextInputType.number,
+            controller: _searchController,
             decoration: InputDecoration(
-              hintText: leftLabel,
-              prefixIcon: Icon(icon, size: 20, color: Colors.grey[500]),
+              hintText: tr('find_transport.search_hint'),
+              prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+              suffixIcon: hasQuery
+                  ? IconButton(
+                      icon: const Icon(Icons.close, size: 18),
+                      onPressed: () => _searchController.clear(),
+                    )
+                  : null,
               filled: true,
-              fillColor: Colors.grey[50],
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              fillColor: Colors.white,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 16.h,
+              ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.r),
-                borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide(color: Colors.grey[200]!),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.r),
-                borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide(color: Colors.grey[200]!),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.r),
-                borderSide: const BorderSide(color: Color(0xFF00B2FF), width: 1.4),
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: const BorderSide(color: Color(0xFF00B2FF)),
               ),
             ),
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.black87,
-            ),
+            style: TextStyle(fontSize: 15.sp),
           ),
         ),
         SizedBox(width: 12.w),
-        Expanded(
-          child: TextField(
-            controller: rightController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText: rightLabel,
-              filled: true,
-              fillColor: Colors.grey[50],
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.r),
-                borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+        SizedBox(
+          height: 52.h,
+          child: OutlinedButton(
+            onPressed: _openFilters,
+            style: OutlinedButton.styleFrom(
+              backgroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14.r),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.r),
-                borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.r),
-                borderSide: const BorderSide(color: Color(0xFF00B2FF), width: 1.4),
+              side: BorderSide(
+                color: hasFilters ? const Color(0xFF00B2FF) : Colors.grey[200]!,
+                width: 1.0,
               ),
             ),
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.black87,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.tune,
+                  size: 28,
+                  color: hasFilters ? const Color(0xFF00B2FF) : Color(0xFF00B2FF),
+                ),
+              ],
             ),
           ),
         ),
@@ -387,477 +180,231 @@ class _FindTransportPageState extends State<FindTransportPage> {
     );
   }
 
-  Widget _buildDateField() {
-    return TextField(
-      controller: _dateController,
-      readOnly: true,
-      onTap: _pickDate,
-      decoration: InputDecoration(
-        hintText: 'Дата перевозки',
-        prefixIcon: Icon(Icons.calendar_today_outlined, size: 20, color: Colors.grey[500]),
-        suffixIcon: Icon(Icons.edit_calendar_outlined, size: 20, color: Colors.grey[500]),
-        filled: true,
-        fillColor: Colors.grey[50],
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: const BorderSide(color: Color(0xFF00B2FF), width: 1.4),
-        ),
+  Widget _buildFiltersBadge(DriverAnnouncementFilters filters) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE8F4FF),
+        borderRadius: BorderRadius.circular(12.r),
       ),
-      style: TextStyle(
-        fontSize: 14.sp,
-        color: Colors.black87,
+      child: Row(
+        children: [
+          Icon(Icons.filter_alt, color: const Color(0xFF00B2FF), size: 18.w),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Text(
+              tr('find_transport.filters_applied'),
+              style: TextStyle(fontSize: 13.sp, color: const Color(0xFF1A1D1F)),
+            ),
+          ),
+          TextButton(
+            onPressed: () =>
+                ref.read(driverAnnouncementFiltersProvider.notifier).reset(),
+            child: Text(tr('common.reset')),
+          ),
+        ],
       ),
     );
   }
 
-  Future<void> _pickDate() async {
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? now,
-      firstDate: now,
-      lastDate: DateTime(now.year + 2),
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF00B2FF),
+  List<Widget> _buildAnnouncementWidgets(
+    ThemeData theme,
+    AsyncValue<List<DriverAnnouncement>> async,
+  ) {
+    return async.when(
+      data: (announcements) {
+        final filtered = _filterAnnouncements(announcements);
+        if (filtered.isEmpty) {
+          return [_buildEmptyState(theme)];
+        }
+        return filtered.map((announcement) {
+          final offer = DriverAnnouncementOffer.fromAnnouncement(announcement);
+          return Padding(
+            padding: EdgeInsets.only(bottom: 16.h),
+            child: GestureDetector(
+              onTap: () => showDriverAnnouncementDetailSheet(
+                context,
+                announcement,
+              ),
+              behavior: HitTestBehavior.opaque,
+              child: DriverAnnouncementCard(
+                offer: offer,
+                onContact: () => showDriverContactSheet(context, offer),
+                onFavoriteToggle: () => _toggleFavorite(offer),
+              ),
+            ),
+          );
+        }).toList();
+      },
+      loading: () => [
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 50.h),
+          child: const Center(child: CircularProgressIndicator()),
+        ),
+      ],
+      error: (error, _) => [
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 40.h),
+          child: Center(
+            child: Text(
+              tr('common.error'),
+              style: TextStyle(fontSize: 14.sp, color: Colors.redAccent),
             ),
           ),
-          child: child!,
-        );
-      },
+        ),
+      ],
     );
+  }
 
-    if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-        _dateController.text =
-            '${picked.day.toString().padLeft(2, '0')}.${picked.month.toString().padLeft(2, '0')}.${picked.year}';
-      });
+  Future<void> _openFilters() async {
+    final current = ref.read(driverAnnouncementFiltersProvider);
+    final result = await Navigator.of(context).push<DriverAnnouncementFilters>(
+      MaterialPageRoute(
+        builder: (_) => FindTransportFiltersPage(initialFilters: current),
+      ),
+    );
+    if (result != null) {
+      ref
+          .read(driverAnnouncementFiltersProvider.notifier)
+          .updateFilters(result);
     }
   }
 
-  void _applyFilters() {
-    final originQuery = _loadingPointController.text.trim().toLowerCase();
-    final destinationQuery = _unloadingPointController.text.trim().toLowerCase();
-    final vehicleQuery = _vehicleTypeController.text.trim().toLowerCase();
-    final loadQuery = _loadingTypeController.text.trim().toLowerCase();
-    final weightFrom = double.tryParse(_weightFromController.text.replaceAll(',', '.'));
-    final weightTo = double.tryParse(_weightToController.text.replaceAll(',', '.'));
-    final volumeFrom = double.tryParse(_volumeFromController.text.replaceAll(',', '.'));
-    final volumeTo = double.tryParse(_volumeToController.text.replaceAll(',', '.'));
-    final selectedDate = _selectedDate;
-
-    setState(() {
-      _visibleOffers = _allOffers.where((offer) {
-        final matchesOrigin = originQuery.isEmpty ||
-            offer.origin.toLowerCase().contains(originQuery);
-        final matchesDestination = destinationQuery.isEmpty ||
-            offer.destination.toLowerCase().contains(destinationQuery);
-        final matchesVehicle = vehicleQuery.isEmpty ||
-            offer.vehicle.toLowerCase().contains(vehicleQuery);
-        final matchesLoad = loadQuery.isEmpty ||
-            offer.loadType.toLowerCase().contains(loadQuery);
-
-        final matchesWeight = (weightFrom == null || offer.capacity >= weightFrom) &&
-            (weightTo == null || offer.capacity <= weightTo);
-        final matchesVolume = (volumeFrom == null || offer.volume >= volumeFrom) &&
-            (volumeTo == null || offer.volume <= volumeTo);
-
-    final matchesDate = selectedDate == null ||
-        (offer.date.year == selectedDate.year &&
-            offer.date.month == selectedDate.month &&
-            offer.date.day == selectedDate.day);
-
-        return matchesOrigin &&
-            matchesDestination &&
-            matchesVehicle &&
-            matchesLoad &&
-            matchesWeight &&
-            matchesVolume &&
-            matchesDate;
-      }).toList();
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Фильтры применены'),
-        backgroundColor: const Color(0xFF00B2FF),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-          bottom: 16.h,
-          left: 16.w,
-          right: 16.w,
-        ),
-      ),
-    );
+  List<DriverAnnouncement> _filterAnnouncements(
+    List<DriverAnnouncement> items,
+  ) {
+    final active = _activeAnnouncements(items);
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return active;
+    return active.where((announcement) {
+      final departure = announcement.departurePoint.cityName.toLowerCase();
+      final destination = announcement.destinationPoint.cityName.toLowerCase();
+      final driver = announcement.driverFullName.toLowerCase();
+      final comment = announcement.comment.toLowerCase();
+      return departure.contains(query) ||
+          destination.contains(query) ||
+          driver.contains(query) ||
+          comment.contains(query);
+    }).toList();
   }
 
-  @override
-  void dispose() {
-    _loadingPointController.dispose();
-    _unloadingPointController.dispose();
-    _vehicleTypeController.dispose();
-    _loadingTypeController.dispose();
-    _weightFromController.dispose();
-    _weightToController.dispose();
-    _volumeFromController.dispose();
-    _volumeToController.dispose();
-    _dateController.dispose();
-    _durationController.dispose();
-    super.dispose();
-  }
-}
-
-class _TransportOfferCard extends StatelessWidget {
-  const _TransportOfferCard({required this.offer});
-
-  final _TransportOffer offer;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
+  Widget _buildEmptyState(ThemeData theme) {
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18.r),
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: Colors.grey[200]!),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 14,
-            offset: const Offset(0, 8),
-          ),
-        ],
       ),
-      padding: EdgeInsets.all(16.w),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  offer.id,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-              ),
-              const Spacer(),
-              Icon(Icons.star, color: Colors.amber, size: 16.w),
-              SizedBox(width: 4.w),
-              Text(
-                offer.rating.toStringAsFixed(1),
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              _FavoriteButton(onPressed: () {}),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${offer.origin} → ${offer.destination}',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: 4.h),
-              Text(
-                'Дата отправки: ${_formatDate(offer.date)}',
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      offer.vehicle,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      '${offer.loadType} • ${offer.capacity.toStringAsFixed(1)} т • ${offer.volume.toStringAsFixed(1)} м³',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    offer.price,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    'за рейс',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 18.w,
-                backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.12),
-                child: Text(
-                  offer.company.isNotEmpty ? offer.company.characters.first : '',
-                  style: TextStyle(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Text(
-                  offer.company,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  foregroundColor: theme.colorScheme.primary,
-                ),
-                child: const Text('Связаться'),
-              ),
-            ],
-          ),
-          if (offer.tags.isNotEmpty) ...[
-            SizedBox(height: 12.h),
-            Wrap(
-              spacing: 8.w,
-              runSpacing: 8.h,
-              children: offer.tags
-                  .map(
-                    (tag) => Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        tag,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
+          Container(
+            height: 36.w,
+            width: 36.w,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
-          ],
+            child: Icon(
+              Icons.info_outline,
+              color: theme.colorScheme.primary,
+              size: 20.w,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text(
+              tr('find_transport.empty'),
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: Colors.black87,
+                height: 1.4,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  String _formatDate(DateTime date) {
-    final months = [
-      'янв',
-      'фев',
-      'мар',
-      'апр',
-      'май',
-      'июн',
-      'июл',
-      'авг',
-      'сен',
-      'окт',
-      'ноя',
-      'дек',
-    ];
-    return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
-  }
-}
-
-class _FavoriteButton extends StatefulWidget {
-  const _FavoriteButton({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  State<_FavoriteButton> createState() => _FavoriteButtonState();
-}
-
-class _FavoriteButtonState extends State<_FavoriteButton> {
-  bool _isFavorite = false;
-
-  void _handleTap() {
-    setState(() {
-      _isFavorite = !_isFavorite;
-    });
-    widget.onPressed();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final Color iconColor = _isFavorite ? theme.colorScheme.primary : Colors.grey[500]!;
-
-    return SizedBox(
-      width: 32.w,
-      height: 32.w,
-      child: IconButton(
-        onPressed: _handleTap,
-        constraints: BoxConstraints.tightFor(width: 32.w, height: 32.w),
-        splashRadius: 20.w,
-        padding: EdgeInsets.zero,
-        icon: SvgPicture.asset(
-          'assets/svg/heart.svg',
-          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+  Widget _buildSelectionField({
+    required String label,
+    required String value,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: Colors.grey[200]!, width: 1),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                value.isEmpty ? label : value,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: value.isEmpty ? Colors.grey[500] : Colors.black87,
+                ),
+              ),
+            ),
+            Icon(Icons.keyboard_arrow_down_rounded, color: Colors.grey[500]),
+          ],
         ),
       ),
     );
   }
+
+  List<DriverAnnouncement> _activeAnnouncements(
+    List<DriverAnnouncement> items,
+  ) {
+    return items.where((announcement) => announcement.isActive).toList();
+  }
+
+  double? _parseDouble(String value) {
+    final normalized = value.replaceAll(',', '.').trim();
+    if (normalized.isEmpty) return null;
+    return double.tryParse(normalized);
+  }
+
+  double _bottomSpacing(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+    return (bottomInset > 0 ? bottomInset : 0) + 24.h;
+  }
+
+  Future<void> _toggleFavorite(DriverAnnouncementOffer offer) async {
+    final repository = ref.read(driverAnnouncementRepositoryProvider);
+    try {
+      if (offer.isFavorite) {
+        await repository.removeFavorite(offer.id);
+      } else {
+        await repository.addFavorite(offer.id);
+      }
+      ref.refresh(driverAnnouncementsProvider);
+      ref.refresh(favoriteDriverAnnouncementsProvider);
+    } catch (error) {
+      _showFavoriteError(error.toString());
+    }
+  }
+
+  void _showFavoriteError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message.isNotEmpty ? message : tr('common.error')),
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+      ),
+    );
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchQuery = _searchController.text.trim();
+    });
+  }
 }
-
-class _TransportOffer {
-  const _TransportOffer({
-    required this.id,
-    required this.origin,
-    required this.destination,
-    required this.date,
-    required this.vehicle,
-    required this.loadType,
-    required this.capacity,
-    required this.volume,
-    required this.price,
-    required this.company,
-    required this.rating,
-    this.tags = const [],
-  });
-
-  final String id;
-  final String origin;
-  final String destination;
-  final DateTime date;
-  final String vehicle;
-  final String loadType;
-  final double capacity;
-  final double volume;
-  final String price;
-  final String company;
-  final double rating;
-  final List<String> tags;
-}
-
-final List<_TransportOffer> _mockOffers = [
-  _TransportOffer(
-    id: 'TR-2915',
-    origin: 'Алматы',
-    destination: 'Астана',
-    date: DateTime.now().add(const Duration(days: 3)),
-    vehicle: 'Рефрижератор 20 т',
-    loadType: 'Задняя погрузка',
-    capacity: 20,
-    volume: 82,
-    price: '450 000 ₸',
-    company: 'ТОО «Алтай Логистик»',
-    rating: 4.8,
-    tags: ['GPS-мониторинг', '24/7 связь'],
-  ),
-  _TransportOffer(
-    id: 'TR-3058',
-    origin: 'Караганда',
-    destination: 'Павлодар',
-    date: DateTime.now().add(const Duration(days: 1)),
-    vehicle: 'Тент 15 т',
-    loadType: 'Верхняя/боковая погрузка',
-    capacity: 15,
-    volume: 60,
-    price: '320 000 ₸',
-    company: 'Logex KZ',
-    rating: 4.6,
-    tags: ['Опыт 7 лет'],
-  ),
-  _TransportOffer(
-    id: 'TR-1984',
-    origin: 'Шымкент',
-    destination: 'Алматы',
-    date: DateTime.now().add(const Duration(days: 5)),
-    vehicle: 'Фургон 10 т',
-    loadType: 'Гидроборт',
-    capacity: 10,
-    volume: 45,
-    price: '280 000 ₸',
-    company: 'Asia Freight',
-    rating: 4.9,
-    tags: ['Страховка груза', 'Закрепление'],
-  ),
-  _TransportOffer(
-    id: 'TR-4120',
-    origin: 'Астана',
-    destination: 'Костанай',
-    date: DateTime.now().add(const Duration(days: 2)),
-    vehicle: 'Открытая платформа 25 т',
-    loadType: 'Погрузчик/кран',
-    capacity: 25,
-    volume: 90,
-    price: '500 000 ₸',
-    company: 'North Cargo',
-    rating: 4.5,
-    tags: ['Негабарит', 'Документы'],
-  ),
-];

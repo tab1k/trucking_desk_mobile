@@ -52,7 +52,7 @@ class DriverTripsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _backgroundColor,
-      appBar: SingleAppbar(title: 'Рейсы'),
+      appBar: const SingleAppbar(title: 'Рейсы'),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         physics: const BouncingScrollPhysics(),
