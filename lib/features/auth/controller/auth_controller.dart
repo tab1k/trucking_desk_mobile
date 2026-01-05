@@ -109,6 +109,52 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     }
   }
 
+  Future<bool> requestPhoneVerification({required String phoneNumber}) async {
+    state = const AsyncLoading();
+    try {
+      await repository.requestPhoneVerification(phoneNumber: phoneNumber);
+      state = const AsyncData(null);
+      return true;
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+      return false;
+    }
+  }
+
+  Future<bool> confirmPhoneVerification({
+    required String phoneNumber,
+    required String pin,
+    required String password,
+    String? passwordConfirm,
+    String role = 'SENDER',
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? referralCode,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      final response = await repository.confirmPhoneVerification(
+        phoneNumber: phoneNumber,
+        pin: pin,
+        password: password,
+        passwordConfirm: passwordConfirm,
+        role: role.toUpperCase(),
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        referralCode: referralCode?.isEmpty ?? true ? null : referralCode,
+      );
+      await _persistSession(response);
+      await PushNotificationService.syncTokenWithBackend();
+      state = const AsyncData(null);
+      return true;
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+      return false;
+    }
+  }
+
   Future<bool> deleteAccount({required String password}) async {
     state = const AsyncLoading();
     try {

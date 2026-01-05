@@ -38,6 +38,51 @@ class AuthRepository {
     );
   }
 
+  Future<void> requestPhoneVerification({required String phoneNumber}) async {
+    try {
+      await _dio.post(
+        'auth/phone/verify/request/',
+        data: {'phone_number': phoneNumber},
+      );
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+      final message = _extractErrorMessage(e);
+      throw ApiException(message, statusCode: statusCode);
+    } catch (_) {
+      throw ApiException('Не удалось отправить код подтверждения');
+    }
+  }
+
+  Future<AuthResponse> confirmPhoneVerification({
+    required String phoneNumber,
+    required String pin,
+    required String password,
+    String? passwordConfirm, // Backend might not strict require this if validated on client, but let's pass if needed or just password
+    String role = 'SENDER',
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? referralCode,
+  }) async {
+     // Prepare data mirroring the backend serializer
+     final data = {
+        'phone_number': phoneNumber,
+        'pin': pin,
+        'password': password,
+        'password_confirm': passwordConfirm ?? password,
+        'role': role,
+        if (firstName != null) 'first_name': firstName,
+        if (lastName != null) 'last_name': lastName,
+        if (email != null && email.isNotEmpty) 'email': email,
+        if (referralCode != null && referralCode.isNotEmpty) 'referral_code': referralCode,
+     };
+
+    return _postAuth(
+      endpoint: 'auth/phone/verify/confirm/',
+      data: data,
+    );
+  }
+
   Future<AuthResponse> register({
     required String login,
     required String password,
@@ -46,10 +91,12 @@ class AuthRepository {
     String role = 'SENDER',
     String? referralCode,
   }) async {
+    // This method might be deprecated if we fully switch to SMS flow, 
+    // but keep it for now or modify it to throw error if used directly.
     return _postAuth(
       endpoint: 'auth/register/',
       data: {
-        'login': login,
+        'login': login, // Note: Backend expects phone_number usually for users, but existing code used 'login'
         'password': password,
         'password_confirm': passwordConfirm,
         'role': role,

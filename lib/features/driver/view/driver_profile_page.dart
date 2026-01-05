@@ -262,6 +262,7 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
           _buildBalanceCard(balanceText),
           isVerified ? _buildReferralSection(referralCode) : verificationBanner,
           _buildSettingsSection(),
+          _buildTariffsSection(),
           _buildSupportSection(),
           _buildSocialLinksSection(),
           _buildLogoutSection(),
@@ -317,13 +318,13 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
                 _BalanceButton(
                   icon: Icons.add,
                   text: tr('driver_profile.balance.top_up'),
-                  onTap: () {},
+                  onTap: () => context.push(ProfileRoutes.wallet),
                 ),
                 SizedBox(width: 12.w),
                 _BalanceButton(
-                  icon: Icons.arrow_forward,
-                  text: tr('driver_profile.balance.transfer'),
-                  onTap: () {},
+                  icon: Icons.history,
+                  text: 'История',
+                  onTap: () => context.push(ProfileRoutes.wallet),
                 ),
               ],
             ),
@@ -487,6 +488,39 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _buildTariffsSection() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: _buildSettingsItem(
+          iconPath: 'assets/svg/ticket.svg',
+          title: tr('driver_profile.balance.tariffs') != 'driver_profile.balance.tariffs' ? tr('driver_profile.balance.tariffs') : 'Тарифы',
+          link: DriverRoutes.tariffs,
+          onTap: () => context.push(DriverRoutes.tariffs),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                 'Активен', // TODO: Make dynamic later
+                 style: TextStyle(color: Colors.green, fontSize: 12.sp, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(width: 8.w),
+              Icon(
+                Icons.chevron_right,
+                size: 20.w,
+                color: CupertinoColors.systemGrey3,
+              ),
+            ],
+          ),
         ),
       ),
     );

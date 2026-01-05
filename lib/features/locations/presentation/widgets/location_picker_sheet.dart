@@ -287,7 +287,12 @@ class _LocationPickerSheetState extends ConsumerState<LocationPickerSheet> {
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 subtitle:
-                    location.latitude != null && location.longitude != null
+                    location.country.isNotEmpty
+                        ? Text(
+                            location.country,
+                            style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                          )
+                        : location.latitude != null && location.longitude != null
                         ? Text(
                             '${location.latitude!.toStringAsFixed(3)}, '
                             '${location.longitude!.toStringAsFixed(3)}',

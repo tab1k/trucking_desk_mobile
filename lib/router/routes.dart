@@ -33,4 +33,5 @@ class CreateRoutes {}
 class DriverRoutes {
   static const String profile = '/driver-profile';
   static const String verification = '/driver-verification';
+  static const String tariffs = '/tariffs';
 }

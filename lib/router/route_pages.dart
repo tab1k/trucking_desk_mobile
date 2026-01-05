@@ -12,6 +12,7 @@ import 'package:fura24.kz/features/auth/view/forgot_password_confirm.dart';
 import 'package:fura24.kz/features/driver/view/driver_dashboard_shell.dart';
 import 'package:fura24.kz/features/driver/view/driver_profile_page.dart';
 import 'package:fura24.kz/features/driver/view/driver_verification_page.dart';
+import 'package:fura24.kz/features/subscriptions/presentation/view/tariffs_page.dart';
 import 'package:fura24.kz/router/routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -62,6 +63,10 @@ final List<GoRoute> appRoutes = [
   GoRoute(
     path: DriverRoutes.verification,
     builder: (context, state) => const DriverVerificationPage(),
+  ),
+  GoRoute(
+    path: DriverRoutes.tariffs,
+    builder: (context, state) => const TariffsPage(),
   ),
 
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:fura24.kz/features/client/domain/models/driver_announcement.dart';
+import 'package:fura24.kz/features/locations/data/models/location_model.dart';
 
 Future<void> showDriverAnnouncementDetailSheet(
   BuildContext context,
@@ -24,16 +25,30 @@ class _DriverAnnouncementDetail extends StatelessWidget {
 
   final DriverAnnouncement announcement;
 
+  String _formatLocation(LocationModel loc) {
+    // If cityName starts with a digit (likely coordinates), preferably show Country
+    if (RegExp(r'^\d').hasMatch(loc.cityName.trim())) {
+      return loc.country.isNotEmpty ? loc.country : loc.cityName;
+    }
+    // Otherwise show "City, Country" if country is available
+    if (loc.country.isNotEmpty) {
+      return '${loc.cityName}, ${loc.country}';
+    }
+    return loc.cityName;
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final safeBottom = MediaQuery.of(context).padding.bottom;
     final stops =
         announcement.waypoints.isNotEmpty
-            ? announcement.waypoints.map((w) => w.location.cityName).toList()
+            ? announcement.waypoints
+                .map((w) => _formatLocation(w.location))
+                .toList()
             : <String>[
-                announcement.departurePoint.cityName,
-                announcement.destinationPoint.cityName,
+                _formatLocation(announcement.departurePoint),
+                _formatLocation(announcement.destinationPoint),
               ];
     final fullRoute = stops.join(' → ');
 

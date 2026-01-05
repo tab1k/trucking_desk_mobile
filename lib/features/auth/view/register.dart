@@ -130,26 +130,56 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
     final loginValue =
         _dialCode +
         _loginController.text.trim().replaceAll(RegExp(r'[^0-9]'), '');
-
     final emailValue = _emailController.text.trim();
 
-    final success = await ref.read(authControllerProvider.notifier).register(
-          login: loginValue,
-          password: _passwordController.text,
-          passwordConfirm: _passwordConfirmController.text,
-          email: emailValue,
-          role: _roleCode,
-          referralCode: _referralController.text.trim(),
-        );
+    // 1. Request SMS Code
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .requestPhoneVerification(phoneNumber: loginValue);
 
-    if (!mounted) return;
-    if (success) {
-      final session = await ref.read(authControllerProvider.notifier).readSession();
-      final role = session?.user.role.toUpperCase() ?? _roleCode;
-      final targetRoute = role == 'DRIVER' ? AppRoutes.driverHome : AppRoutes.home;
-      if (!mounted) return;
-      context.go(targetRoute);
+    if (success && mounted) {
+      // 2. Show Dialog
+      _showVerificationDialog(
+        phoneNumber: loginValue,
+        email: emailValue,
+      );
     }
+  }
+
+  void _showVerificationDialog({
+    required String phoneNumber,
+    String? email,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _VerificationSheet(
+        phoneNumber: phoneNumber,
+        onVerify: (pin) async {
+          // 3. Confirm & Register
+          final success = await ref
+              .read(authControllerProvider.notifier)
+              .confirmPhoneVerification(
+                phoneNumber: phoneNumber,
+                pin: pin,
+                password: _passwordController.text,
+                passwordConfirm: _passwordConfirmController.text,
+                email: email,
+                role: _roleCode,
+                referralCode: _referralController.text.trim(),
+              );
+
+          if (success && mounted) {
+            Navigator.pop(context); // Close sheet
+            final session = await ref.read(authControllerProvider.notifier).readSession();
+            final role = session?.user.role.toUpperCase() ?? _roleCode;
+            final targetRoute = role == 'DRIVER' ? AppRoutes.driverHome : AppRoutes.home;
+            if (mounted) context.go(targetRoute);
+          }
+        },
+      ),
+    );
   }
 
   @override
@@ -484,6 +514,112 @@ class _AuthErrorBanner extends StatelessWidget {
               style: const TextStyle(
                 color: Color(0xFFB00020),
                 fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VerificationSheet extends StatefulWidget {
+  const _VerificationSheet({
+    required this.phoneNumber,
+    required this.onVerify,
+  });
+
+  final String phoneNumber;
+  final Function(String) onVerify;
+
+  @override
+  State<_VerificationSheet> createState() => _VerificationSheetState();
+}
+
+class _VerificationSheetState extends State<_VerificationSheet> {
+  final _pinController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, MediaQuery.of(context).viewInsets.bottom + 20.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Подтверждение номера',
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+                color: Colors.grey,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            'Мы отправили SMS с кодом на номер\n${widget.phoneNumber}',
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: Colors.grey[600],
+            ),
+          ),
+          SizedBox(height: 24.h),
+          TextField(
+            controller: _pinController,
+            keyboardType: TextInputType.number,
+            maxLength: 4,
+            autofocus: true,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 32.sp,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 8,
+            ),
+            decoration: InputDecoration(
+              counterText: '',
+              hintText: '0000',
+              hintStyle: TextStyle(color: Colors.grey[300]),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+          ),
+          SizedBox(height: 24.h),
+          ElevatedButton(
+            onPressed: () {
+              if (_pinController.text.length == 4) {
+                 widget.onVerify(_pinController.text);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+            child: Text(
+              'Подтвердить',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ),

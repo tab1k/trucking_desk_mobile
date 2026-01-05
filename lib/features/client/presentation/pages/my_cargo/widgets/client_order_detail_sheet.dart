@@ -11,6 +11,7 @@ import 'package:fura24.kz/features/client/domain/models/order_detail.dart';
 import 'package:fura24.kz/features/client/presentation/providers/my_orders_provider.dart';
 import 'package:fura24.kz/features/client/presentation/providers/order_detail_provider.dart';
 import 'package:fura24.kz/features/driver/view/widgets/driver_photo_viewer.dart';
+import 'package:fura24.kz/features/reviews/view/rating_bottom_sheet.dart';
 
 Future<void> showClientOrderDetailSheet(BuildContext context, String orderId) {
   return showModalBottomSheet<void>(
@@ -939,6 +940,23 @@ class _OrderStatusSectionState extends ConsumerState<_OrderStatusSection> {
       (repo) => repo.confirmDelivery(widget.orderId),
       successMessage: 'Доставка подтверждена',
     );
+    
+    // Show rating sheet if user is sender
+    if (mounted) {
+      final detail = widget.detail;
+      // Check if current user is sender and driver exists
+      if (detail.driverName.isNotEmpty) {
+        // Small delay to let the success message show
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (mounted) {
+          await showRatingBottomSheet(
+            context: context,
+            orderId: widget.orderId,
+            driverName: detail.driverName,
+          );
+        }
+      }
+    }
   }
 
   Future<void> _markReady() async {

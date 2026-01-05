@@ -2,12 +2,14 @@ class LocationModel {
   const LocationModel({
     required this.id,
     required this.cityName,
+    this.country = '',
     this.latitude,
     this.longitude,
   });
 
   final int id;
   final String cityName;
+  final String country;
   final double? latitude;
   final double? longitude;
 
@@ -15,6 +17,7 @@ class LocationModel {
     return LocationModel(
       id: json['id'] as int,
       cityName: json['city_name'] as String? ?? '',
+      country: json['country'] as String? ?? '',
       latitude: _toDouble(json['latitude']),
       longitude: _toDouble(json['longitude']),
     );
