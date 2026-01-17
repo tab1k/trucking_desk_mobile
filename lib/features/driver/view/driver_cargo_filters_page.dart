@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fura24.kz/features/driver/providers/saved_routes_provider.dart';
 import 'package:fura24.kz/features/driver/domain/models/driver_cargo_filters.dart';
 import 'package:fura24.kz/features/locations/presentation/widgets/location_picker_sheet.dart';
 import 'package:fura24.kz/features/transport/data/vehicle_type_options.dart';
 import 'package:fura24.kz/shared/widgets/app_date_picker.dart';
 
-class DriverCargoFiltersPage extends StatefulWidget {
+class DriverCargoFiltersPage extends ConsumerStatefulWidget {
   const DriverCargoFiltersPage({super.key, required this.initialFilters});
 
   final DriverCargoFilters initialFilters;
 
   @override
-  State<DriverCargoFiltersPage> createState() => _DriverCargoFiltersPageState();
+  ConsumerState<DriverCargoFiltersPage> createState() =>
+      _DriverCargoFiltersPageState();
 }
 
-class _DriverCargoFiltersPageState extends State<DriverCargoFiltersPage> {
+class _DriverCargoFiltersPageState
+    extends ConsumerState<DriverCargoFiltersPage> {
   late TextEditingController _departureController;
   late TextEditingController _destinationController;
   late TextEditingController _minAmountController;
@@ -49,15 +53,14 @@ class _DriverCargoFiltersPageState extends State<DriverCargoFiltersPage> {
     _destinationPointId = widget.initialFilters.destinationPointId;
     _selectedDate = widget.initialFilters.transportationDate;
     _vehicleTypeController = TextEditingController(
-      text:
-          _selectedVehicleType.isEmpty
-              ? ''
-              : vehicleTypeOptions
-                  .firstWhere(
-                    (option) => option.value == _selectedVehicleType,
-                    orElse: () => vehicleTypeOptions.first,
-                  )
-                  .label,
+      text: _selectedVehicleType.isEmpty
+          ? ''
+          : vehicleTypeOptions
+                .firstWhere(
+                  (option) => option.value == _selectedVehicleType,
+                  orElse: () => vehicleTypeOptions.first,
+                )
+                .label,
     );
     _dateController = TextEditingController(
       text: _selectedDate != null ? _formatDate(_selectedDate!) : '',
@@ -99,6 +102,7 @@ class _DriverCargoFiltersPageState extends State<DriverCargoFiltersPage> {
               ),
             ),
             SizedBox(height: 12.h),
+            SizedBox(height: 12.h),
             _LabeledField(
               label: 'Город разгрузки',
               child: _SelectableField(
@@ -108,6 +112,33 @@ class _DriverCargoFiltersPageState extends State<DriverCargoFiltersPage> {
                 onTap: () => _pickCity(isDeparture: false),
               ),
             ),
+            if (_departureController.text.isNotEmpty &&
+                _destinationController.text.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(top: 8.h),
+                child: GestureDetector(
+                  onTap: _saveCurrentRoute,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        Icons.bookmark_border,
+                        size: 16.sp,
+                        color: const Color(0xFF00B2FF),
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        'Сохранить маршрут',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: const Color(0xFF00B2FF),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             SizedBox(height: 12.h),
             _LabeledField(
               label: 'Тип транспорта',
@@ -212,6 +243,27 @@ class _DriverCargoFiltersPageState extends State<DriverCargoFiltersPage> {
     );
   }
 
+  Future<void> _saveCurrentRoute() async {
+    final dep = _departureController.text.trim();
+    final dest = _destinationController.text.trim();
+    if (dep.isEmpty || dest.isEmpty) return;
+
+    try {
+      await ref
+          .read(savedRoutesProvider(null).notifier)
+          .create(departureCityName: dep, destinationCityName: dest);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Маршрут сохранен в закладки')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Ошибка сохранения: $e')));
+    }
+  }
+
   void _reset() {
     setState(() {
       _departureController.clear();
@@ -268,16 +320,15 @@ class _DriverCargoFiltersPageState extends State<DriverCargoFiltersPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      builder:
-          (context) => SizedBox(
-            height: MediaQuery.of(context).size.height * 0.85,
-            child: ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
-              child: LocationPickerSheet(
-                title: isDeparture ? 'Город погрузки' : 'Город разгрузки',
-              ),
-            ),
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+          child: LocationPickerSheet(
+            title: isDeparture ? 'Город погрузки' : 'Город разгрузки',
           ),
+        ),
+      ),
     );
     if (selected == null) return;
     setState(() {
@@ -310,13 +361,12 @@ class _DriverCargoFiltersPageState extends State<DriverCargoFiltersPage> {
       if (result.isEmpty) {
         _vehicleTypeController.clear();
       } else {
-        final label =
-            vehicleTypeOptions
-                .firstWhere(
-                  (option) => option.value == result,
-                  orElse: () => vehicleTypeOptions.first,
-                )
-                .label;
+        final label = vehicleTypeOptions
+            .firstWhere(
+              (option) => option.value == result,
+              orElse: () => vehicleTypeOptions.first,
+            )
+            .label;
         _vehicleTypeController.text = label;
       }
     });
@@ -403,9 +453,8 @@ class _DriverCargoFiltersPageState extends State<DriverCargoFiltersPage> {
                   Expanded(
                     child: ListView.separated(
                       itemCount: options.length,
-                      separatorBuilder:
-                          (_, __) =>
-                              Divider(height: 1, color: Colors.grey[100]),
+                      separatorBuilder: (_, __) =>
+                          Divider(height: 1, color: Colors.grey[100]),
                       itemBuilder: (context, index) {
                         final option = options[index];
                         final isSelected = option.value == currentValue;
@@ -414,10 +463,9 @@ class _DriverCargoFiltersPageState extends State<DriverCargoFiltersPage> {
                             option.label,
                             style: TextStyle(
                               fontSize: 14.sp,
-                              fontWeight:
-                                  isSelected
-                                      ? FontWeight.w600
-                                      : FontWeight.normal,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
                               color: isSelected ? Colors.black : Colors.black87,
                             ),
                           ),

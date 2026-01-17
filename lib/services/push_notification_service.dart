@@ -185,10 +185,9 @@ class PushNotificationService {
 
     final dio = Dio(
       BaseOptions(
-        baseUrl:
-            AppConfig.apiBaseUrl.endsWith('/')
-                ? AppConfig.apiBaseUrl
-                : '${AppConfig.apiBaseUrl}/',
+        baseUrl: AppConfig.apiBaseUrl.endsWith('/')
+            ? AppConfig.apiBaseUrl
+            : '${AppConfig.apiBaseUrl}/',
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
@@ -292,10 +291,9 @@ class PushNotificationService {
         if (accessToken != null && accessToken.isNotEmpty) {
           final dio = Dio(
             BaseOptions(
-              baseUrl:
-                  AppConfig.apiBaseUrl.endsWith('/')
-                      ? AppConfig.apiBaseUrl
-                      : '${AppConfig.apiBaseUrl}/',
+              baseUrl: AppConfig.apiBaseUrl.endsWith('/')
+                  ? AppConfig.apiBaseUrl
+                  : '${AppConfig.apiBaseUrl}/',
               headers: {
                 'Authorization': 'Bearer $accessToken',
                 'Accept': 'application/json',
@@ -385,10 +383,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     presentSound: true,
   );
 
-  const details = NotificationDetails(
-    android: androidDetails,
-    iOS: iosDetails,
-  );
+  const details = NotificationDetails(android: androidDetails, iOS: iosDetails);
 
   await local.show(
     DateTime.now().millisecondsSinceEpoch ~/ 1000,

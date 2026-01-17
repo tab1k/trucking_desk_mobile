@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:fura24.kz/features/auth/controller/auth_controller.dart';
 import 'package:fura24.kz/features/client/presentation/providers/profile/profile_provider.dart';
+import 'package:fura24.kz/features/reviews/view/my_reviews_page.dart';
 import 'package:fura24.kz/features/profile/view/privacy_policy_page.dart';
 import 'package:fura24.kz/features/profile/view/user_agreement_page.dart';
 import 'package:fura24.kz/shared/widgets/single_appbar.dart';
@@ -24,7 +25,8 @@ class ProfileTab extends ConsumerStatefulWidget {
 }
 
 class _ProfileTabState extends ConsumerState<ProfileTab> {
-  final TextEditingController _deletePasswordController = TextEditingController();
+  final TextEditingController _deletePasswordController =
+      TextEditingController();
   bool _isDeleting = false;
 
   void _copyReferral(String? code) {
@@ -70,9 +72,9 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr('common.error'))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(tr('common.error'))));
     }
   }
 
@@ -139,53 +141,52 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
   void _showLogoutDialog() {
     showCupertinoDialog<void>(
       context: context,
-      builder:
-          (BuildContext context) => CupertinoAlertDialog(
-            title: Text(
-              tr('profile_tab.logout_title'),
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
-            ),
-            content: Text(
-              tr('profile_tab.logout_question'),
-              style: TextStyle(fontSize: 16.sp),
-            ),
-            actions: <CupertinoDialogAction>[
-              CupertinoDialogAction(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  tr('common.cancel'),
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    color: CupertinoColors.systemBlue,
-                  ),
-                ),
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Text(
+          tr('profile_tab.logout_title'),
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+        ),
+        content: Text(
+          tr('profile_tab.logout_question'),
+          style: TextStyle(fontSize: 16.sp),
+        ),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              tr('common.cancel'),
+              style: TextStyle(
+                fontSize: 17.sp,
+                color: CupertinoColors.systemBlue,
               ),
-              CupertinoDialogAction(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _logout();
-                },
-                isDestructiveAction: true,
-                child: Text(
-                  tr('profile_tab.logout'),
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
+          CupertinoDialogAction(
+            onPressed: () {
+              Navigator.pop(context);
+              _logout();
+            },
+            isDestructiveAction: true,
+            child: Text(
+              tr('profile_tab.logout'),
+              style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Future<void> _deleteAccount(String password, BuildContext modalContext) async {
+  Future<void> _deleteAccount(
+    String password,
+    BuildContext modalContext,
+  ) async {
     if (password.trim().isEmpty) {
-      ScaffoldMessenger.of(modalContext).showSnackBar(
-        const SnackBar(content: Text('Введите пароль')),
-      );
+      ScaffoldMessenger.of(
+        modalContext,
+      ).showSnackBar(const SnackBar(content: Text('Введите пароль')));
       return;
     }
 
@@ -193,9 +194,9 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
       _isDeleting = true;
     });
 
-    final success = await ref.read(authControllerProvider.notifier).deleteAccount(
-          password: password,
-        );
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .deleteAccount(password: password);
 
     if (!mounted) return;
     setState(() {
@@ -205,15 +206,17 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
 
     if (success) {
       Navigator.of(modalContext).pop(); // закрыть sheet
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Аккаунт удален')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Аккаунт удален')));
       context.go(AuthRoutes.welcomeScreen);
     } else {
-      final error = authErrorMessage(ref.read(authControllerProvider)) ?? 'Не удалось удалить аккаунт';
-      ScaffoldMessenger.of(modalContext).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      final error =
+          authErrorMessage(ref.read(authControllerProvider)) ??
+          'Не удалось удалить аккаунт';
+      ScaffoldMessenger.of(
+        modalContext,
+      ).showSnackBar(SnackBar(content: Text(error)));
     }
   }
 
@@ -241,7 +244,10 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 children: [
                   Text(
                     'Удаление аккаунта',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   SizedBox(height: 8.h),
                   Text(
@@ -256,8 +262,13 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                       labelText: 'Пароль',
                       border: const OutlineInputBorder(),
                       suffixIcon: IconButton(
-                        icon: Icon(obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                        onPressed: () => setStateModal(() => obscure = !obscure),
+                        icon: Icon(
+                          obscure
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onPressed: () =>
+                            setStateModal(() => obscure = !obscure),
                       ),
                     ),
                   ),
@@ -266,7 +277,9 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: _isDeleting ? null : () => Navigator.of(modalContext).pop(),
+                          onPressed: _isDeleting
+                              ? null
+                              : () => Navigator.of(modalContext).pop(),
                           child: const Text('Отмена'),
                         ),
                       ),
@@ -279,9 +292,9 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                           onPressed: _isDeleting
                               ? null
                               : () => _deleteAccount(
-                                    _deletePasswordController.text,
-                                    modalContext,
-                                  ),
+                                  _deletePasswordController.text,
+                                  modalContext,
+                                ),
                           child: _isDeleting
                               ? const SizedBox(
                                   width: 18,
@@ -309,12 +322,12 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
     final user = profileState.user;
-    final balanceText =
-        user != null ? _balanceFormat.format(user.balance) : '—';
-    final referralCode =
-        (user?.referralCode?.trim().isNotEmpty ?? false)
-            ? user!.referralCode!
-            : '—';
+    final balanceText = user != null
+        ? _balanceFormat.format(user.balance)
+        : '—';
+    final referralCode = (user?.referralCode?.trim().isNotEmpty ?? false)
+        ? user!.referralCode!
+        : '—';
 
     if (profileState.isLoading && user == null) {
       return Scaffold(
@@ -333,8 +346,8 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
               Text(tr('profile_tab.error')),
               SizedBox(height: 12.h),
               ElevatedButton(
-                onPressed:
-                    () => ref.read(profileProvider.notifier).loadProfile(),
+                onPressed: () =>
+                    ref.read(profileProvider.notifier).loadProfile(),
                 child: Text(tr('common.retry')),
               ),
             ],
@@ -542,6 +555,19 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             ),
             _buildDivider(),
             _buildSettingsItem(
+              iconPath: 'assets/svg/comment-dots.svg',
+              title: tr('profile.my_reviews'),
+              onTap: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const MyReviewsPage())),
+              trailing: Icon(
+                Icons.chevron_right,
+                size: 20.w,
+                color: CupertinoColors.systemGrey3,
+              ),
+            ),
+            _buildDivider(),
+            _buildSettingsItem(
               iconPath: 'assets/svg/settings.svg',
               title: tr('profile_tab.settings.settings'),
               link: ProfileRoutes.settings,
@@ -555,25 +581,24 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             _buildSettingsItem(
               iconPath: 'assets/svg/help.svg',
               title: tr('profile_tab.settings.help'),
-              onTap:
-                  () => _showSupportSheet(
-                    title: tr('profile_tab.settings.help'),
-                    description: tr('profile_tab.support.help_body'),
-                    contacts: const [
-                      _SupportContact(
-                        svgAsset: 'assets/svg/whatsapp.svg',
-                        label: 'WhatsApp',
-                        value: '+7778 272 9845',
-                        url: 'https://wa.me/77782729845',
-                      ),
-                      _SupportContact(
-                        icon: Icons.telegram,
-                        label: 'Telegram',
-                        value: '@TruckingDesk_bot',
-                        url: 'https://t.me/TruckingDesk_bot',
-                      ),
-                    ],
+              onTap: () => _showSupportSheet(
+                title: tr('profile_tab.settings.help'),
+                description: tr('profile_tab.support.help_body'),
+                contacts: const [
+                  _SupportContact(
+                    svgAsset: 'assets/svg/whatsapp.svg',
+                    label: 'WhatsApp',
+                    value: '+7778 272 9845',
+                    url: 'https://wa.me/77782729845',
                   ),
+                  _SupportContact(
+                    icon: Icons.telegram,
+                    label: 'Telegram',
+                    value: '@TruckingDesk_bot',
+                    url: 'https://t.me/TruckingDesk_bot',
+                  ),
+                ],
+              ),
               trailing: Icon(
                 Icons.chevron_right,
                 size: 20.w,
@@ -599,14 +624,13 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             _buildSettingsItem(
               iconPath: 'assets/svg/sogl.svg',
               title: tr('profile_tab.settings.user_agreement'),
-              onTap:
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const UserAgreementPage(
-                        titleKey: 'profile_tab.settings.user_agreement',
-                      ),
-                    ),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const UserAgreementPage(
+                    titleKey: 'profile_tab.settings.user_agreement',
                   ),
+                ),
+              ),
               trailing: Icon(
                 Icons.chevron_right,
                 size: 20.w,
@@ -711,7 +735,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                     )
                     .toList(),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -911,24 +935,24 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                                 shape: BoxShape.circle,
                               ),
                               alignment: Alignment.center,
-                              child:
-                                  contact.svgAsset != null
-                                      ? SvgPicture.asset(
-                                        contact.svgAsset!,
-                                        width: 18.w,
-                                        height: 18.w,
-                                        colorFilter: ColorFilter.mode(
-                                          Theme.of(context).colorScheme.primary,
-                                          BlendMode.srcIn,
-                                        ),
-                                      )
-                                      : Icon(
-                                        contact.icon ??
-                                            Icons.chat_bubble_outline_rounded,
-                                        size: 18.w,
-                                        color:
-                                            Theme.of(context).colorScheme.primary,
+                              child: contact.svgAsset != null
+                                  ? SvgPicture.asset(
+                                      contact.svgAsset!,
+                                      width: 18.w,
+                                      height: 18.w,
+                                      colorFilter: ColorFilter.mode(
+                                        Theme.of(context).colorScheme.primary,
+                                        BlendMode.srcIn,
                                       ),
+                                    )
+                                  : Icon(
+                                      contact.icon ??
+                                          Icons.chat_bubble_outline_rounded,
+                                      size: 18.w,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
                             ),
                             SizedBox(width: 12.w),
                             Column(

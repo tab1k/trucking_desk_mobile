@@ -8,7 +8,9 @@ import 'package:fura24.kz/features/subscriptions/data/repositories/subscriptions
 import 'package:fura24.kz/features/subscriptions/data/models/tariff_model.dart';
 import 'package:fura24.kz/features/client/presentation/providers/profile/profile_provider.dart';
 
-final tariffsFutureProvider = FutureProvider.autoDispose<List<TariffModel>>((ref) {
+final tariffsFutureProvider = FutureProvider.autoDispose<List<TariffModel>>((
+  ref,
+) {
   final repo = ref.watch(subscriptionsRepositoryProvider);
   return repo.fetchTariffs();
 });
@@ -23,13 +25,19 @@ class TariffsPage extends ConsumerWidget {
     return Colors.black;
   }
 
-  Future<void> _handlePurchase(BuildContext context, WidgetRef ref, TariffModel tariff) async {
+  Future<void> _handlePurchase(
+    BuildContext context,
+    WidgetRef ref,
+    TariffModel tariff,
+  ) async {
     final color = _getColor(tariff.code);
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24.r),
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         child: Container(
@@ -81,17 +89,28 @@ class TariffsPage extends ConsumerWidget {
                 child: RichText(
                   textAlign: TextAlign.left,
                   text: TextSpan(
-                    style: TextStyle(fontSize: 14.sp, color: Colors.grey[600], height: 1.5),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.grey[600],
+                      height: 1.5,
+                    ),
                     children: [
                       const TextSpan(text: 'Вы собираетесь подключить тариф '),
                       TextSpan(
                         text: tariff.title,
-                        style: TextStyle(fontWeight: FontWeight.w700, color: color),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: color,
+                        ),
                       ),
                       const TextSpan(text: ' за '),
                       TextSpan(
-                        text: '${NumberFormat('#,##0', 'ru_RU').format(tariff.price)} ₸',
-                        style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.black87),
+                        text:
+                            '${NumberFormat('#,##0', 'ru_RU').format(tariff.price)} ₸',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
+                        ),
                       ),
                     ],
                   ),
@@ -106,11 +125,17 @@ class TariffsPage extends ConsumerWidget {
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 14.h),
                         backgroundColor: Colors.grey[50],
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
                       ),
                       child: Text(
                         tr('common.cancel'),
-                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Colors.grey[600]),
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
+                        ),
                       ),
                     ),
                   ),
@@ -123,11 +148,16 @@ class TariffsPage extends ConsumerWidget {
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(vertical: 14.h),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
                       ),
                       child: Text(
                         tr('common.confirm'),
-                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -173,25 +203,22 @@ class TariffsPage extends ConsumerWidget {
       } catch (e) {
         // Hide loading if visible (we know it is because of the flow, but good to check)
         if (context.mounted) {
-          // We need to pop the loading dialog. 
+          // We need to pop the loading dialog.
           // We can use a flag or just pop via root navigator and hope.
           // Better: just pop once.
-           Navigator.of(context, rootNavigator: true).pop();
+          Navigator.of(context, rootNavigator: true).pop();
         }
-        
+
         String errorMsg = 'Ошибка при подключении';
         if (e is DioException) {
           errorMsg = e.response?.data?['error'] ?? errorMsg;
         } else {
-           errorMsg = e.toString();
+          errorMsg = e.toString();
         }
-        
+
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(errorMsg),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
           );
         }
       }
@@ -203,9 +230,38 @@ class TariffsPage extends ConsumerWidget {
     final tariffsAsync = ref.watch(tariffsFutureProvider);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FB),
       appBar: AppBar(
-        title: const Text('Тарифы'),
-        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: false,
+        titleSpacing: 0,
+        toolbarHeight: 60.h,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Material(
+            color: Colors.grey[200],
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, size: 20),
+              color: Colors.black87,
+              padding: EdgeInsets.zero,
+              onPressed: () => context.pop(),
+            ),
+          ),
+        ),
+        title: Padding(
+          padding: EdgeInsets.only(left: 12.w),
+          child: Text(
+            'Тарифы',
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+        ),
       ),
       body: tariffsAsync.when(
         data: (tariffs) {
@@ -242,7 +298,7 @@ class _TariffCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _getColor(tariff.code);
-    
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -283,7 +339,10 @@ class _TariffCard extends StatelessWidget {
                 ),
                 if (tariff.isActive)
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 4.h,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8.r),
@@ -300,7 +359,7 @@ class _TariffCard extends StatelessWidget {
               ],
             ),
           ),
-          
+
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -317,10 +376,7 @@ class _TariffCard extends StatelessWidget {
                 SizedBox(height: 8.h),
                 Text(
                   tariff.description,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
                 ),
                 SizedBox(height: 16.h),
                 ...tariff.features.map((feature) => _FeatureRow(text: feature)),
@@ -328,10 +384,16 @@ class _TariffCard extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: tariff.isActive ? null : () => onPurchase(tariff),
+                    onPressed: tariff.isActive
+                        ? null
+                        : () => onPurchase(tariff),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: tariff.isActive ? Colors.grey[300] : color,
-                      foregroundColor: tariff.isActive ? Colors.black54 : Colors.white,
+                      backgroundColor: tariff.isActive
+                          ? Colors.grey[300]
+                          : color,
+                      foregroundColor: tariff.isActive
+                          ? Colors.black54
+                          : Colors.white,
                       disabledBackgroundColor: Colors.grey[300],
                       disabledForegroundColor: Colors.black38,
                       shape: RoundedRectangleBorder(
@@ -340,8 +402,11 @@ class _TariffCard extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 14.h),
                     ),
                     child: Text(
-                       tariff.isActive ? 'Уже подключен' : 'Подключить',
-                       style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                      tariff.isActive ? 'Уже подключен' : 'Подключить',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),

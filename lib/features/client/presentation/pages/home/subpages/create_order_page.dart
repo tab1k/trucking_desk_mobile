@@ -17,6 +17,7 @@ import 'package:fura24.kz/features/transport/data/vehicle_type_options.dart';
 import 'package:fura24.kz/shared/widgets/app_date_picker.dart';
 import 'package:image/image.dart' as image_lib;
 import 'package:image_picker/image_picker.dart';
+import 'package:fura24.kz/shared/widgets/address_autocomplete_field.dart';
 
 class CreateOrderPage extends ConsumerStatefulWidget {
   const CreateOrderPage({super.key, this.editingOrder, this.prefilledOrder})
@@ -95,9 +96,6 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
 
   bool get _requiresDestinationAddress =>
       _isUrbanRoute && !_destinationSelectedOnMap;
-
-  bool get _requiresManualAddresses =>
-      _requiresDepartureAddress || _requiresDestinationAddress;
 
   final List<_PickedPhoto> _selectedPhotos = [];
   final List<String> _existingPhotoUrls = [];
@@ -229,19 +227,17 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      builder:
-          (context) => SizedBox(
-            height: MediaQuery.of(context).size.height * 0.85,
-            child: ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
-              child: LocationPickerSheet(
-                title:
-                    isDeparture
-                        ? tr('create_order.location.pick_departure')
-                        : tr('create_order.location.pick_destination'),
-              ),
-            ),
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+          child: LocationPickerSheet(
+            title: isDeparture
+                ? tr('create_order.location.pick_departure')
+                : tr('create_order.location.pick_destination'),
           ),
+        ),
+      ),
     );
 
     if (selected == null) return;
@@ -251,8 +247,9 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
         _departureLocation = selected.location;
         _departurePointController.text = selected.location.cityName;
         _departureSelectedOnMap = selected.selectedOnMap;
-        _departureMapAddress =
-            selected.selectedOnMap ? selected.addressLabel : null;
+        _departureMapAddress = selected.selectedOnMap
+            ? selected.addressLabel
+            : null;
         if (_departureSelectedOnMap) {
           _departureAddressController.clear();
         }
@@ -260,8 +257,9 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
         _destinationLocation = selected.location;
         _destinationPointController.text = selected.location.cityName;
         _destinationSelectedOnMap = selected.selectedOnMap;
-        _destinationMapAddress =
-            selected.selectedOnMap ? selected.addressLabel : null;
+        _destinationMapAddress = selected.selectedOnMap
+            ? selected.addressLabel
+            : null;
         if (_destinationSelectedOnMap) {
           _destinationAddressController.clear();
         }
@@ -279,17 +277,16 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      builder:
-          (context) => SizedBox(
-            height: MediaQuery.of(context).size.height * 0.85,
-              child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
-                child: LocationPickerSheet(
-                  title: tr('create_order.route_points.pick'),
-                ),
-              ),
-            ),
-      );
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+          child: LocationPickerSheet(
+            title: tr('create_order.route_points.pick'),
+          ),
+        ),
+      ),
+    );
     if (selected == null) return;
 
     setState(() {
@@ -326,7 +323,12 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       _destinationAddressController.text = last.addressDetail ?? '';
       if (waypoints.length > 2) {
         for (final wp in waypoints.sublist(1, waypoints.length - 1)) {
-          _midPoints.add(_WaypointStop(location: wp.location));
+          _midPoints.add(
+            _WaypointStop(
+              location: wp.location,
+              initialAddress: wp.addressDetail,
+            ),
+          );
         }
       }
     } else {
@@ -419,10 +421,9 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
             if (!isFirstStep) SizedBox(width: 12.w),
             Expanded(
               child: ElevatedButton(
-                onPressed:
-                    isSubmitting
-                        ? null
-                        : () async => _handleNext(isLastStep: isLastStep),
+                onPressed: isSubmitting
+                    ? null
+                    : () async => _handleNext(isLastStep: isLastStep),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF00B2FF),
                   foregroundColor: Colors.white,
@@ -436,8 +437,8 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                 child: Text(
                   isLastStep
                       ? (isSubmitting
-                          ? tr('create_order.creating')
-                          : tr('create_order.publish'))
+                            ? tr('create_order.creating')
+                            : tr('create_order.publish'))
                       : tr('common.next'),
                   style: TextStyle(
                     fontSize: 16.sp,
@@ -492,7 +493,15 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
               SizedBox(height: 4.h),
               _buildMapLocationHint(_departureMapAddress!),
             ],
-            SizedBox(height: 8.h),
+            SizedBox(height: 12.h),
+            AddressAutocompleteField(
+              controller: _departureAddressController,
+              label: tr('create_order.form.route.departure_address'),
+              icon: Icons.home_outlined,
+              isRequired: _requiresDepartureAddress,
+              city: _departureLocation?.cityName,
+            ),
+            SizedBox(height: 12.h),
             _buildWaypointList(),
             SizedBox(height: 8.h),
             _buildLocationField(
@@ -505,27 +514,17 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
               SizedBox(height: 4.h),
               _buildMapLocationHint(_destinationMapAddress!),
             ],
-            if (_requiresManualAddresses) ...[
+            SizedBox(height: 12.h),
+            AddressAutocompleteField(
+              controller: _destinationAddressController,
+              label: tr('create_order.form.route.destination_address'),
+              icon: Icons.location_city_outlined,
+              isRequired: _requiresDestinationAddress,
+              city: _destinationLocation?.cityName,
+            ),
+            if (_isUrbanRoute) ...[
               SizedBox(height: 12.h),
               _buildSameCityNote(theme),
-              if (_requiresDepartureAddress) ...[
-                SizedBox(height: 12.h),
-                _buildTextField(
-                  controller: _departureAddressController,
-                  label: tr('create_order.form.route.departure_address'),
-                  icon: Icons.home_outlined,
-                  isRequired: true,
-                ),
-              ],
-              if (_requiresDestinationAddress) ...[
-                SizedBox(height: 12.h),
-                _buildTextField(
-                  controller: _destinationAddressController,
-                  label: tr('create_order.form.route.destination_address'),
-                  icon: Icons.location_city_outlined,
-                  isRequired: true,
-                ),
-              ],
             ],
 
             SizedBox(height: 10.h),
@@ -551,27 +550,25 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
             _buildSelectionField(
               label: tr('create_order.form.transport.vehicle_type'),
               value: _labelForOption(_vehicleOptions, _selectedVehicleType),
-              onTap:
-                  () => _pickOption<String>(
-                    title: tr('create_order.form.transport.vehicle_type'),
-                    options: _vehicleOptions,
-                    currentValue: _selectedVehicleType,
-                    onSelected:
-                        (value) => setState(() => _selectedVehicleType = value),
-                  ),
+              onTap: () => _pickOption<String>(
+                title: tr('create_order.form.transport.vehicle_type'),
+                options: _vehicleOptions,
+                currentValue: _selectedVehicleType,
+                onSelected: (value) =>
+                    setState(() => _selectedVehicleType = value),
+              ),
             ),
             SizedBox(height: 12.h),
             _buildSelectionField(
               label: tr('create_order.form.transport.loading_type'),
               value: _labelForOption(_loadingOptions, _selectedLoadingType),
-              onTap:
-                  () => _pickOption<String>(
-                    title: tr('create_order.form.transport.loading_type'),
-                    options: _loadingOptions,
-                    currentValue: _selectedLoadingType,
-                    onSelected:
-                        (value) => setState(() => _selectedLoadingType = value),
-                  ),
+              onTap: () => _pickOption<String>(
+                title: tr('create_order.form.transport.loading_type'),
+                options: _loadingOptions,
+                currentValue: _selectedLoadingType,
+                onSelected: (value) =>
+                    setState(() => _selectedLoadingType = value),
+              ),
             ),
             SizedBox(height: 12.h),
             _buildTextField(
@@ -653,14 +650,13 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
             _buildSelectionField(
               label: tr('create_order.form.payment.payment_type'),
               value: _labelForOption(_paymentTypeOptions, _selectedPaymentType),
-              onTap:
-                  () => _pickOption<String>(
-                    title: tr('create_order.form.payment.payment_type'),
-                    options: _paymentTypeOptions,
-                    currentValue: _selectedPaymentType,
-                    onSelected:
-                        (value) => setState(() => _selectedPaymentType = value),
-                  ),
+              onTap: () => _pickOption<String>(
+                title: tr('create_order.form.payment.payment_type'),
+                options: _paymentTypeOptions,
+                currentValue: _selectedPaymentType,
+                onSelected: (value) =>
+                    setState(() => _selectedPaymentType = value),
+              ),
             ),
           ],
         );
@@ -698,15 +694,13 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                   child: _buildSelectionField(
                     label: tr('create_order.form.cargo.currency'),
                     value: _labelForOption(_currencyOptions, _selectedCurrency),
-                    onTap:
-                        () => _pickOption<String>(
-                          title: tr('create_order.form.cargo.currency'),
-                          options: _currencyOptions,
-                          currentValue: _selectedCurrency,
-                          onSelected:
-                              (value) =>
-                                  setState(() => _selectedCurrency = value),
-                        ),
+                    onTap: () => _pickOption<String>(
+                      title: tr('create_order.form.cargo.currency'),
+                      options: _currencyOptions,
+                      currentValue: _selectedCurrency,
+                      onSelected: (value) =>
+                          setState(() => _selectedCurrency = value),
+                    ),
                   ),
                 ),
               ],
@@ -872,15 +866,14 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
         ),
       ),
       style: TextStyle(fontSize: 14.sp, color: Colors.black87),
-      validator:
-          isRequired
-              ? (value) {
-                if (value == null || value.isEmpty) {
-                  return tr('create_order.form.validation.required');
-                }
-                return null;
+      validator: isRequired
+          ? (value) {
+              if (value == null || value.isEmpty) {
+                return tr('create_order.form.validation.required');
               }
-              : null,
+              return null;
+            }
+          : null,
     );
   }
 
@@ -1005,45 +998,58 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       children: [
         ..._midPoints.asMap().entries.map(
           (entry) => Padding(
-            padding: EdgeInsets.only(bottom: 6.h),
-            child: TextFormField(
-              readOnly: true,
-              enableInteractiveSelection: false,
-              focusNode: _disabledFocusNode,
-              initialValue: entry.value.location.cityName,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.location_on_outlined, size: 18),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.close, size: 18),
-                  onPressed: () {
-                    setState(() {
-                      _midPoints.removeAt(entry.key);
-                    });
-                  },
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 12.w,
-                  vertical: 12.h,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: const BorderSide(
-                    color: Color(0xFF00B2FF),
-                    width: 1.2,
+            padding: EdgeInsets.only(bottom: 12.h),
+            child: Column(
+              children: [
+                TextFormField(
+                  readOnly: true,
+                  enableInteractiveSelection: false,
+                  focusNode: _disabledFocusNode,
+                  initialValue: entry.value.location.cityName,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(
+                      Icons.location_on_outlined,
+                      size: 18,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.close, size: 18),
+                      onPressed: () {
+                        setState(() {
+                          final removed = _midPoints.removeAt(entry.key);
+                          removed.dispose();
+                        });
+                      },
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[50],
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 12.h,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(
+                        color: Colors.grey[200]!,
+                        width: 1,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(
+                        color: Colors.grey[200]!,
+                        width: 1,
+                      ),
+                    ),
                   ),
+                  style: TextStyle(fontSize: 14.sp, color: Colors.black87),
                 ),
-              ),
-              style: TextStyle(fontSize: 14.sp, color: Colors.black87),
+                SizedBox(height: 8.h),
+                _buildTextField(
+                  controller: entry.value.addressController,
+                  label: tr('create_order.form.route.waypoint_address'),
+                  icon: Icons.map_outlined,
+                ),
+              ],
             ),
           ),
         ),
@@ -1185,9 +1191,8 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                     Expanded(
                       child: ListView.separated(
                         itemCount: options.length,
-                        separatorBuilder:
-                            (_, __) =>
-                                Divider(height: 1, color: Colors.grey[200]),
+                        separatorBuilder: (_, __) =>
+                            Divider(height: 1, color: Colors.grey[200]),
                         itemBuilder: (context, index) {
                           final option = options[index];
                           final isSelected = option.value == currentValue;
@@ -1196,20 +1201,20 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                               option.label,
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                fontWeight:
-                                    isSelected
-                                        ? FontWeight.w600
-                                        : FontWeight.normal,
-                                color:
-                                    isSelected ? Colors.black : Colors.black87,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                                color: isSelected
+                                    ? Colors.black
+                                    : Colors.black87,
                               ),
                             ),
                             trailing: Icon(
                               Icons.chevron_right,
                               color: Colors.grey[500],
                             ),
-                            onTap:
-                                () => Navigator.of(context).pop(option.value),
+                            onTap: () =>
+                                Navigator.of(context).pop(option.value),
                           );
                         },
                       ),
@@ -1328,12 +1333,9 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
           _buildSummaryRow(
             icon: Icons.local_shipping,
             title: tr('create_order.form.summary.transport'),
-            value:
-                _vehicleOptions
-                    .firstWhere(
-                      (option) => option.value == _selectedVehicleType,
-                    )
-                    .label,
+            value: _vehicleOptions
+                .firstWhere((option) => option.value == _selectedVehicleType)
+                .label,
           ),
           SizedBox(height: 12.h),
           _buildSummaryRow(
@@ -1442,10 +1444,9 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
 
       final normalizedFiles = <_PickedPhoto>[];
       for (final file in result.files) {
-        final xfile =
-            file.path != null
-                ? XFile(file.path!, name: file.name)
-                : XFile.fromData(file.bytes ?? Uint8List(0), name: file.name);
+        final xfile = file.path != null
+            ? XFile(file.path!, name: file.name)
+            : XFile.fromData(file.bytes ?? Uint8List(0), name: file.name);
         final normalized = await _normalizePickedImage(
           xfile,
           fallbackBytes: file.bytes,
@@ -1514,10 +1515,9 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
     final destination = _destinationLocation;
     final weight = double.tryParse(_weightController.text.trim());
     final amount = double.tryParse(_amountController.text.trim());
-    final transportTerm =
-        _transportDurationController.text.trim().isEmpty
-            ? null
-            : int.tryParse(_transportDurationController.text.trim());
+    final transportTerm = _transportDurationController.text.trim().isEmpty
+        ? null
+        : int.tryParse(_transportDurationController.text.trim());
 
     if (departure == null) {
       _showError(tr('create_order.errors.pick_departure'));
@@ -1549,35 +1549,40 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       _showError(tr('create_order.require_destination_address'));
       return;
     }
-    final totalPhotos = _existingPhotoUrls.length + _selectedPhotos.length;
-    final requiresPhotos = !_isEditing || totalPhotos > 0;
-    if (requiresPhotos && totalPhotos < 2) {
-      _showError(tr('create_order.errors.photos'));
-      return;
-    }
     if (transportTerm != null && (transportTerm < 1 || transportTerm > 7)) {
       _showError(tr('create_order.errors.transport_term'));
       return;
     }
 
-    final waypoints =
-        _midPoints.isEmpty
-            ? <OrderWaypointRequest>[]
-            : <OrderWaypointRequest>[
-              OrderWaypointRequest(locationId: departure.id, sequence: 1),
-              ..._midPoints.asMap().entries.map((entry) {
-                final idx = entry.key;
-                final wp = entry.value;
-                return OrderWaypointRequest(
-                  locationId: wp.location.id,
-                  sequence: idx + 2,
-                );
-              }),
-              OrderWaypointRequest(
-                locationId: destination.id,
-                sequence: _midPoints.length + 2,
-              ),
-            ];
+    final waypoints = _midPoints.isEmpty
+        ? <OrderWaypointRequest>[]
+        : <OrderWaypointRequest>[
+            OrderWaypointRequest(
+              locationId: departure.id,
+              sequence: 1,
+              addressDetail: _departureAddressController.text.trim().isEmpty
+                  ? null
+                  : _departureAddressController.text.trim(),
+            ),
+            ..._midPoints.asMap().entries.map((entry) {
+              final idx = entry.key;
+              final wp = entry.value;
+              return OrderWaypointRequest(
+                locationId: wp.location.id,
+                sequence: idx + 2,
+                addressDetail: wp.addressController.text.trim().isEmpty
+                    ? null
+                    : wp.addressController.text.trim(),
+              );
+            }),
+            OrderWaypointRequest(
+              locationId: destination.id,
+              sequence: _midPoints.length + 2,
+              addressDetail: _destinationAddressController.text.trim().isEmpty
+                  ? null
+                  : _destinationAddressController.text.trim(),
+            ),
+          ];
 
     final request = CreateOrderRequest(
       departurePointId: departure.id,
@@ -1590,10 +1595,9 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       lengthMeters: _parseDouble(_lengthController.text),
       widthMeters: _parseDouble(_widthController.text),
       heightMeters: _parseDouble(_heightController.text),
-      description:
-          _notesController.text.trim().isEmpty
-              ? null
-              : _notesController.text.trim(),
+      description: _notesController.text.trim().isEmpty
+          ? null
+          : _notesController.text.trim(),
       transportationDate: _selectedTransportationDate,
       transportationTermDays: transportTerm,
       amount: amount,
@@ -1601,26 +1605,24 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
       currency: _selectedCurrency,
       photos: _selectedPhotos.map((photo) => photo.file).toList(),
       showPhoneToDrivers: _showPhoneToDrivers,
-      departureAddressDetail:
-          _departureAddressController.text.trim().isEmpty
-              ? null
-              : _departureAddressController.text.trim(),
+      departureAddressDetail: _departureAddressController.text.trim().isEmpty
+          ? null
+          : _departureAddressController.text.trim(),
       destinationAddressDetail:
           _destinationAddressController.text.trim().isEmpty
-              ? null
-              : _destinationAddressController.text.trim(),
+          ? null
+          : _destinationAddressController.text.trim(),
       waypoints: waypoints,
     );
 
     final controller = ref.read(createOrderControllerProvider.notifier);
-    final success =
-        _isEditing
-            ? await controller.updateOrder(
-              widget.editingOrder!.id,
-              request,
-              includePhotos: _selectedPhotos.isNotEmpty,
-            )
-            : await controller.submit(request);
+    final success = _isEditing
+        ? await controller.updateOrder(
+            widget.editingOrder!.id,
+            request,
+            includePhotos: _selectedPhotos.isNotEmpty,
+          )
+        : await controller.submit(request);
     if (!mounted) return;
 
     if (success) {
@@ -1690,9 +1692,16 @@ class _DropdownOption<T> {
 }
 
 class _WaypointStop {
-  _WaypointStop({required this.location});
+  _WaypointStop({required this.location, String? initialAddress}) {
+    addressController = TextEditingController(text: initialAddress);
+  }
 
   final LocationModel location;
+  late final TextEditingController addressController;
+
+  void dispose() {
+    addressController.dispose();
+  }
 }
 
 class _PickedPhoto {
@@ -1719,10 +1728,9 @@ class _PhotoPreview extends StatelessWidget {
             width: 96.w,
             height: 96.w,
             color: Colors.grey[200],
-            child:
-                photo.bytes.isEmpty
-                    ? const Icon(Icons.image_not_supported_outlined)
-                    : Image.memory(photo.bytes, fit: BoxFit.cover),
+            child: photo.bytes.isEmpty
+                ? const Icon(Icons.image_not_supported_outlined)
+                : Image.memory(photo.bytes, fit: BoxFit.cover),
           ),
         ),
         Positioned(
@@ -1767,9 +1775,8 @@ class _RemotePhotoPreview extends StatelessWidget {
               child: CircularProgressIndicator(strokeWidth: 2),
             );
           },
-          errorBuilder:
-              (_, __, ___) =>
-                  const Center(child: Icon(Icons.broken_image_outlined)),
+          errorBuilder: (_, __, ___) =>
+              const Center(child: Icon(Icons.broken_image_outlined)),
         ),
       ),
     );

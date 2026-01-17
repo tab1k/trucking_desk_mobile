@@ -36,10 +36,7 @@ Future<void> toggleDriverOrderFavorite(
   }
 }
 
-Future<void> callOrderSender(
-  BuildContext context,
-  OrderSummary order,
-) async {
+Future<void> callOrderSender(BuildContext context, OrderSummary order) async {
   if (!order.canDriverCall) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Отправитель не раскрыл контакты')),
@@ -65,6 +62,40 @@ Future<void> callOrderSender(
   } catch (_) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Не удалось позвонить отправителю')),
+    );
+  }
+}
+
+Future<void> openOrderWhatsApp(BuildContext context, OrderSummary order) async {
+  if (!order.canDriverCall) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Отправитель не раскрыл контакты')),
+    );
+    return;
+  }
+  final phone = order.senderPhoneNumber.trim();
+  if (phone.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Телефон отправителя недоступен')),
+    );
+    return;
+  }
+
+  // Remove all non-digit characters for the link
+  final cleanPhone = phone.replaceAll(RegExp(r'\D'), '');
+  final uri = Uri.parse('https://wa.me/$cleanPhone');
+
+  try {
+    if (!await canLaunchUrl(uri)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Не удалось открыть WhatsApp')),
+      );
+      return;
+    }
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } catch (_) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Не удалось открыть WhatsApp')),
     );
   }
 }

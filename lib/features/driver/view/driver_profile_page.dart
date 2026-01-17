@@ -95,45 +95,41 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
   void _showLogoutDialog() {
     showCupertinoDialog<void>(
       context: context,
-      builder:
-          (BuildContext context) => CupertinoAlertDialog(
-            title: Text(
-              tr('driver_profile.logout.title'),
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
-            ),
-            content: Text(
-              tr('driver_profile.logout.confirm'),
-              style: TextStyle(fontSize: 16.sp),
-            ),
-            actions: <CupertinoDialogAction>[
-              CupertinoDialogAction(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  tr('driver_profile.logout.cancel'),
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    color: CupertinoColors.systemBlue,
-                  ),
-                ),
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Text(
+          tr('driver_profile.logout.title'),
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+        ),
+        content: Text(
+          tr('driver_profile.logout.confirm'),
+          style: TextStyle(fontSize: 16.sp),
+        ),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              tr('driver_profile.logout.cancel'),
+              style: TextStyle(
+                fontSize: 17.sp,
+                color: CupertinoColors.systemBlue,
               ),
-              CupertinoDialogAction(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _logout();
-                },
-                isDestructiveAction: true,
-                child: Text(
-                  tr('driver_profile.logout.submit'),
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
+          CupertinoDialogAction(
+            onPressed: () {
+              Navigator.pop(context);
+              _logout();
+            },
+            isDestructiveAction: true,
+            child: Text(
+              tr('driver_profile.logout.submit'),
+              style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -158,10 +154,9 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
       case 'REJECTED':
         title = 'Верификация отклонена';
         color = Colors.red;
-        message =
-            user?.verificationRejectionReason?.isNotEmpty == true
-                ? user!.verificationRejectionReason
-                : 'Проверьте корректность документов и попробуйте снова.';
+        message = user?.verificationRejectionReason?.isNotEmpty == true
+            ? user!.verificationRejectionReason
+            : 'Проверьте корректность документов и попробуйте снова.';
         onTap = () => context.go(DriverRoutes.verification);
         break;
       default:
@@ -218,14 +213,14 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
     final user = profileState.user;
-    final balanceText =
-        user != null ? _balanceFormat.format(user.balance) : '—';
+    final balanceText = user != null
+        ? _balanceFormat.format(user.balance)
+        : '—';
     final isVerified = user?.verificationStatus == 'APPROVED';
     final verificationBanner = _buildVerificationBanner(user);
-    final referralCode =
-        (user?.referralCode?.trim().isNotEmpty ?? false)
-            ? user!.referralCode!
-            : '—';
+    final referralCode = (user?.referralCode?.trim().isNotEmpty ?? false)
+        ? user!.referralCode!
+        : '—';
 
     if (profileState.isLoading && user == null) {
       return Scaffold(
@@ -244,8 +239,8 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
               Text(tr('driver_profile.error_load')),
               SizedBox(height: 12.h),
               ElevatedButton(
-                onPressed:
-                    () => ref.read(profileProvider.notifier).loadProfile(),
+                onPressed: () =>
+                    ref.read(profileProvider.notifier).loadProfile(),
                 child: Text(tr('driver_profile.retry')),
               ),
             ],
@@ -258,11 +253,11 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
       appBar: SingleAppbar(title: tr('driver_profile.title')),
       body: CustomScrollView(
         slivers: [
-          if (isVerified) verificationBanner,
           _buildBalanceCard(balanceText),
           isVerified ? _buildReferralSection(referralCode) : verificationBanner,
           _buildSettingsSection(),
           _buildTariffsSection(),
+          _buildBusinessSection(),
           _buildSupportSection(),
           _buildSocialLinksSection(),
           _buildLogoutSection(),
@@ -464,23 +459,22 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
               iconPath: 'assets/svg/help.svg',
               title: tr('driver_profile.settings.help'),
               link: '',
-              onTap:
-                  () => _showSupportSheet(
-                    title: tr('driver_profile.settings.help'),
-                    description: tr('driver_profile.support.help_body'),
-                    contacts: const [
-                      _SupportContact(
-                        svgAsset: 'assets/svg/whatsapp.svg',
-                        label: 'WhatsApp',
-                        value: '+7778 272 9845',
-                      ),
-                      _SupportContact(
-                        icon: Icons.telegram,
-                        label: 'Telegram',
-                        value: '@TruckingDesk_bot',
-                      ),
-                    ],
+              onTap: () => _showSupportSheet(
+                title: tr('driver_profile.settings.help'),
+                description: tr('driver_profile.support.help_body'),
+                contacts: const [
+                  _SupportContact(
+                    svgAsset: 'assets/svg/whatsapp.svg',
+                    label: 'WhatsApp',
+                    value: '+7778 272 9845',
                   ),
+                  _SupportContact(
+                    icon: Icons.telegram,
+                    label: 'Telegram',
+                    value: '@TruckingDesk_bot',
+                  ),
+                ],
+              ),
               trailing: Icon(
                 Icons.chevron_right,
                 size: 20.w,
@@ -503,15 +497,19 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
         ),
         child: _buildSettingsItem(
           iconPath: 'assets/svg/ticket.svg',
-          title: tr('driver_profile.balance.tariffs') != 'driver_profile.balance.tariffs' ? tr('driver_profile.balance.tariffs') : 'Тарифы',
+          title: tr('driver_profile.balance.tariffs'),
           link: DriverRoutes.tariffs,
           onTap: () => context.push(DriverRoutes.tariffs),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                 'Активен', // TODO: Make dynamic later
-                 style: TextStyle(color: Colors.green, fontSize: 12.sp, fontWeight: FontWeight.bold),
+                'Активен', // TODO: Make dynamic later
+                style: TextStyle(
+                  color: Colors.green, // Active color
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               SizedBox(width: 8.w),
               Icon(
@@ -521,6 +519,49 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _buildBusinessSection() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Column(
+          children: [
+            _buildSettingsItem(
+              iconPath: 'assets/svg/business.svg',
+              title: tr('driver_profile.balance.business'),
+              link: DriverRoutes.businessServices,
+              onTap: () {
+                context.push(DriverRoutes.businessServices);
+              },
+              trailing: Icon(
+                Icons.chevron_right,
+                size: 20.w,
+                color: CupertinoColors.systemGrey3,
+              ),
+            ),
+            _buildDivider(),
+            _buildSettingsItem(
+              iconPath: 'assets/svg/hand.svg',
+              title: tr('driver_profile.balance.partner'),
+              link: DriverRoutes.becomePartner,
+              onTap: () {
+                context.push(DriverRoutes.becomePartner);
+              },
+              trailing: Icon(
+                Icons.chevron_right,
+                size: 20.w,
+                color: CupertinoColors.systemGrey3,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -540,15 +581,13 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
               iconPath: 'assets/svg/sogl.svg',
               title: tr('driver_profile.settings.user_agreement'),
               link: '',
-              onTap:
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (_) => const UserAgreementPage(
-                            titleKey: 'driver_profile.settings.user_agreement',
-                          ),
-                    ),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const UserAgreementPage(
+                    titleKey: 'driver_profile.settings.user_agreement',
                   ),
+                ),
+              ),
               trailing: Icon(
                 Icons.chevron_right,
                 size: 20.w,
@@ -560,15 +599,13 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
               iconPath: 'assets/svg/terms.svg',
               title: tr('driver_profile.settings.privacy'),
               link: '',
-              onTap:
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (_) => const PrivacyPolicyPage(
-                            titleKey: 'driver_profile.settings.privacy',
-                          ),
-                    ),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const PrivacyPolicyPage(
+                    titleKey: 'driver_profile.settings.privacy',
                   ),
+                ),
+              ),
               trailing: Icon(
                 Icons.chevron_right,
                 size: 20.w,
@@ -769,24 +806,22 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
                             shape: BoxShape.circle,
                           ),
                           alignment: Alignment.center,
-                          child:
-                              contact.svgAsset != null
-                                  ? SvgPicture.asset(
-                                    contact.svgAsset!,
-                                    width: 18.w,
-                                    height: 18.w,
-                                    colorFilter: ColorFilter.mode(
-                                      Theme.of(context).colorScheme.primary,
-                                      BlendMode.srcIn,
-                                    ),
-                                  )
-                                  : Icon(
-                                    contact.icon ??
-                                        Icons.chat_bubble_outline_rounded,
-                                    size: 18.w,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                          child: contact.svgAsset != null
+                              ? SvgPicture.asset(
+                                  contact.svgAsset!,
+                                  width: 18.w,
+                                  height: 18.w,
+                                  colorFilter: ColorFilter.mode(
+                                    Theme.of(context).colorScheme.primary,
+                                    BlendMode.srcIn,
                                   ),
+                                )
+                              : Icon(
+                                  contact.icon ??
+                                      Icons.chat_bubble_outline_rounded,
+                                  size: 18.w,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                         ),
                         SizedBox(width: 12.w),
                         Column(
@@ -907,15 +942,14 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:
-                    links
-                        .map(
-                          (link) => _SocialButton(
-                            link: link,
-                            onTap: () => _openLink(link.url),
-                          ),
-                        )
-                        .toList(),
+                children: links
+                    .map(
+                      (link) => _SocialButton(
+                        link: link,
+                        onTap: () => _openLink(link.url),
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           ],
@@ -985,15 +1019,14 @@ class _SocialButton extends StatelessWidget {
           border: Border.all(color: Colors.grey[200]!),
         ),
         alignment: Alignment.center,
-        child:
-            link.svgAsset != null
-                ? SvgPicture.asset(
-                  link.svgAsset!,
-                  width: 22.w,
-                  height: 22.w,
-                  colorFilter: ColorFilter.mode(link.color, BlendMode.srcIn),
-                )
-                : Icon(link.icon, size: 20.w, color: link.color),
+        child: link.svgAsset != null
+            ? SvgPicture.asset(
+                link.svgAsset!,
+                width: 22.w,
+                height: 22.w,
+                colorFilter: ColorFilter.mode(link.color, BlendMode.srcIn),
+              )
+            : Icon(link.icon, size: 20.w, color: link.color),
       ),
     );
   }

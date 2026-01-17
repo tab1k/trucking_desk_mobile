@@ -155,20 +155,19 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
       distanceFilter: 25,
     );
 
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: settings,
-    ).listen(
-      (position) {
-        final location = LatLng(position.latitude, position.longitude);
-        _handleLocationUpdate(location);
-      },
-      onError: (error) {
-        if (!mounted) return;
-        setState(() {
-          _locationError = tr(_mapLocationError(error));
-        });
-      },
-    );
+    _positionSubscription =
+        Geolocator.getPositionStream(locationSettings: settings).listen(
+          (position) {
+            final location = LatLng(position.latitude, position.longitude);
+            _handleLocationUpdate(location);
+          },
+          onError: (error) {
+            if (!mounted) return;
+            setState(() {
+              _locationError = tr(_mapLocationError(error));
+            });
+          },
+        );
   }
 
   void _handleLocationUpdate(LatLng location, {bool centerOnUser = false}) {
@@ -294,16 +293,15 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
   }
 
   void _updateActiveCargos(List<OrderSummary> orders) {
-    final mapped =
-        orders
-            .where(
-              (order) =>
-                  order.status != CargoStatus.completed &&
-                  order.status != CargoStatus.cancelled,
-            )
-            .map(_activeCargoFromOrder)
-            .whereType<_ActiveCargoInfo>()
-            .toList();
+    final mapped = orders
+        .where(
+          (order) =>
+              order.status != CargoStatus.completed &&
+              order.status != CargoStatus.cancelled,
+        )
+        .map(_activeCargoFromOrder)
+        .whereType<_ActiveCargoInfo>()
+        .toList();
 
     if (!mounted) return;
     setState(() {
@@ -332,9 +330,8 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
     );
     if (origin == null || destination == null) return null;
 
-    final waypointPoints =
-        order.waypoints.toList()
-          ..sort((a, b) => a.sequence.compareTo(b.sequence));
+    final waypointPoints = order.waypoints.toList()
+      ..sort((a, b) => a.sequence.compareTo(b.sequence));
     final routePoints = <LatLng>[
       origin,
       ...waypointPoints
@@ -543,21 +540,16 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
               right: 16.w,
               child: _buildLocationButton(),
             ),
-            Positioned(
-              top: 90.h,
-              right: 16.w,
-              child: _buildLanguageButton(),
-            ),
+            Positioned(top: 90.h, right: 16.w, child: _buildLanguageButton()),
             Positioned(top: 300.h, right: 16.w, child: _buildZoomControls()),
           ],
 
           Positioned.fill(
             child: NotificationListener<DraggableScrollableNotification>(
               onNotification: (notification) {
-                final extent =
-                    notification.extent
-                        .clamp(_minExtent, _maxExtent)
-                        .toDouble();
+                final extent = notification.extent
+                    .clamp(_minExtent, _maxExtent)
+                    .toDouble();
                 if ((extent - _currentSheetExtent).abs() > 0.001) {
                   setState(() {
                     _currentSheetExtent = extent;
@@ -605,18 +597,16 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
 
   List<Polyline> _buildCargoPolylines() {
     final trackedId = trackedCargoIdNotifier.value;
-    final cargos =
-        trackedId != null
-            ? _activeCargos.where((c) => c.id == trackedId).toList()
-            : (_activeCargos.isNotEmpty ? [_activeCargos.first] : const []);
+    final cargos = trackedId != null
+        ? _activeCargos.where((c) => c.id == trackedId).toList()
+        : (_activeCargos.isNotEmpty ? [_activeCargos.first] : const []);
 
     if (cargos.isEmpty) return const [];
 
     final cargo = cargos.first;
-    final points =
-        cargo.routePoints.length >= 2
-            ? cargo.routePoints
-            : <LatLng>[cargo.origin, cargo.destination];
+    final points = cargo.routePoints.length >= 2
+        ? cargo.routePoints
+        : <LatLng>[cargo.origin, cargo.destination];
 
     return [
       Polyline(
@@ -634,28 +624,26 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
           trackedId == null || trackedId == cargo.id || _isSheetCollapsed;
       if (!isTracked) return <Marker>[];
 
-      final route =
-          cargo.routePoints.isNotEmpty
-              ? cargo.routePoints
-              : [cargo.origin, cargo.destination];
+      final route = cargo.routePoints.isNotEmpty
+          ? cargo.routePoints
+          : [cargo.origin, cargo.destination];
       final markers = <Marker>[];
       for (var i = 0; i < route.length; i++) {
         final point = route[i];
         final letter = _letterForIndex(i);
         final name =
             i < cargo.routeNames.length && cargo.routeNames[i].isNotEmpty
-                ? cargo.routeNames[i]
-                : letter;
+            ? cargo.routeNames[i]
+            : letter;
         final isFirst = i == 0;
         final isLast = i == route.length - 1;
-        final color =
-            isLast
-                ? const Color(0xFF2EB872)
-                : const Color(0xFF00B2FF);
+        final color = isLast
+            ? const Color(0xFF2EB872)
+            : const Color(0xFF00B2FF);
         markers.add(
           Marker(
             width: 48.w,
-            height: 64.h,
+            height: 80.h,
             point: point,
             alignment: Alignment.topCenter,
             child: _RouteLetterPin(
@@ -674,10 +662,9 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
 
   void _focusOnActiveCargo(BuildContext context) {
     final trackedId = trackedCargoIdNotifier.value;
-    final selected =
-        trackedId == null
-            ? _activeCargos
-            : _activeCargos.where((cargo) => cargo.id == trackedId).toList();
+    final selected = trackedId == null
+        ? _activeCargos
+        : _activeCargos.where((cargo) => cargo.id == trackedId).toList();
     if (selected.isEmpty) return;
 
     final firstCargo = selected.first;
@@ -748,22 +735,21 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
           borderRadius: BorderRadius.circular(14.r),
           onTap: _isLocationLoading ? null : _moveToCurrentLocation,
           child: Center(
-            child:
-                _isLocationLoading
-                    ? SizedBox(
-                      width: 20.w,
-                      height: 20.w,
-                      child: const CircularProgressIndicator(strokeWidth: 2),
-                    )
-                    : SvgPicture.asset(
-                      'assets/svg/location-arrow.svg',
-                      width: 20.w,
-                      height: 20.h,
-                      colorFilter: const ColorFilter.mode(
-                        Colors.black,
-                        BlendMode.srcIn,
-                      ),
+            child: _isLocationLoading
+                ? SizedBox(
+                    width: 20.w,
+                    height: 20.w,
+                    child: const CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : SvgPicture.asset(
+                    'assets/svg/location-arrow.svg',
+                    width: 20.w,
+                    height: 20.h,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.black,
+                      BlendMode.srcIn,
                     ),
+                  ),
           ),
         ),
       ),
@@ -859,7 +845,10 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
               'assets/svg/world.svg',
               width: 22.w,
               height: 22.w,
-              colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(
+                Colors.black,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),
@@ -894,11 +883,12 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
                   (option) => ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(option.label),
-                    trailing:
-                        option.locale.languageCode == current.languageCode
-                            ? const Icon(Icons.radio_button_checked,
-                                color: Color(0xFF64B5F6))
-                            : const Icon(Icons.radio_button_off),
+                    trailing: option.locale.languageCode == current.languageCode
+                        ? const Icon(
+                            Icons.radio_button_checked,
+                            color: Color(0xFF64B5F6),
+                          )
+                        : const Icon(Icons.radio_button_off),
                     onTap: () => Navigator.of(context).pop(option),
                   ),
                 ),
@@ -1068,12 +1058,18 @@ class _RouteLetterPin extends StatelessWidget {
           ),
         ),
         SizedBox(height: 6.h),
-        Text(
-          subtitle,
-          style: TextStyle(
-            fontSize: 10.sp,
-            fontWeight: FontWeight.w700,
-            color: color,
+        SizedBox(
+          width: 80.w,
+          child: Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
           ),
         ),
       ],

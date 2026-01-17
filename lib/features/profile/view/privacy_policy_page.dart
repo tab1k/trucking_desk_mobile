@@ -2,8 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:fura24.kz/shared/widgets/single_appbar.dart';
-
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key, required this.titleKey});
 
@@ -13,7 +11,11 @@ class PrivacyPolicyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.locale.languageCode;
     final content = _policyContent(locale);
-    final textStyle = TextStyle(fontSize: 14.sp, height: 1.45, color: Colors.black87);
+    final textStyle = TextStyle(
+      fontSize: 14.sp,
+      height: 1.45,
+      color: Colors.black87,
+    );
     final headingStyle = TextStyle(
       fontSize: 16.sp,
       fontWeight: FontWeight.w700,
@@ -21,9 +23,38 @@ class PrivacyPolicyPage extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: SingleAppbar(
-        title: tr(titleKey),
-        onBack: () => Navigator.of(context).pop(),
+      backgroundColor: const Color(0xFFF5F7FB),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: false,
+        titleSpacing: 0,
+        toolbarHeight: 60.h,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Material(
+            color: Colors.grey[200],
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, size: 20),
+              color: Colors.black87,
+              padding: EdgeInsets.zero,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
+        title: Padding(
+          padding: EdgeInsets.only(left: 12.w),
+          child: Text(
+            tr(titleKey),
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -216,27 +247,15 @@ class PrivacyPolicyPage extends StatelessWidget {
             _PolicySection(
               title: '信息用途',
               paragraphs: ['为了提供、改进和发展平台：'],
-              bullets: [
-                '访问与用户沟通，发送支持消息。',
-                '安全、防护、研究与优化。',
-                '提供付费服务的访问。',
-              ],
+              bullets: ['访问与用户沟通，发送支持消息。', '安全、防护、研究与优化。', '提供付费服务的访问。'],
             ),
             _PolicySection(
               title: '安全环境',
-              bullets: [
-                '发现和防止欺诈、垃圾信息与滥用。',
-                '安全检查与风险评估。',
-                '遵守法律；为保护平台进行画像分析。',
-              ],
+              bullets: ['发现和防止欺诈、垃圾信息与滥用。', '安全检查与风险评估。', '遵守法律；为保护平台进行画像分析。'],
             ),
             _PolicySection(
               title: '广告与营销',
-              bullets: [
-                '根据偏好发送促销信息。',
-                '个性化并衡量广告效果（含社交媒体）。',
-                '基于兴趣和使用历史进行画像。',
-              ],
+              bullets: ['根据偏好发送促销信息。', '个性化并衡量广告效果（含社交媒体）。', '基于兴趣和使用历史进行画像。'],
             ),
             _PolicySection(
               title: '共享与披露',

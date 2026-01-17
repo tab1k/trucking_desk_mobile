@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "com.fura24.kz"
-        minSdk = 21  // ИЗМЕНИТЕ на 21 (Firebase требует минимум 21)
+        minSdk = flutter.minSdkVersion  // ИЗМЕНИТЕ на 21 (Firebase требует минимум 21)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

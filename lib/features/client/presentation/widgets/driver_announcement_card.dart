@@ -21,6 +21,7 @@ class DriverAnnouncementOffer {
     required this.company,
     required this.rating,
     required this.driverPhoneNumber,
+    this.driverPhoto,
     required this.whatsappUrl,
     required this.isFavorite,
     this.tags = const [],
@@ -39,6 +40,7 @@ class DriverAnnouncementOffer {
   final String company;
   final double rating;
   final String driverPhoneNumber;
+  final String? driverPhoto;
   final String whatsappUrl;
   final bool isFavorite;
   final List<String> tags;
@@ -59,12 +61,12 @@ class DriverAnnouncementOffer {
       capacity: announcement.weight,
       volume: announcement.volume ?? 0,
       price: tr('find_transport.card.price_on_request'),
-      company:
-          announcement.driverFullName.isNotEmpty
-              ? announcement.driverFullName
-              : tr('find_transport.card.driver_placeholder'),
+      company: announcement.driverFullName.isNotEmpty
+          ? announcement.driverFullName
+          : tr('find_transport.card.driver_placeholder'),
       rating: announcement.driverRating,
       driverPhoneNumber: phone,
+      driverPhoto: announcement.driverPhoto,
       whatsappUrl: _buildWhatsAppUrl(phone),
       tags: comment.isNotEmpty ? [comment] : const [],
       isFavorite: announcement.isFavorite,
@@ -153,19 +155,19 @@ Future<void> showDriverContactSheet(
             if (offer.whatsappUrl.isNotEmpty)
               ListTile(
                 contentPadding: EdgeInsets.zero,
-              leading: CircleAvatar(
-                radius: 20.w,
-                backgroundColor: Colors.green.withOpacity(0.1),
-                child: SvgPicture.asset(
-                  'assets/svg/whatsapp.svg',
-                  width: 20.w,
-                  height: 20.h,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.green,
-                    BlendMode.srcIn,
+                leading: CircleAvatar(
+                  radius: 20.w,
+                  backgroundColor: Colors.green.withOpacity(0.1),
+                  child: SvgPicture.asset(
+                    'assets/svg/whatsapp.svg',
+                    width: 20.w,
+                    height: 20.h,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.green,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
-              ),
                 title: Text(tr('driver_contact.whatsapp')),
                 subtitle: Text(offer.driverPhoneNumber),
                 onTap: () {
@@ -304,15 +306,18 @@ class DriverAnnouncementCard extends StatelessWidget {
                     SizedBox(width: 8.w),
                     routeTrailing!,
                   ],
-              ],
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              tr('find_transport.card.created_at', args: [_formatDate(offer.date)]),
-              style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
-            ),
-          ],
-        ),
+                ],
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                tr(
+                  'find_transport.card.created_at',
+                  args: [_formatDate(offer.date)],
+                ),
+                style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+              ),
+            ],
+          ),
           SizedBox(height: 16.h),
           Row(
             children: [
@@ -340,46 +345,51 @@ class DriverAnnouncementCard extends StatelessWidget {
                         color: Colors.grey[600],
                       ),
                     ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                offer.price,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.primary,
+                  ],
                 ),
               ),
-              SizedBox(height: 4.h),
-              Text(
-                tr('find_transport.card.per_trip'),
-                style: TextStyle(fontSize: 12.sp, color: Colors.grey[500]),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    offer.price,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    tr('find_transport.card.per_trip'),
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[500]),
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
           ),
           SizedBox(height: 16.h),
           Row(
             children: [
               CircleAvatar(
                 radius: 18.w,
-                backgroundColor: theme.colorScheme.primary.withValues(
-                  alpha: 0.12,
-                ),
-                child: Text(
-                  offer.company.isNotEmpty
-                      ? offer.company.characters.first
-                      : '',
-                  style: TextStyle(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                backgroundColor: theme.colorScheme.primary.withOpacity(0.12),
+                backgroundImage:
+                    offer.driverPhoto != null && offer.driverPhoto!.isNotEmpty
+                    ? NetworkImage(offer.driverPhoto!)
+                    : null,
+                child:
+                    offer.driverPhoto != null && offer.driverPhoto!.isNotEmpty
+                    ? null
+                    : Text(
+                        offer.company.isNotEmpty
+                            ? offer.company.characters.first
+                            : '',
+                        style: TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
               ),
               SizedBox(width: 8.w),
               Expanded(
@@ -406,34 +416,27 @@ class DriverAnnouncementCard extends StatelessWidget {
             Wrap(
               spacing: 8.w,
               runSpacing: 8.h,
-              children:
-                  offer.tags.map((tag) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 6.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        tag,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    );
-                  }).toList(),
+              children: offer.tags.map((tag) {
+                return Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 6.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    tag,
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[700]),
+                  ),
+                );
+              }).toList(),
             ),
           ],
           if (bottomTrailing != null) ...[
             SizedBox(height: 8.h),
-            Align(
-              alignment: Alignment.centerRight,
-              child: bottomTrailing!,
-            ),
+            Align(alignment: Alignment.centerRight, child: bottomTrailing!),
           ],
         ],
       ),
@@ -468,12 +471,11 @@ class _FavoriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final defaultColor = Colors.grey[500];
-    final iconColor =
-        onPressed == null
-            ? defaultColor?.withOpacity(0.3)
-            : isFavorite
-                ? const Color(0xFFE53935)
-                : defaultColor;
+    final iconColor = onPressed == null
+        ? defaultColor?.withOpacity(0.3)
+        : isFavorite
+        ? const Color(0xFFE53935)
+        : defaultColor;
 
     return SizedBox(
       width: 32.w,

@@ -55,6 +55,7 @@
   "profile": {
     "title": "个人资料",
     "unavailable": "用户资料不可用",
+    "my_reviews": "我的评价",
     "user_placeholder": "用户",
     "contact": {
       "title": "联系方式",
@@ -73,7 +74,6 @@
       "error_empty": "请输入密码",
       "error_failed": "删除账户失败"
     },
-    "delete_account": "删除账户",
     "role": {
       "unknown": "角色未指定",
       "sender": "发货方",
@@ -206,7 +206,7 @@
   },
   "create_order": {
     "step_counter": "步骤 {}/{}",
-    "title": "创建发布",
+    "title": "添加货物",
     "edit_title": "编辑发布",
     "subtitle": "一步步填写，避免遗漏。",
     "location": {
@@ -259,6 +259,7 @@
         "destination_point": "卸货城市",
         "departure_address": "城市内装货地址",
         "destination_address": "城市内卸货地址",
+        "waypoint_address": "途经点地址",
         "catalog_hint": "城市来自目录，请补充具体地址方便司机。"
       },
       "transport": {
@@ -281,7 +282,7 @@
         "amount": "金额",
         "currency": "币种",
         "photos": "货物照片",
-        "photos_hint": "至少 2 张照片。支持 JPG、PNG、HEIC。",
+        "photos_hint": "可选。支持 JPG、PNG、HEIC。",
         "additional": "其他",
         "note": "备注",
         "contact_visibility_title": "向司机显示号码",
@@ -391,7 +392,7 @@
     "actions": {
       "title": "快捷操作",
       "subtitle": "选择一个选项继续。",
-      "create_order_title": "创建发布",
+      "create_order_title": "添加货物",
       "create_order_subtitle": "按路线发送货物",
       "find_transport_title": "寻找运输",
       "find_transport_subtitle": "按路线选择车辆",

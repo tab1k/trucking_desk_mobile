@@ -42,6 +42,7 @@ class DriverAnnouncement {
     required this.createdAt,
     required this.driverRating,
     required this.driverPhoneNumber,
+    this.driverPhoto,
     required this.isFavorite,
   });
 
@@ -62,6 +63,7 @@ class DriverAnnouncement {
   final DateTime createdAt;
   final double driverRating;
   final String driverPhoneNumber;
+  final String? driverPhoto;
   final bool isFavorite;
 
   factory DriverAnnouncement.fromJson(Map<String, dynamic> json) {
@@ -73,8 +75,9 @@ class DriverAnnouncement {
             ?.whereType<Map<String, dynamic>>()
             .toList() ??
         const [];
-    final waypointModels =
-        waypointMaps.map(DriverAnnouncementWaypoint.fromJson).toList();
+    final waypointModels = waypointMaps
+        .map(DriverAnnouncementWaypoint.fromJson)
+        .toList();
 
     return DriverAnnouncement(
       id: (json['id'] ?? '').toString(),
@@ -100,6 +103,7 @@ class DriverAnnouncement {
       createdAt: _parseDate(json['created_at']) ?? DateTime.now(),
       driverRating: _parseDriverRating(json['driver_rating']),
       driverPhoneNumber: (json['driver_phone_number'] as String?)?.trim() ?? '',
+      driverPhoto: (json['driver_photo'] as String?)?.trim(),
       isFavorite: json['is_favorite'] as bool? ?? false,
     );
   }

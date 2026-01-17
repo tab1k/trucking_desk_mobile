@@ -55,6 +55,7 @@
   "profile": {
     "title": "Профиль",
     "unavailable": "Пайдаланушы профилі қолжетімсіз",
+    "my_reviews": "Менің пікірлерім",
     "user_placeholder": "Пайдаланушы",
     "contact": {
       "title": "Байланыс деректері",
@@ -73,7 +74,6 @@
       "error_empty": "Парольді енгізіңіз",
       "error_failed": "Аккаунтты жою мүмкін болмады"
     },
-    "delete_account": "Аккаунтты жою",
     "role": {
       "unknown": "Роль көрсетілмеген",
       "sender": "Жөнелтуші",
@@ -206,7 +206,7 @@
   },
   "create_order": {
     "step_counter": "{} қадам {} ішінен",
-    "title": "Хабарлама жасау",
+    "title": "Жүк қосу",
     "edit_title": "Хабарламаны өзгерту",
     "subtitle": "Қадамдап толтырамыз — ештеңе ұмытылмайды.",
     "location": {
@@ -259,6 +259,7 @@
         "destination_point": "Түсіру қаласы",
         "departure_address": "Қаладағы жүктеу мекенжайы",
         "destination_address": "Қаладағы түсіру мекенжайы",
+        "waypoint_address": "Аралық пункт мекенжайы",
         "catalog_hint": "Қалалар анықтамадан алынды. Дәл мекенжайды көрсетіңіз."
       },
       "transport": {
@@ -281,7 +282,7 @@
         "amount": "Сома",
         "currency": "Валюта",
         "photos": "Жүк фотосы",
-        "photos_hint": "Кемінде 2 фото. JPG, PNG, HEIC қолдайды.",
+        "photos_hint": "Міндетті емес. JPG, PNG, HEIC қолдайды.",
         "additional": "Қосымша",
         "note": "Ескерту",
         "contact_visibility_title": "Нөмірді жүргізушілерге көрсету",
@@ -391,7 +392,7 @@
     "actions": {
       "title": "Сіздің әрекеттеріңіз",
       "subtitle": "Жалғастыру үшін опцияны таңдаңыз.",
-      "create_order_title": "Хабарлама жасау",
+      "create_order_title": "Жүк қосу",
       "create_order_subtitle": "Бағыт бойынша жүк жіберіңіз",
       "find_transport_title": "Транспорт табу",
       "find_transport_subtitle": "Бағытқа сәйкес көлік таңдаңыз",
@@ -600,7 +601,7 @@
       "subtitle": "Рейсті бақылаңыз және маңызды оқиғаларды белгілеңіз.",
       "find_cargo": "Жүк табу",
       "loading_status": "Жүк статусы",
-      "expenses": "Шығындар",
+      "expenses": "Калькулятор",
       "transport": "Менің көлігім",
       "create_ad": "Хабарландыру жасау",
       "fill_form": "Форманы толтыру",

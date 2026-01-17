@@ -26,27 +26,25 @@ class DriverFavoritesPage extends ConsumerWidget {
       body: SafeArea(
         top: false,
         child: favoritesAsync.when(
-          data:
-              (orders) => _DriverFavoritesList(
-                orders: orders,
-                onRefresh: () async {
-                  await ref.refresh(driverFavoritesProvider.future);
-                },
-                onToggleFavorite:
-                    (order) => toggleDriverOrderFavorite(context, ref, order),
-              ),
+          data: (orders) => _DriverFavoritesList(
+            orders: orders,
+            onRefresh: () async {
+              await ref.refresh(driverFavoritesProvider.future);
+            },
+            onToggleFavorite: (order) =>
+                toggleDriverOrderFavorite(context, ref, order),
+          ),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error:
-              (error, _) => Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w),
-                  child: Text(
-                    tr('driver_favorites.error'),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14.sp, color: Colors.black54),
-                  ),
-                ),
+          error: (error, _) => Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Text(
+                tr('driver_favorites.error'),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14.sp, color: Colors.black54),
               ),
+            ),
+          ),
         ),
       ),
     );
@@ -70,48 +68,43 @@ class _DriverFavoritesList extends ConsumerWidget {
     final bottomInset = MediaQuery.of(context).padding.bottom;
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child:
-          orders.isEmpty
-              ? ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
-                children: [
-                  SizedBox(height: 120.h),
-                  Center(
-                    child: Text(
-                      tr('driver_favorites.empty'),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14.sp, color: Colors.black54),
-                    ),
+      child: orders.isEmpty
+          ? ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+              children: [
+                SizedBox(height: 120.h),
+                Center(
+                  child: Text(
+                    tr('driver_favorites.empty'),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14.sp, color: Colors.black54),
                   ),
-                ],
-              )
-              : ListView.separated(
-                padding: EdgeInsets.fromLTRB(
-                  16.w,
-                  0.h,
-                  16.w,
-                  24.h + bottomInset,
                 ),
-                itemCount: orders.length,
-                separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                itemBuilder: (context, index) {
-                  final order = orders[index];
-                  return DriverOrderCard(
-                    order: order,
-                    isResponded:
-                        order.hasResponded ||
-                        respondedOrders.contains(order.id),
-                    onTap: () => _openOrderDetail(context, order),
-                    onRespond: () => _respondToOrder(context, ref, order),
-                    onCall:
-                        order.canDriverCall
-                            ? () => callOrderSender(context, order)
-                            : null,
-                    onToggleFavorite: () => onToggleFavorite(order),
-                  );
-                },
-              ),
+              ],
+            )
+          : ListView.separated(
+              padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 24.h + bottomInset),
+              itemCount: orders.length,
+              separatorBuilder: (_, __) => SizedBox(height: 12.h),
+              itemBuilder: (context, index) {
+                final order = orders[index];
+                return DriverOrderCard(
+                  order: order,
+                  isResponded:
+                      order.hasResponded || respondedOrders.contains(order.id),
+                  onTap: () => _openOrderDetail(context, order),
+                  onRespond: () => _respondToOrder(context, ref, order),
+                  onCall: order.canDriverCall
+                      ? () => callOrderSender(context, order)
+                      : null,
+                  onWhatsApp: order.canDriverCall
+                      ? () => openOrderWhatsApp(context, order)
+                      : null,
+                  onToggleFavorite: () => onToggleFavorite(order),
+                );
+              },
+            ),
     );
   }
 

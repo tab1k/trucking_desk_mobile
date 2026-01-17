@@ -8,6 +8,10 @@ import 'package:fura24.kz/features/locations/data/models/location_model.dart';
 import 'package:fura24.kz/features/locations/presentation/widgets/location_picker_sheet.dart';
 import 'package:fura24.kz/features/transport/data/vehicle_type_options.dart';
 import 'package:fura24.kz/shared/widgets/app_date_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fura24.kz/features/driver/view/widgets/saved_routes_sheet.dart';
+import 'package:fura24.kz/features/driver/domain/models/saved_route.dart';
+import 'package:fura24.kz/features/driver/providers/saved_routes_provider.dart';
 
 class _DropdownOption<T> {
   const _DropdownOption({required this.value, required this.label});
@@ -36,17 +40,18 @@ final _vehicleOptions = vehicleTypeOptions
     )
     .toList(growable: false);
 
-class FindTransportFiltersPage extends StatefulWidget {
+class FindTransportFiltersPage extends ConsumerStatefulWidget {
   const FindTransportFiltersPage({super.key, required this.initialFilters});
 
   final DriverAnnouncementFilters initialFilters;
 
   @override
-  State<FindTransportFiltersPage> createState() =>
+  ConsumerState<FindTransportFiltersPage> createState() =>
       _FindTransportFiltersPageState();
 }
 
-class _FindTransportFiltersPageState extends State<FindTransportFiltersPage> {
+class _FindTransportFiltersPageState
+    extends ConsumerState<FindTransportFiltersPage> {
   final _loadingPointController = TextEditingController();
   final _unloadingPointController = TextEditingController();
   final _vehicleTypeController = TextEditingController();
@@ -105,7 +110,14 @@ class _FindTransportFiltersPageState extends State<FindTransportFiltersPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(tr('find_transport.filters.title')),
-        actions: [TextButton(onPressed: _reset, child: Text(tr('common.reset')))],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bookmark_border),
+            tooltip: 'Сохраненные маршруты',
+            onPressed: _showSavedRoutes,
+          ),
+          TextButton(onPressed: _reset, child: Text(tr('common.reset'))),
+        ],
       ),
       body: SafeArea(
         child: ListView(
@@ -124,41 +136,64 @@ class _FindTransportFiltersPageState extends State<FindTransportFiltersPage> {
               icon: Icons.flag_outlined,
               onTap: () => _pickLocation(isLoading: false),
             ),
+            if (_loadingPointController.text.isNotEmpty &&
+                _unloadingPointController.text.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(top: 8.h),
+                child: GestureDetector(
+                  onTap: _saveRoute,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        Icons.bookmark_border,
+                        size: 16.sp,
+                        color: const Color(0xFF00B2FF),
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        'Сохранить маршрут',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: const Color(0xFF00B2FF),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             SizedBox(height: 12.h),
             _buildSelectionField(
               label: tr('find_transport.filters.vehicle'),
-              value:
-                  _vehicleTypeController.text.isEmpty
-                      ? tr('find_transport.filters.vehicle_any')
-                      : _vehicleTypeController.text,
-              onTap:
-                  () => _showSelectionSheet(
-                    title: tr('find_transport.filters.vehicle'),
-                    options: _vehicleOptions,
-                    selectedValue: _selectedVehicleValue,
-                    onSelected: (option) {
-                      _selectedVehicleValue = option.value;
-                      _vehicleTypeController.text = tr(option.label);
-                    },
-                  ),
+              value: _vehicleTypeController.text.isEmpty
+                  ? tr('find_transport.filters.vehicle_any')
+                  : _vehicleTypeController.text,
+              onTap: () => _showSelectionSheet(
+                title: tr('find_transport.filters.vehicle'),
+                options: _vehicleOptions,
+                selectedValue: _selectedVehicleValue,
+                onSelected: (option) {
+                  _selectedVehicleValue = option.value;
+                  _vehicleTypeController.text = tr(option.label);
+                },
+              ),
             ),
             SizedBox(height: 12.h),
             _buildSelectionField(
               label: tr('find_transport.filters.loading_title'),
-              value:
-                  _loadingTypeController.text.isEmpty
-                      ? tr('find_transport.filters.loading.any')
-                      : _loadingTypeController.text,
-              onTap:
-                  () => _showSelectionSheet(
-                    title: tr('find_transport.filters.loading_title'),
-                    options: _loadingTypeOptions,
-                    selectedValue: _selectedLoadingValue,
-                    onSelected: (option) {
-                      _selectedLoadingValue = option.value;
-                      _loadingTypeController.text = tr(option.label);
-                    },
-                  ),
+              value: _loadingTypeController.text.isEmpty
+                  ? tr('find_transport.filters.loading.any')
+                  : _loadingTypeController.text,
+              onTap: () => _showSelectionSheet(
+                title: tr('find_transport.filters.loading_title'),
+                options: _loadingTypeOptions,
+                selectedValue: _selectedLoadingValue,
+                onSelected: (option) {
+                  _selectedLoadingValue = option.value;
+                  _loadingTypeController.text = tr(option.label);
+                },
+              ),
             ),
             SizedBox(height: 16.h),
             _buildRangeRow(
@@ -310,8 +345,9 @@ class _FindTransportFiltersPageState extends State<FindTransportFiltersPage> {
   InputDecoration _rangeDecoration(String hint, {IconData? icon}) {
     return InputDecoration(
       hintText: hint,
-      prefixIcon:
-          icon != null ? Icon(icon, size: 20, color: Colors.grey[500]) : null,
+      prefixIcon: icon != null
+          ? Icon(icon, size: 20, color: Colors.grey[500])
+          : null,
       filled: true,
       fillColor: Colors.grey[50],
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
@@ -376,14 +412,14 @@ class _FindTransportFiltersPageState extends State<FindTransportFiltersPage> {
           heightFactor: 0.85,
           child: ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-              child: Material(
-                color: Colors.white,
-                child: LocationPickerSheet(
-                  title: tr('find_transport_filters.pick_city'),
-                ),
+            child: Material(
+              color: Colors.white,
+              child: LocationPickerSheet(
+                title: tr('find_transport_filters.pick_city'),
               ),
             ),
-      );
+          ),
+        );
       },
     );
     if (selected == null) return;
@@ -400,11 +436,11 @@ class _FindTransportFiltersPageState extends State<FindTransportFiltersPage> {
   }
 
   Future<void> _pickDate() async {
-      final picked = await showAppDatePicker(
-        context,
-        firstDate: DateTime.now(),
-        title: tr('find_transport_filters.request_date'),
-      );
+    final picked = await showAppDatePicker(
+      context,
+      firstDate: DateTime.now(),
+      title: tr('find_transport_filters.request_date'),
+    );
     if (picked != null) {
       setState(() {
         _selectedDate = picked;
@@ -418,6 +454,50 @@ class _FindTransportFiltersPageState extends State<FindTransportFiltersPage> {
       _selectedDate = null;
       _dateController.clear();
     });
+  }
+
+  Future<void> _showSavedRoutes() async {
+    final route = await showSavedRoutesSheet(
+      context,
+      type: SavedRoute.typeTransport,
+    );
+    if (route != null) {
+      setState(() {
+        _loadingPointController.text = route.departureCityName;
+        _unloadingPointController.text = route.destinationCityName;
+        // Optionally clear other filters or keep them
+      });
+    }
+  }
+
+  Future<void> _saveRoute() async {
+    final dep = _loadingPointController.text;
+    final dest = _unloadingPointController.text;
+    if (dep.isEmpty || dest.isEmpty) return;
+
+    try {
+      await ref
+          .read(savedRoutesProvider(SavedRoute.typeTransport).notifier)
+          .create(
+            departureCityName: dep,
+            destinationCityName: dest,
+            type: SavedRoute.typeTransport,
+          );
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Маршрут сохранен')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ошибка сохранения: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _reset() {
@@ -583,9 +663,8 @@ class _FindTransportFiltersPageState extends State<FindTransportFiltersPage> {
                       child: ListView.separated(
                         padding: EdgeInsets.only(top: 8.h),
                         itemCount: options.length,
-                        separatorBuilder:
-                            (_, __) =>
-                                Divider(height: 1, color: Colors.grey[200]),
+                        separatorBuilder: (_, __) =>
+                            Divider(height: 1, color: Colors.grey[200]),
                         itemBuilder: (context, index) {
                           final option = options[index];
                           final isSelected = option.value == selectedValue;
@@ -594,10 +673,9 @@ class _FindTransportFiltersPageState extends State<FindTransportFiltersPage> {
                               tr(option.label),
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                fontWeight:
-                                    isSelected
-                                        ? FontWeight.w600
-                                        : FontWeight.normal,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
                               ),
                             ),
                             trailing: Icon(

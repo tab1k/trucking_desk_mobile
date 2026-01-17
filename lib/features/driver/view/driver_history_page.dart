@@ -148,10 +148,7 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
           borderSide: const BorderSide(color: Color(0xFF00B2FF), width: 1.4),
         ),
       ),
-      style: TextStyle(
-        fontSize: 14.sp,
-        color: Colors.black87,
-      ),
+      style: TextStyle(fontSize: 14.sp, color: Colors.black87),
     );
   }
 
@@ -271,7 +268,8 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
   List<OrderSummary> _applyFilters(List<OrderSummary> orders) {
     final query = _searchController.text.trim().toLowerCase();
     return orders.where((order) {
-      final matchesStatus = _selectedStatus == HistoryStatus.all ||
+      final matchesStatus =
+          _selectedStatus == HistoryStatus.all ||
           (_selectedStatus == HistoryStatus.completed &&
               order.status == CargoStatus.completed) ||
           (_selectedStatus == HistoryStatus.cancelled &&
@@ -280,7 +278,8 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
       final matchesDate =
           _selectedRange == null || _orderMatchesRange(order, _selectedRange!);
 
-      final matchesQuery = query.isEmpty ||
+      final matchesQuery =
+          query.isEmpty ||
           order.id.toLowerCase().contains(query) ||
           order.routeLabel.toLowerCase().contains(query);
 
@@ -291,8 +290,19 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
   bool _orderMatchesRange(OrderSummary order, DateTimeRange range) {
     final baseDate = order.transportationDate ?? order.createdAt;
     if (baseDate == null) return false;
-    final start = DateTime(range.start.year, range.start.month, range.start.day);
-    final end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59, 59);
+    final start = DateTime(
+      range.start.year,
+      range.start.month,
+      range.start.day,
+    );
+    final end = DateTime(
+      range.end.year,
+      range.end.month,
+      range.end.day,
+      23,
+      59,
+      59,
+    );
     return !baseDate.isBefore(start) && !baseDate.isAfter(end);
   }
 
@@ -369,13 +379,18 @@ class _HistoryCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                summary.routeLabel,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
+              Expanded(
+                child: Text(
+                  summary.routeLabel,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              SizedBox(width: 8.w),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                 decoration: BoxDecoration(
@@ -402,7 +417,11 @@ class _HistoryCard extends StatelessWidget {
           SizedBox(height: 10.h),
           Row(
             children: [
-              const Icon(Icons.calendar_today_outlined, size: 16, color: Colors.grey),
+              const Icon(
+                Icons.calendar_today_outlined,
+                size: 16,
+                color: Colors.grey,
+              ),
               SizedBox(width: 6.w),
               Text(
                 tr(
@@ -415,10 +434,7 @@ class _HistoryCard extends StatelessWidget {
                         : '—',
                   ],
                 ),
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: Colors.grey.shade700,
-                ),
+                style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade700),
               ),
             ],
           ),
@@ -426,7 +442,11 @@ class _HistoryCard extends StatelessWidget {
           if (summary.priceLabel.isNotEmpty)
             Row(
               children: [
-                const Icon(Icons.payments_outlined, size: 16, color: Colors.grey),
+                const Icon(
+                  Icons.payments_outlined,
+                  size: 16,
+                  color: Colors.grey,
+                ),
                 SizedBox(width: 6.w),
                 Text(
                   summary.priceLabel,

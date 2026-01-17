@@ -38,11 +38,10 @@ class DriverHomeBottomSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final notificationsAsync = ref.watch(notificationsControllerProvider);
-    final unreadCount =
-        notificationsAsync.maybeWhen(
-          data: (items) => items.where((n) => !n.isRead).length,
-          orElse: () => 0,
-        );
+    final unreadCount = notificationsAsync.maybeWhen(
+      data: (items) => items.where((n) => !n.isRead).length,
+      orElse: () => 0,
+    );
 
     return Container(
       decoration: BoxDecoration(
@@ -157,10 +156,11 @@ class _DriverSheetContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14.r),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(14.r),
-                    onTap: () => NavigationUtils.navigateWithBottomSheetAnimation(
-                      context,
-                      const NotificationsPage(),
-                    ),
+                    onTap: () =>
+                        NavigationUtils.navigateWithBottomSheetAnimation(
+                          context,
+                          const NotificationsPage(),
+                        ),
                     child: SizedBox(
                       width: 48.w,
                       height: 48.w,
@@ -209,13 +209,13 @@ class _DriverSheetContent extends StatelessWidget {
                 SizedBox(width: 12.w),
                 Expanded(
                   child: _DriverActionCard(
-                    iconAsset: 'assets/svg/truck-loading.svg',
-                    title: tr('driver_home.actions.loading_status'),
+                    iconAsset: 'assets/svg/plus.svg',
+                    title: tr('driver_home.actions.create_ad'),
                     color: _driverActionColor,
                     onTap: () {
                       NavigationUtils.navigateWithBottomSheetAnimation(
                         context,
-                        const DriverLoadingStatusPage(),
+                        const CreateOrderPage(),
                       );
                     },
                   ),
@@ -230,12 +230,12 @@ class _DriverSheetContent extends StatelessWidget {
                     iconAsset: 'assets/svg/calculator.svg',
                     title: tr('driver_home.actions.expenses'),
                     color: _driverActionColor,
-                  onTap: () {
-                    NavigationUtils.navigateWithBottomSheetAnimation(
-                      context,
-                      const DriverExpensesPage(),
-                    );
-                  },
+                    onTap: () {
+                      NavigationUtils.navigateWithBottomSheetAnimation(
+                        context,
+                        const DriverExpensesPage(),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(width: 12.w),
@@ -244,25 +244,25 @@ class _DriverSheetContent extends StatelessWidget {
                     iconAsset: 'assets/svg/history.svg',
                     title: tr('driver_home.actions.history'),
                     color: _driverActionColor,
-                  onTap: () {
-                    NavigationUtils.navigateWithBottomSheetAnimation(
-                      context,
-                      const DriverHistoryPage(),
-                    );
-                  },
+                    onTap: () {
+                      NavigationUtils.navigateWithBottomSheetAnimation(
+                        context,
+                        const DriverHistoryPage(),
+                      );
+                    },
                   ),
                 ),
               ],
             ),
             SizedBox(height: 12.h),
             _DriverActionListTile(
-              iconAsset: 'assets/svg/plus.svg',
-              title: tr('driver_home.actions.create_ad'),
-              subtitle: tr('driver_home.actions.fill_form'),
+              iconAsset: 'assets/svg/truck-loading.svg',
+              title: tr('driver_home.actions.loading_status'),
+              subtitle: tr('driver_home.actions.current_orders'),
               onTap: () {
                 NavigationUtils.navigateWithBottomSheetAnimation(
                   context,
-                  const CreateOrderPage(),
+                  const DriverLoadingStatusPage(),
                 );
               },
             ),
@@ -300,7 +300,6 @@ class _DriverSheetContent extends StatelessWidget {
         SizedBox(height: 18.h),
         const BannerStoriesStrip(),
         SizedBox(height: 12.h),
-
       ],
     );
   }
@@ -409,7 +408,6 @@ class _DriverActionCard extends StatelessWidget {
     );
   }
 }
-
 
 class _DriverActionListTile extends StatelessWidget {
   const _DriverActionListTile({

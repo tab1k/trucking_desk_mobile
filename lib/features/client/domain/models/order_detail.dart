@@ -16,14 +16,12 @@ class OrderWaypointModel {
 
   factory OrderWaypointModel.fromJson(Map<String, dynamic> json) {
     return OrderWaypointModel(
-      id:
-          json['id'] is int
-              ? json['id'] as int
-              : int.tryParse('${json['id']}') ?? 0,
-      sequence:
-          json['sequence'] is int
-              ? json['sequence'] as int
-              : int.tryParse('${json['sequence']}') ?? 0,
+      id: json['id'] is int
+          ? json['id'] as int
+          : int.tryParse('${json['id']}') ?? 0,
+      sequence: json['sequence'] is int
+          ? json['sequence'] as int
+          : int.tryParse('${json['sequence']}') ?? 0,
       location: LocationModel.fromJson(
         json['location'] as Map<String, dynamic>? ?? {},
       ),
@@ -121,6 +119,16 @@ class OrderDetail {
 
   bool get hasAssignedDriver => driverId != null && driverId!.isNotEmpty;
 
+  String get driverName {
+    if (driverId == null) return '';
+    for (final bid in bids) {
+      if (bid.driverId == driverId) {
+        return bid.driverName;
+      }
+    }
+    return '';
+  }
+
   bool get isFinished => status == 'DELIVERED' || status == 'CANCELLED';
 
   factory OrderDetail.fromJson(Map<String, dynamic> json) {
@@ -177,10 +185,10 @@ class OrderDetail {
       amount: bidAmount ?? _parseNum(json['amount'] ?? json['total_cost']) ?? 0,
       paymentType: (json['payment_type'] as String?) ?? 'CASH',
       currency: (json['currency'] as String?) ?? 'KZT',
-      departureAddressDetail:
-          (json['departure_address_detail'] as String?)?.trim(),
-      destinationAddressDetail:
-          (json['destination_address_detail'] as String?)?.trim(),
+      departureAddressDetail: (json['departure_address_detail'] as String?)
+          ?.trim(),
+      destinationAddressDetail: (json['destination_address_detail'] as String?)
+          ?.trim(),
       showPhoneToDrivers: json['show_phone_to_drivers'] as bool? ?? true,
       createdAt: _parseDate(json['created_at']),
       acceptedAt: _parseDate(json['accepted_at']),
@@ -204,14 +212,12 @@ class OrderDetail {
       waypoints: waypoints,
       statusHistory: history,
       bids: bids,
-      lastLocation:
-          lastLocationMap != null
-              ? OrderLocationPoint.fromJson(lastLocationMap)
-              : null,
-      currentDriverLocation:
-          currentDriverLocationMap != null
-              ? OrderLocationPoint.fromJson(currentDriverLocationMap)
-              : null,
+      lastLocation: lastLocationMap != null
+          ? OrderLocationPoint.fromJson(lastLocationMap)
+          : null,
+      currentDriverLocation: currentDriverLocationMap != null
+          ? OrderLocationPoint.fromJson(currentDriverLocationMap)
+          : null,
     );
   }
 }

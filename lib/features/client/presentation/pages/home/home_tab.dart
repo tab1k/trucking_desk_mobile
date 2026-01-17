@@ -164,20 +164,19 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       distanceFilter: 25,
     );
 
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: settings,
-    ).listen(
-      (position) {
-        final location = LatLng(position.latitude, position.longitude);
-        _handleLocationUpdate(location);
-      },
-      onError: (error) {
-        if (!mounted) return;
-        setState(() {
-          _locationError = _mapLocationError(error);
-        });
-      },
-    );
+    _positionSubscription =
+        Geolocator.getPositionStream(locationSettings: settings).listen(
+          (position) {
+            final location = LatLng(position.latitude, position.longitude);
+            _handleLocationUpdate(location);
+          },
+          onError: (error) {
+            if (!mounted) return;
+            setState(() {
+              _locationError = _mapLocationError(error);
+            });
+          },
+        );
   }
 
   void _handleLocationUpdate(LatLng location, {bool centerOnUser = false}) {
@@ -302,8 +301,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         );
         break;
       case HomeQuickAction.myCargo:
-        final firstActive =
-            _activeCargos.isNotEmpty ? _activeCargos.first.id : null;
+        final firstActive = _activeCargos.isNotEmpty
+            ? _activeCargos.first.id
+            : null;
         _trackedCargoId.value = firstActive;
         trackedCargoIdNotifier.value = firstActive;
         setState(() {
@@ -320,16 +320,15 @@ class _HomeTabState extends ConsumerState<HomeTab> {
   }
 
   void _updateActiveCargos(List<OrderSummary> orders) {
-    final mapped =
-        orders
-            .where(
-              (order) =>
-                  order.status != CargoStatus.completed &&
-                  order.status != CargoStatus.cancelled,
-            )
-            .map(_activeCargoFromOrder)
-            .whereType<_ActiveCargoInfo>()
-            .toList();
+    final mapped = orders
+        .where(
+          (order) =>
+              order.status != CargoStatus.completed &&
+              order.status != CargoStatus.cancelled,
+        )
+        .map(_activeCargoFromOrder)
+        .whereType<_ActiveCargoInfo>()
+        .toList();
     if (!mounted) return;
     setState(() {
       _activeCargos = mapped;
@@ -371,16 +370,14 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       statusLabel: _statusLabel(order.status, order.rawStatus),
       status: order.status,
       rawStatus: order.rawStatus,
-      driverPosition:
-          canShowDriver
-              ? _latLngFromLocation(order.lastLocation) ??
-                  _latLngFromLocation(order.currentDriverLocation)
-              : null,
-      lastUpdate:
-          canShowDriver
-              ? order.lastLocation?.reportedAt ??
-                  order.currentDriverLocation?.reportedAt
-              : null,
+      driverPosition: canShowDriver
+          ? _latLngFromLocation(order.lastLocation) ??
+                _latLngFromLocation(order.currentDriverLocation)
+          : null,
+      lastUpdate: canShowDriver
+          ? order.lastLocation?.reportedAt ??
+                order.currentDriverLocation?.reportedAt
+          : null,
       canShowDriver:
           canShowDriver &&
           (_latLngFromLocation(order.lastLocation) != null ||
@@ -452,8 +449,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     addPoint(destination);
     names.add(order.destinationCity);
 
-    final resolvedPoints =
-        points.length >= 2 ? points : <LatLng>[origin, destination];
+    final resolvedPoints = points.length >= 2
+        ? points
+        : <LatLng>[origin, destination];
     final resolvedNames = names.take(resolvedPoints.length).toList();
 
     return _RoutePath(points: resolvedPoints, names: resolvedNames);
@@ -488,8 +486,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
   }
 
   String _statusLabel(CargoStatus status, String rawStatus) {
-    final rawKey =
-        rawStatus.isNotEmpty ? 'order_detail.statuses.${rawStatus.toLowerCase()}' : null;
+    final rawKey = rawStatus.isNotEmpty
+        ? 'order_detail.statuses.${rawStatus.toLowerCase()}'
+        : null;
     if (rawKey != null) {
       final translated = tr(rawKey);
       if (translated != rawKey) return translated;
@@ -604,10 +603,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
             ? _activeCargos.first.midpoint
             : _fallbackLocation);
     final trackedId = trackedCargoIdNotifier.value;
-    final overlayCargos =
-        trackedId == null
-            ? _activeCargos
-            : _activeCargos.where((cargo) => cargo.id == trackedId).toList();
+    final overlayCargos = trackedId == null
+        ? _activeCargos
+        : _activeCargos.where((cargo) => cargo.id == trackedId).toList();
     final mediaQuery = MediaQuery.of(context);
     final screenHeight = mediaQuery.size.height;
     final sheetHeight = screenHeight * _currentSheetExtent;
@@ -618,13 +616,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final double zoomControlsHeight = (48.w * 2) + 1;
     final double locationButtonHeight = 48.w;
     final double controlsSpacing = 12.h;
-  final double languageButtonHeight = 48.w;
-  final double controlsColumnHeight =
-      languageButtonHeight +
-      controlsSpacing +
-      zoomControlsHeight +
-      controlsSpacing +
-      locationButtonHeight;
+    final double languageButtonHeight = 48.w;
+    final double controlsColumnHeight =
+        languageButtonHeight +
+        controlsSpacing +
+        zoomControlsHeight +
+        controlsSpacing +
+        locationButtonHeight;
     final double baseControlsBottom = 120.h;
     final double minControlsBottom = sheetHeight + safeBottomInset + 24.h;
     final double maxControlsBottom = math.max(
@@ -708,11 +706,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               right: 16.w,
               child: _buildLocationButton(),
             ),
-            Positioned(
-              top: 90.h,
-              right: 16.w,
-              child: _buildLanguageButton(),
-            ),
+            Positioned(top: 90.h, right: 16.w, child: _buildLanguageButton()),
             Positioned(top: 300.h, right: 16.w, child: _buildZoomControls()),
           ],
 
@@ -740,10 +734,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           Positioned.fill(
             child: NotificationListener<DraggableScrollableNotification>(
               onNotification: (notification) {
-                final extent =
-                    notification.extent
-                        .clamp(_minExtent, _maxExtent)
-                        .toDouble();
+                final extent = notification.extent
+                    .clamp(_minExtent, _maxExtent)
+                    .toDouble();
                 if ((extent - _currentSheetExtent).abs() > 0.001) {
                   setState(() {
                     _currentSheetExtent = extent;
@@ -793,10 +786,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
   List<Polyline> _buildCargoPolylines() {
     final trackedId = trackedCargoIdNotifier.value;
     return _activeCargos.expand((cargo) {
-      final route =
-          cargo.routePoints.length >= 2
-              ? cargo.routePoints
-              : [cargo.origin, cargo.destination];
+      final route = cargo.routePoints.length >= 2
+          ? cargo.routePoints
+          : [cargo.origin, cargo.destination];
       final isTracked = trackedId == null || trackedId == cargo.id;
       if (!isTracked) return const <Polyline>[];
 
@@ -822,18 +814,17 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         final letter = _letterForIndex(i);
         final name =
             i < cargo.routeNames.length && cargo.routeNames[i].isNotEmpty
-                ? cargo.routeNames[i]
-                : letter;
+            ? cargo.routeNames[i]
+            : letter;
         final isFirst = i == 0;
         final isLast = i == route.length - 1;
-        final color =
-            isLast
-                ? const Color(0xFF2EB872)
-                : const Color(0xFF00B2FF);
+        final color = isLast
+            ? const Color(0xFF2EB872)
+            : const Color(0xFF00B2FF);
         markers.add(
           Marker(
             width: 48.w,
-            height: 64.h,
+            height: 80.h,
             point: point,
             alignment: Alignment.topCenter,
             child: _RouteLetterPin(
@@ -867,10 +858,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
   void _focusOnActiveCargo(BuildContext context) {
     final trackedId = trackedCargoIdNotifier.value;
-    final selected =
-        trackedId == null
-            ? _activeCargos
-            : _activeCargos.where((cargo) => cargo.id == trackedId).toList();
+    final selected = trackedId == null
+        ? _activeCargos
+        : _activeCargos.where((cargo) => cargo.id == trackedId).toList();
     if (selected.isEmpty) return;
 
     final points = <LatLng>[];
@@ -938,22 +928,21 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           borderRadius: BorderRadius.circular(14.r),
           onTap: _isLocationLoading ? null : _moveToCurrentLocation,
           child: Center(
-            child:
-                _isLocationLoading
-                    ? SizedBox(
-                      width: 20.w,
-                      height: 20.w,
-                      child: const CircularProgressIndicator(strokeWidth: 2),
-                    )
-                    : SvgPicture.asset(
-                      'assets/svg/location-arrow.svg',
-                      width: 20.w,
-                      height: 20.h,
-                      colorFilter: const ColorFilter.mode(
-                        Colors.black,
-                        BlendMode.srcIn,
-                      ),
+            child: _isLocationLoading
+                ? SizedBox(
+                    width: 20.w,
+                    height: 20.w,
+                    child: const CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : SvgPicture.asset(
+                    'assets/svg/location-arrow.svg',
+                    width: 20.w,
+                    height: 20.h,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.black,
+                      BlendMode.srcIn,
                     ),
+                  ),
           ),
         ),
       ),
@@ -1022,6 +1011,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       ),
     );
   }
+
   Widget _buildLanguageButton() {
     return Container(
       width: 48.w,
@@ -1048,7 +1038,10 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               'assets/svg/world.svg',
               width: 22.w,
               height: 22.w,
-              colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(
+                Colors.black,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),
@@ -1083,11 +1076,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   (option) => ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(option.label),
-                    trailing:
-                        option.locale.languageCode == current.languageCode
-                            ? const Icon(Icons.radio_button_checked,
-                                color: Color(0xFF64B5F6))
-                            : const Icon(Icons.radio_button_off),
+                    trailing: option.locale.languageCode == current.languageCode
+                        ? const Icon(
+                            Icons.radio_button_checked,
+                            color: Color(0xFF64B5F6),
+                          )
+                        : const Icon(Icons.radio_button_off),
                     onTap: () => Navigator.of(context).pop(option),
                   ),
                 ),
@@ -1284,16 +1278,16 @@ class _ActiveCargoInfo {
   final DateTime? lastUpdate;
   final bool canShowDriver;
 
-  LatLng get midpoint =>
-      routePoints.isNotEmpty ? _centerOfRoute(routePoints) : LatLng(
-        (origin.latitude + destination.latitude) / 2,
-        (origin.longitude + destination.longitude) / 2,
-      );
+  LatLng get midpoint => routePoints.isNotEmpty
+      ? _centerOfRoute(routePoints)
+      : LatLng(
+          (origin.latitude + destination.latitude) / 2,
+          (origin.longitude + destination.longitude) / 2,
+        );
 
-  LatLng get currentPosition =>
-      canShowDriver && driverPosition != null
-          ? driverPosition!
-          : progressPosition;
+  LatLng get currentPosition => canShowDriver && driverPosition != null
+      ? driverPosition!
+      : progressPosition;
 
   LatLng get progressPosition {
     final route = routePoints.length >= 2 ? routePoints : [origin, destination];
@@ -1345,12 +1339,18 @@ class _RouteLetterPin extends StatelessWidget {
           ),
         ),
         SizedBox(height: 6.h),
-        Text(
-          subtitle,
-          style: TextStyle(
-            fontSize: 10.sp,
-            fontWeight: FontWeight.w700,
-            color: color,
+        SizedBox(
+          width: 80.w,
+          child: Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
@@ -1433,7 +1433,7 @@ LatLng _positionOnRoute(List<LatLng> route, double t) {
   return route.last;
 }
 
-  double _routeLength(List<LatLng> route) {
+double _routeLength(List<LatLng> route) {
   var total = 0.0;
   for (var i = 0; i < route.length - 1; i++) {
     total += _homeDistance.distance(route[i], route[i + 1]);

@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fura24.kz/router/app_router.dart';
 import 'package:fura24.kz/services/push_notification_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:fura24.kz/core/error/global_error_provider.dart';
+import 'package:fura24.kz/shared/widgets/no_connection_sheet.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +24,6 @@ Future<void> main() async {
       }
     },
   );
-  
 
   timeago.setLocaleMessages('ru', timeago.RuMessages());
 
@@ -47,6 +48,28 @@ class FuraApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Listen for global errors (No Internet / Server Error)
+    ref.listen<GlobalErrorState>(globalErrorProvider, (previous, next) {
+      if (next.type != GlobalErrorType.none) {
+        final context = appRouter.routerDelegate.navigatorKey.currentContext;
+        if (context != null && context.mounted) {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => NoConnectionSheet(
+              isServerError: next.type == GlobalErrorType.serverError,
+              onRetry: () {
+                ref.read(globalErrorProvider.notifier).clear();
+              },
+            ),
+          ).whenComplete(() {
+            ref.read(globalErrorProvider.notifier).clear();
+          });
+        }
+      }
+    });
+
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       minTextAdapt: true,

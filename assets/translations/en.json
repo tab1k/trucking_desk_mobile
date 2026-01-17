@@ -55,6 +55,7 @@
   "profile": {
     "title": "Profile",
     "unavailable": "User profile unavailable",
+    "my_reviews": "My Reviews",
     "user_placeholder": "User",
     "contact": {
       "title": "Contact information",
@@ -73,7 +74,6 @@
       "error_empty": "Enter your password",
       "error_failed": "Failed to delete account"
     },
-    "delete_account": "Delete account",
     "role": {
       "unknown": "Role not set",
       "sender": "Sender",
@@ -206,7 +206,7 @@
   },
   "create_order": {
     "step_counter": "Step {} of {}",
-    "title": "Create listing",
+    "title": "Add Cargo",
     "edit_title": "Edit listing",
     "subtitle": "We'll fill it step by step so nothing is missed.",
     "location": {
@@ -259,6 +259,7 @@
         "destination_point": "Dropoff city",
         "departure_address": "Pickup address in the city",
         "destination_address": "Dropoff address in the city",
+        "waypoint_address": "Waypoint address",
         "catalog_hint": "Cities are from the directory. Add the exact address to help the driver."
       },
       "transport": {
@@ -281,7 +282,7 @@
         "amount": "Amount",
         "currency": "Currency",
         "photos": "Cargo photos",
-        "photos_hint": "Minimum 2 photos. JPG, PNG, HEIC supported.",
+        "photos_hint": "Optional. JPG, PNG, HEIC supported.",
         "additional": "Additional",
         "note": "Note",
         "contact_visibility_title": "Show phone number to drivers",
@@ -391,7 +392,7 @@
     "actions": {
       "title": "Your actions",
       "subtitle": "Choose an option to continue.",
-      "create_order_title": "Create listing",
+      "create_order_title": "Add Cargo",
       "create_order_subtitle": "Send cargo on route",
       "find_transport_title": "Find transport",
       "find_transport_subtitle": "Pick a vehicle by route",
@@ -600,7 +601,7 @@
       "subtitle": "Track your trips and mark key events.",
       "find_cargo": "Find cargo",
       "loading_status": "Cargo status",
-      "expenses": "Expenses",
+      "expenses": "Calculator",
       "transport": "My transport",
       "create_ad": "Create announcement",
       "fill_form": "Fill the form",

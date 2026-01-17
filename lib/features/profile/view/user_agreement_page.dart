@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fura24.kz/shared/widgets/single_appbar.dart';
 
 class UserAgreementPage extends StatelessWidget {
   const UserAgreementPage({super.key, required this.titleKey});
@@ -12,7 +11,11 @@ class UserAgreementPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.locale.languageCode;
     final content = _agreementContent(locale);
-    final textStyle = TextStyle(fontSize: 14.sp, height: 1.45, color: Colors.black87);
+    final textStyle = TextStyle(
+      fontSize: 14.sp,
+      height: 1.45,
+      color: Colors.black87,
+    );
     final headingStyle = TextStyle(
       fontSize: 16.sp,
       fontWeight: FontWeight.w700,
@@ -20,9 +23,38 @@ class UserAgreementPage extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: SingleAppbar(
-        title: tr(titleKey),
-        onBack: () => Navigator.of(context).pop(),
+      backgroundColor: const Color(0xFFF5F7FB),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: false,
+        titleSpacing: 0,
+        toolbarHeight: 60.h,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: Material(
+            color: Colors.grey[200],
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, size: 20),
+              color: Colors.black87,
+              padding: EdgeInsets.zero,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
+        title: Padding(
+          padding: EdgeInsets.only(left: 12.w),
+          child: Text(
+            tr(titleKey),
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -216,15 +248,11 @@ class UserAgreementPage extends StatelessWidget {
             ),
             _AgreementSection(
               title: '条款变更',
-              paragraphs: [
-                '条款可能更新；继续使用即表示接受修改。',
-              ],
+              paragraphs: ['条款可能更新；继续使用即表示接受修改。'],
             ),
             _AgreementSection(
               title: '注册',
-              paragraphs: [
-                '发布货物或运输需要账户。如代表公司注册，需确认授权。提供准确信息、妥善保管凭据，并对账户行为负责。',
-              ],
+              paragraphs: ['发布货物或运输需要账户。如代表公司注册，需确认授权。提供准确信息、妥善保管凭据，并对账户行为负责。'],
             ),
             _AgreementSection(
               title: '内容',
@@ -234,9 +262,7 @@ class UserAgreementPage extends StatelessWidget {
             ),
             _AgreementSection(
               title: '付款',
-              paragraphs: [
-                '部分服务需付费；若未使用付费服务，付款可在14天内退款。',
-              ],
+              paragraphs: ['部分服务需付费；若未使用付费服务，付款可在14天内退款。'],
             ),
             _AgreementSection(
               title: '禁止行为',
@@ -250,15 +276,11 @@ class UserAgreementPage extends StatelessWidget {
                 '绕过安全措施或逆向工程。',
                 '损害平台运行。',
               ],
-              paragraphs: [
-                'Fura24.kz 可限制访问、移除内容或暂停账户，以守法并保护用户。',
-              ],
+              paragraphs: ['Fura24.kz 可限制访问、移除内容或暂停账户，以守法并保护用户。'],
             ),
             _AgreementSection(
               title: '期限与终止',
-              paragraphs: [
-                '协议为30天并自动续期。您或 Fura24.kz 可终止；违反条款时访问可被暂停。',
-              ],
+              paragraphs: ['协议为30天并自动续期。您或 Fura24.kz 可终止；违反条款时访问可被暂停。'],
             ),
             _AgreementSection(
               title: '免责声明与责任',

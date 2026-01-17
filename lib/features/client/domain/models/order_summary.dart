@@ -31,6 +31,7 @@ class OrderSummary {
   final bool hasResponded;
   final List<String> photoUrls;
   final String senderName;
+  final String? senderAvatarUrl;
   final DateTime? transportationDate;
   final DateTime? createdAt;
   final double? departureLatitude;
@@ -83,6 +84,7 @@ class OrderSummary {
     this.lastLocation,
     this.currentDriverLocation,
     this.waypoints = const [],
+    this.senderAvatarUrl,
   });
 
   factory OrderSummary.fromJson(Map<String, dynamic> json) {
@@ -91,17 +93,16 @@ class OrderSummary {
             ?.whereType<Map<String, dynamic>>()
             .toList() ??
         const [];
-    final waypointModels =
-        waypointMaps.map(OrderWaypointSummary.fromJson).toList();
+    final waypointModels = waypointMaps
+        .map(OrderWaypointSummary.fromJson)
+        .toList();
 
-    final departure =
-        waypointModels.isNotEmpty
-            ? waypointModels.first.location
-            : json['departure_point'] as Map<String, dynamic>?;
-    final destination =
-        waypointModels.isNotEmpty
-            ? waypointModels.last.location
-            : json['destination_point'] as Map<String, dynamic>?;
+    final departure = waypointModels.isNotEmpty
+        ? waypointModels.first.location
+        : json['departure_point'] as Map<String, dynamic>?;
+    final destination = waypointModels.isNotEmpty
+        ? waypointModels.last.location
+        : json['destination_point'] as Map<String, dynamic>?;
     final departureLat = _parseNum(departure?['latitude'])?.toDouble();
     final departureLng = _parseNum(departure?['longitude'])?.toDouble();
     final destinationLat = _parseNum(destination?['latitude'])?.toDouble();
@@ -115,10 +116,9 @@ class OrderSummary {
     final createdAtString = json['created_at'] as String?;
     final dateString = transportDateString ?? createdAtString;
     final rawCargoName = (json['cargo_name'] as String?)?.trim();
-    final displayCargoName =
-        rawCargoName != null && rawCargoName.isNotEmpty
-            ? rawCargoName
-            : 'Без названия';
+    final displayCargoName = rawCargoName != null && rawCargoName.isNotEmpty
+        ? rawCargoName
+        : 'Без названия';
     final description = (json['description'] as String?)?.trim() ?? '';
     final vehicleTypeLabel = _labelOrDash(
       json['vehicle_type_display'] as String?,
@@ -167,17 +167,16 @@ class OrderSummary {
             .where((url) => url.isNotEmpty)
             .toList() ??
         const [];
+    final senderAvatarUrl = json['sender_avatar'] as String?;
     final lastLocationMap = json['last_location'] as Map<String, dynamic>?;
     final currentDriverLocationMap =
         json['current_driver_location'] as Map<String, dynamic>?;
-    final lastLocation =
-        lastLocationMap != null
-            ? OrderSummaryLocation.fromJson(lastLocationMap)
-            : null;
-    final currentDriverLocation =
-        currentDriverLocationMap != null
-            ? OrderSummaryLocation.fromJson(currentDriverLocationMap)
-            : null;
+    final lastLocation = lastLocationMap != null
+        ? OrderSummaryLocation.fromJson(lastLocationMap)
+        : null;
+    final currentDriverLocation = currentDriverLocationMap != null
+        ? OrderSummaryLocation.fromJson(currentDriverLocationMap)
+        : null;
     final resolvedAmount = bidAmount ?? amountRaw;
 
     return OrderSummary(
@@ -210,10 +209,10 @@ class OrderSummary {
       bidDriverPreviewIds: previewIds,
       hasResponded: hasResponded,
       photoUrls: photoUrls,
-      senderName:
-          senderName == null || senderName.isEmpty
-              ? 'Имя не указано'
-              : senderName,
+      senderName: senderName == null || senderName.isEmpty
+          ? 'Имя не указано'
+          : senderName,
+      senderAvatarUrl: senderAvatarUrl,
       transportationDate: _parseDate(transportDateString),
       createdAt: _parseDate(createdAtString),
       rawStatus: (json['status'] as String?) ?? '',
@@ -301,11 +300,10 @@ String _buildRoute(
 ) {
   const emptyLabel = 'Не указано';
   if (waypoints.isNotEmpty) {
-    final cities =
-        waypoints
-            .map((w) => _cityName(w.location, fallback: ''))
-            .where((c) => c.isNotEmpty)
-            .toList();
+    final cities = waypoints
+        .map((w) => _cityName(w.location, fallback: ''))
+        .where((c) => c.isNotEmpty)
+        .toList();
     if (cities.length >= 2) {
       if (cities.length > 2) {
         return '${cities.first} → … → ${cities.last}';

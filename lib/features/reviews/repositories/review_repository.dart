@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/core/exceptions/api_exception.dart';
 import 'package:fura24.kz/core/network/dio_provider.dart';
+import 'package:fura24.kz/features/reviews/domain/models/review.dart';
 
 final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
   final dio = ref.watch(dioProvider);
@@ -23,11 +24,7 @@ class ReviewRepository {
     try {
       await _dio.post(
         'reviews/create/',
-        data: {
-          'order_id': orderId,
-          'rating': rating,
-          'comment': comment ?? '',
-        },
+        data: {'order_id': orderId, 'rating': rating, 'comment': comment ?? ''},
       );
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
@@ -35,6 +32,23 @@ class ReviewRepository {
       throw ApiException(message, statusCode: statusCode);
     } catch (_) {
       throw ApiException('Не удалось отправить отзыв');
+    }
+  }
+
+  Future<List<Review>> getMyReviews() async {
+    try {
+      final response = await _dio.get('reviews/my/');
+      final data = response.data;
+      if (data is List) {
+        return data.map((json) => Review.fromJson(json)).toList();
+      }
+      return [];
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+      final message = _extractErrorMessage(e);
+      throw ApiException(message, statusCode: statusCode);
+    } catch (_) {
+      throw ApiException('Не удалось загрузить отзывы');
     }
   }
 

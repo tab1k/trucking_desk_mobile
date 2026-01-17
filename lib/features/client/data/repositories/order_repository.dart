@@ -31,7 +31,11 @@ class OrderRepository {
       await _dio.post<Map<String, dynamic>>(
         'cargo/requests/',
         data: formData,
-        options: Options(contentType: 'multipart/form-data'),
+        options: Options(
+          contentType: 'multipart/form-data',
+          sendTimeout: const Duration(seconds: 120),
+          receiveTimeout: const Duration(seconds: 120),
+        ),
       );
     } on DioException catch (exception) {
       if (kDebugMode) {
@@ -74,14 +78,14 @@ class OrderRepository {
       addField('departure_point', first.locationId);
       addField('destination_point', last.locationId);
 
-      final waypointPayload =
-          request.waypoints
-              .asMap()
-              .entries
+      final waypointPayload = request.waypoints
+          .asMap()
+          .entries
           .map(
             (entry) => {
               'location': entry.value.locationId,
               'sequence': entry.value.sequence ?? (entry.key + 1),
+              'address_detail': entry.value.addressDetail,
             },
           )
           .toList();
@@ -178,7 +182,11 @@ class OrderRepository {
       await _dio.patch<Map<String, dynamic>>(
         'cargo/requests/$orderId/',
         data: formData,
-        options: Options(contentType: 'multipart/form-data'),
+        options: Options(
+          contentType: 'multipart/form-data',
+          sendTimeout: const Duration(seconds: 120),
+          receiveTimeout: const Duration(seconds: 120),
+        ),
       );
     } on DioException catch (exception) {
       throw ApiException(

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,7 +29,9 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
 
   String _handleLoginChanged(String value) {
     final digits = _extractDigits(value);
-    final isPhone = digits.isNotEmpty && !value.contains('@');
+    // Fix: Don't switch to phone mode if there are letters (e.g. email like 'tabik85...')
+    final hasLetters = RegExp(r'[a-zA-Z]').hasMatch(value);
+    final isPhone = digits.isNotEmpty && !value.contains('@') && !hasLetters;
 
     if (_isPhoneMode != isPhone) {
       setState(() {
@@ -106,21 +109,22 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
     final success = await ref
         .read(authControllerProvider.notifier)
         .login(
-          login:
-              _isPhoneMode
-                  ? _normalizePhoneValue(_loginController.text)
-                  : _loginController.text.trim(),
+          login: _isPhoneMode
+              ? _normalizePhoneValue(_loginController.text)
+              : _loginController.text.trim(),
           password: _passwordController.text,
           role: _roleCode,
         );
 
     if (!mounted) return;
     if (success) {
-      final session =
-          await ref.read(authControllerProvider.notifier).readSession();
+      final session = await ref
+          .read(authControllerProvider.notifier)
+          .readSession();
       final role = session?.user.role.toUpperCase() ?? _roleCode;
-      final targetRoute =
-          role == 'DRIVER' ? AppRoutes.driverHome : AppRoutes.home;
+      final targetRoute = role == 'DRIVER'
+          ? AppRoutes.driverHome
+          : AppRoutes.home;
       if (!mounted) return;
       context.go(targetRoute);
     }
@@ -198,23 +202,22 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                     AuthInputField(
                       controller: _loginController,
                       hintText: 'Телефон или email',
-                      icon:
-                          _isPhoneMode ? null : Icons.alternate_email_outlined,
-                      prefix:
-                          _isPhoneMode
-                              ? Text(
-                                '+7',
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              )
-                              : null,
-                      keyboardType:
-                          _isPhoneMode
-                              ? TextInputType.phone
-                              : TextInputType.emailAddress,
+                      icon: _isPhoneMode
+                          ? null
+                          : Icons.alternate_email_outlined,
+                      prefix: _isPhoneMode
+                          ? Text(
+                              '+7',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            )
+                          : null,
+                      keyboardType: _isPhoneMode
+                          ? TextInputType.phone
+                          : TextInputType.emailAddress,
                       enabled: !isLoading,
                       onChanged: _handleLoginChanged,
                       validator: (value) {
@@ -265,21 +268,22 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                           color: Colors.grey.shade500,
                           size: 20.w,
                         ),
-                        onPressed:
-                            isLoading
-                                ? null
-                                : () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
                       ),
                     ),
                     SizedBox(height: 16.h),
                     Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: () => context.go(AuthRoutes.forgotPassword),
+                        onTap: () => launchUrl(
+                          Uri.parse('https://fura24.kz/auth/password-reset/'),
+                        ),
                         child: Text(
                           'Забыли пароль?',
                           style: TextStyle(
@@ -302,26 +306,25 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                             borderRadius: BorderRadius.circular(14.r),
                           ),
                         ),
-                        child:
-                            isLoading
-                                ? SizedBox(
-                                  width: 18.w,
-                                  height: 18.w,
-                                  child: const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white,
-                                    ),
-                                  ),
-                                )
-                                : Text(
-                                  'Войти',
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                        child: isLoading
+                            ? SizedBox(
+                                width: 18.w,
+                                height: 18.w,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
                                   ),
                                 ),
+                              )
+                            : Text(
+                                'Войти',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
                     ),
 

@@ -30,16 +30,14 @@ class HomeBottomSheet extends ConsumerWidget {
     final theme = Theme.of(context);
     final notificationsAsync = ref.watch(notificationsControllerProvider);
     final myOrdersAsync = ref.watch(myOrdersProvider);
-    final unreadCount =
-        notificationsAsync.maybeWhen(
-          data: (items) => items.where((n) => !n.isRead).length,
-          orElse: () => 0,
-        );
-    final newBidsCount =
-        myOrdersAsync.maybeWhen(
-          data: (orders) => orders.where((o) => o.hasNewBids).length,
-          orElse: () => 0,
-        );
+    final unreadCount = notificationsAsync.maybeWhen(
+      data: (items) => items.where((n) => !n.isRead).length,
+      orElse: () => 0,
+    );
+    final newBidsCount = myOrdersAsync.maybeWhen(
+      data: (orders) => orders.where((o) => o.hasNewBids).length,
+      orElse: () => 0,
+    );
     final totalBadgeCount = unreadCount + newBidsCount;
 
     return Container(
@@ -146,10 +144,11 @@ class _HomeSheetContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14.r),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(14.r),
-                    onTap: () => NavigationUtils.navigateWithBottomSheetAnimation(
-                      context,
-                      const NotificationsPage(),
-                    ),
+                    onTap: () =>
+                        NavigationUtils.navigateWithBottomSheetAnimation(
+                          context,
+                          const NotificationsPage(),
+                        ),
                     child: SizedBox(
                       width: 48.w,
                       height: 48.w,
@@ -328,9 +327,8 @@ class _BannerStoryCard extends StatelessWidget {
                   child: Image(
                     image: _imageProvider(),
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: Colors.grey.shade900,
-                    ),
+                    errorBuilder: (_, __, ___) =>
+                        Container(color: Colors.grey.shade900),
                   ),
                 ),
                 Positioned(

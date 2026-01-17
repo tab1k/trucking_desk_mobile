@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fura24.kz/core/exceptions/api_exception.dart';
 import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
 import 'package:fura24.kz/features/driver/domain/models/driver_cargo_filters.dart';
+import 'package:fura24.kz/features/driver/domain/models/saved_route.dart';
 import 'package:fura24.kz/features/driver/providers/available_orders_provider.dart';
 import 'package:fura24.kz/features/driver/providers/responded_orders_provider.dart';
 import 'package:fura24.kz/features/driver/utils/driver_order_actions.dart';
@@ -14,6 +15,7 @@ import 'package:fura24.kz/features/driver/view/driver_cargo_filters_page.dart';
 import 'package:fura24.kz/features/driver/view/widgets/driver_order_card.dart';
 import 'package:fura24.kz/features/driver/view/widgets/driver_order_detail_sheet.dart';
 import 'package:fura24.kz/features/driver/view/widgets/driver_respond_sheet.dart';
+import 'package:fura24.kz/features/driver/view/widgets/saved_routes_sheet.dart';
 
 class DriverFindCargoPage extends ConsumerStatefulWidget {
   const DriverFindCargoPage({super.key});
@@ -90,7 +92,14 @@ class _DriverFindCargoPageState extends ConsumerState<DriverFindCargoPage> {
               ),
             ),
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.bookmark_outline, color: Colors.black87),
+              onPressed: _openSavedRoutes,
+            ),
+          ],
         ),
+
         body: SafeArea(
           top: false,
           child: AnimatedSwitcher(
@@ -108,28 +117,24 @@ class _DriverFindCargoPageState extends ConsumerState<DriverFindCargoPage> {
                       driverAvailableOrdersProvider(_filters).future,
                     );
                   },
-                  onFavoriteToggle:
-                      (order) => toggleDriverOrderFavorite(context, ref, order),
+                  onFavoriteToggle: (order) =>
+                      toggleDriverOrderFavorite(context, ref, order),
                 );
               },
-              loading:
-                  () => _ScrollableShell(
-                    header: _buildHeader(),
-                    child: const _DriverCargoLoading(),
-                  ),
+              loading: () => _ScrollableShell(
+                header: _buildHeader(),
+                child: const _DriverCargoLoading(),
+              ),
               error: (error, _) {
-                final message =
-                    error is ApiException
-                        ? error.message
-                        : tr('driver_find.error');
+                final message = error is ApiException
+                    ? error.message
+                    : tr('driver_find.error');
                 return _ScrollableShell(
                   header: _buildHeader(),
                   child: _DriverCargoError(
                     message: message,
-                    onRetry:
-                        () => ref.invalidate(
-                          driverAvailableOrdersProvider(_filters),
-                        ),
+                    onRetry: () =>
+                        ref.invalidate(driverAvailableOrdersProvider(_filters)),
                   ),
                 );
               },
@@ -150,13 +155,12 @@ class _DriverFindCargoPageState extends ConsumerState<DriverFindCargoPage> {
             decoration: InputDecoration(
               hintText: tr('driver_find.search_hint'),
               prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
-              suffixIcon:
-                  hasQuery
-                      ? IconButton(
-                        icon: const Icon(Icons.close, size: 18),
-                        onPressed: () => _searchController.clear(),
-                      )
-                      : null,
+              suffixIcon: hasQuery
+                  ? IconButton(
+                      icon: const Icon(Icons.close, size: 18),
+                      onPressed: () => _searchController.clear(),
+                    )
+                  : null,
               filled: true,
               fillColor: Colors.white,
               contentPadding: EdgeInsets.symmetric(
@@ -221,7 +225,10 @@ class _DriverFindCargoPageState extends ConsumerState<DriverFindCargoPage> {
   Widget _buildHeader() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [_buildSearchRow(context), SizedBox(height: 5.h)],
+      children: [
+        _buildSearchRow(context),
+        SizedBox(height: 5.h),
+      ],
     );
   }
 
@@ -251,6 +258,21 @@ class _DriverFindCargoPageState extends ConsumerState<DriverFindCargoPage> {
       return values.any((value) => value.toLowerCase().contains(query));
     }).toList();
   }
+
+  Future<void> _openSavedRoutes() async {
+    final route = await showSavedRoutesSheet(context);
+    if (route != null) {
+      if (!mounted) return;
+      setState(() {
+        _filters = _filters.copyWith(
+          departureCity: route.departureCityName,
+          destinationCity: route.destinationCityName,
+          departurePointId: route.departureCity,
+          destinationPointId: route.destinationCity,
+        );
+      });
+    }
+  }
 }
 
 class _ScrollableShell extends StatelessWidget {
@@ -263,7 +285,11 @@ class _ScrollableShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
-      children: [header, SizedBox(height: 8.h), child],
+      children: [
+        header,
+        SizedBox(height: 8.h),
+        child,
+      ],
     );
   }
 }
@@ -354,10 +380,12 @@ class _DriverCargoList extends ConsumerWidget {
                 order.hasResponded || respondedOrders.contains(order.id),
             onRespond: () => _respondToOrder(context, ref, order),
             onTap: () => _openOrderDetail(context, order),
-            onCall:
-                order.canDriverCall
-                    ? () => callOrderSender(context, order)
-                    : null,
+            onCall: order.canDriverCall
+                ? () => callOrderSender(context, order)
+                : null,
+            onWhatsApp: order.canDriverCall
+                ? () => openOrderWhatsApp(context, order)
+                : null,
             onToggleFavorite: () async {
               await onFavoriteToggle(order);
               ref.invalidate(driverAvailableOrdersProvider(filters));

@@ -8,8 +8,6 @@ class AuthRoutes {
   static const String welcomeScreen = '/';
   static const String login = '/login';
   static const String register = '/register';
-  static const String forgotPassword = '/forgot-password';
-  static const String resetPassword = '/reset-password';
 }
 
 class CargoRoutes {
@@ -34,4 +32,6 @@ class DriverRoutes {
   static const String profile = '/driver-profile';
   static const String verification = '/driver-verification';
   static const String tariffs = '/tariffs';
+  static const String businessServices = '/business-services';
+  static const String becomePartner = '/become-partner';
 }

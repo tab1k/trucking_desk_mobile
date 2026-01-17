@@ -57,7 +57,7 @@ class _DriverOrderDetailSheet extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             Text(
-              order.routeLabel,
+              _buildFullRoute(order),
               style: TextStyle(fontSize: 14.sp, color: Colors.grey[700]),
             ),
             if (order.photoUrls.isNotEmpty) ...[
@@ -73,11 +73,11 @@ class _DriverOrderDetailSheet extends StatelessWidget {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(14.r),
                       child: InkWell(
-                    onTap: () => showDriverPhotoViewer(
-                      context,
-                      order.photoUrls,
-                      initialIndex: index,
-                    ),
+                        onTap: () => showDriverPhotoViewer(
+                          context,
+                          order.photoUrls,
+                          initialIndex: index,
+                        ),
                         child: Container(
                           width: 160.w,
                           color: Colors.grey[200],
@@ -90,7 +90,9 @@ class _DriverOrderDetailSheet extends StatelessWidget {
                                 child: SizedBox(
                                   width: 24.w,
                                   height: 24.w,
-                                  child: const CircularProgressIndicator(strokeWidth: 2),
+                                  child: const CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 ),
                               );
                             },
@@ -129,10 +131,7 @@ class _DriverOrderDetailSheet extends StatelessWidget {
               SizedBox(height: 16.h),
               Text(
                 'Комментарий отправителя',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 8.h),
               Text(
@@ -158,6 +157,19 @@ class _DriverOrderDetailSheet extends StatelessWidget {
         return 'Отменен';
     }
   }
+
+  String _buildFullRoute(OrderSummary order) {
+    if (order.waypoints.isNotEmpty) {
+      final cities = order.waypoints
+          .map((w) => w.location['city_name'] as String? ?? '')
+          .where((c) => c.isNotEmpty)
+          .toList();
+      if (cities.length >= 2) {
+        return cities.join(' → ');
+      }
+    }
+    return '${order.departureCity} → ${order.destinationCity}';
+  }
 }
 
 class _InfoBlock extends StatelessWidget {
@@ -181,10 +193,7 @@ class _InfoBlock extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
           ),
           SizedBox(height: 8.h),
           ...children,

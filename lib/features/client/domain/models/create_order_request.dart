@@ -4,10 +4,12 @@ class OrderWaypointRequest {
   const OrderWaypointRequest({
     required this.locationId,
     this.sequence,
+    this.addressDetail,
   });
 
   final int locationId;
   final int? sequence;
+  final String? addressDetail;
 }
 
 /// DTO с типизированными полями для создания заявки на перевозку.
