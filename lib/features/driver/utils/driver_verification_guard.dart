@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,11 +16,11 @@ Future<bool> ensureDriverVerified(BuildContext context, WidgetRef ref) async {
   final user = ref.read(currentUserProvider);
 
   if (user == null) {
-    _showSnack(context, 'Авторизуйтесь как водитель, чтобы продолжить');
+    _showSnack(context, tr('driver_utils.authorize_as_driver'));
     return false;
   }
   if (user.role?.toUpperCase() != 'DRIVER') {
-    _showSnack(context, 'Доступно только для водителей');
+    _showSnack(context, tr('driver_utils.drivers_only'));
     return false;
   }
   if (isDriverVerified(user)) {
@@ -55,14 +56,14 @@ Future<bool> ensureDriverVerified(BuildContext context, WidgetRef ref) async {
               ),
               const SizedBox(height: 16),
               Text(
-                'Нужна верификация',
+                tr('driver_utils.verification_needed_title'),
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Чтобы откликаться на заявки и публиковать транспорт, подтвердите документы водителя. Это поможет отправителям доверять вам.',
+                tr('driver_utils.verification_needed_body'),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.black.withOpacity(0.7),
                   height: 1.4,
@@ -80,7 +81,7 @@ Future<bool> ensureDriverVerified(BuildContext context, WidgetRef ref) async {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('Позже'),
+                      child: Text(tr('driver_utils.later')),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -96,7 +97,7 @@ Future<bool> ensureDriverVerified(BuildContext context, WidgetRef ref) async {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('Пройти'),
+                      child: Text(tr('driver_utils.verify')),
                     ),
                   ),
                 ],

@@ -79,7 +79,7 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Не удалось обработать отклик')),
+        SnackBar(content: Text(tr('my_cargo.bids.error_process'))),
       );
     } finally {
       if (mounted) {
@@ -176,7 +176,7 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                       children: [
                         Expanded(
                           child: Text(
-                            'Клиент предлагает',
+                            tr('my_cargo.bids.offer'),
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
@@ -196,11 +196,10 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(
-                            color: Colors.black.withValues(alpha: 0.8),
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Colors.black.withValues(alpha: 0.8),
+                              ),
                           _formatDateTime(widget.bid.createdAt),
                         ),
                       ],
@@ -213,7 +212,7 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
             if (widget.bid.comment.isNotEmpty) ...[
               SizedBox(height: 18.h),
               Text(
-                'Комментарий',
+                tr('my_cargo.bids.comment'),
                 style: Theme.of(
                   context,
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -237,10 +236,9 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed:
-                          _isProcessing
-                              ? null
-                              : () => _handleAction(approve: false),
+                      onPressed: _isProcessing
+                          ? null
+                          : () => _handleAction(approve: false),
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                           vertical: 14.h,
@@ -257,7 +255,7 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                       ),
 
                       label: Text(
-                        'Отклонить',
+                        tr('my_cargo.bids.actions.decline'),
                         style: TextStyle(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w600,
@@ -268,10 +266,9 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                   SizedBox(width: 12.w),
                   Expanded(
                     child: FilledButton.icon(
-                      onPressed:
-                          _isProcessing
-                              ? null
-                              : () => _handleAction(approve: true),
+                      onPressed: _isProcessing
+                          ? null
+                          : () => _handleAction(approve: true),
                       style: FilledButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                           vertical: 14.h,
@@ -286,7 +283,9 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                       ),
 
                       label: Text(
-                        _isProcessing ? 'Обработка...' : 'Принять',
+                        _isProcessing
+                            ? tr('my_cargo.bids.actions.processing')
+                            : tr('my_cargo.bids.actions.accept'),
                         style: TextStyle(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w600,
@@ -352,7 +351,7 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
   }
 
   String _formatDateTime(DateTime? date) {
-    if (date == null) return 'Не указано';
+    if (date == null) return tr('my_cargo.bids.date_unknown');
     final day = date.day.toString().padLeft(2, '0');
     final month = date.month.toString().padLeft(2, '0');
     final hour = date.hour.toString().padLeft(2, '0');
@@ -365,15 +364,15 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
     final key = () {
       switch (status) {
         case 'PENDING':
-          return 'order_detail.bid_status.new';
+          return 'my_cargo.bids.status.new';
         case 'WAITING_DRIVER_DECISION':
-          return 'order_detail.bid_status.waiting_driver_decision';
         case 'CONFIRMED':
-          return 'order_detail.bid_status.confirmed';
+          return 'my_cargo.bids.status.confirmed';
         case 'DECLINED':
-          return 'order_detail.bid_status.declined';
+          return 'my_cargo.bids.status.declined';
+        case 'CANCELLED':
         case 'REJECTED':
-          return 'order_detail.bid_status.rejected';
+          return 'my_cargo.bids.status.cancelled';
         default:
           return '';
       }

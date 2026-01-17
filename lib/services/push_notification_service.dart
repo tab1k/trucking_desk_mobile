@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -135,8 +136,8 @@ class PushNotificationService {
   static Future<void> _createNotificationChannel() async {
     final channel = AndroidNotificationChannel(
       'fura24_channel',
-      'Fura24 уведомления',
-      description: 'Канал для push-уведомлений Fura24.kz',
+      'notifications.channel_name'.tr(),
+      description: 'notifications.channel_description'.tr(),
       importance: Importance.max,
       playSound: true,
       enableVibration: true,
@@ -228,8 +229,8 @@ class PushNotificationService {
   static Future<void> _showNotification(RemoteMessage message) async {
     final androidDetails = AndroidNotificationDetails(
       'fura24_channel',
-      'Fura24 уведомления',
-      channelDescription: 'Канал для push-уведомлений Fura24.kz',
+      'notifications.channel_name'.tr(),
+      channelDescription: 'notifications.channel_description'.tr(),
       importance: Importance.max,
       priority: Priority.high,
       enableVibration: true,
@@ -237,7 +238,8 @@ class PushNotificationService {
       styleInformation: BigTextStyleInformation(
         message.notification?.body ?? '',
         htmlFormatBigText: true,
-        contentTitle: message.notification?.title ?? 'Fura24.kz',
+        contentTitle:
+            message.notification?.title ?? 'notifications.default_title'.tr(),
         htmlFormatContentTitle: true,
       ),
     );
@@ -255,8 +257,8 @@ class PushNotificationService {
 
     await _localNotifications.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      message.notification?.title ?? 'Fura24.kz',
-      message.notification?.body ?? 'Новое уведомление',
+      message.notification?.title ?? 'notifications.default_title'.tr(),
+      message.notification?.body ?? 'notifications.default_body'.tr(),
       details,
       payload: json.encode(message.data),
     );
@@ -271,7 +273,9 @@ class PushNotificationService {
     try {
       final map = json.decode(payload) as Map<String, dynamic>;
       _handleNotificationClick(map);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[PushNotificationService] Payload parse error: $e');
+    }
   }
 
   static Future<void> subscribeToTopic(String topic) =>
@@ -357,7 +361,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   const channel = AndroidNotificationChannel(
     'fura24_channel',
-    'Fura24 уведомления',
+    'Fura24 уведомления', // TODO: Localize (requires separate locale init in background isolate)
     description: 'Канал для push-уведомлений Fura24.kz',
     importance: Importance.max,
   );
@@ -387,8 +391,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   await local.show(
     DateTime.now().millisecondsSinceEpoch ~/ 1000,
-    message.notification?.title ?? 'Fura24.kz',
-    message.notification?.body ?? 'Новое уведомление',
+    message.notification?.title ?? 'Fura24.kz', // TODO: Localize
+    message.notification?.body ?? 'Новое уведомление', // TODO: Localize
     details,
     payload: json.encode(message.data),
   );

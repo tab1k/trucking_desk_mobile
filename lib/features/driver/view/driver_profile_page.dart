@@ -142,27 +142,26 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
 
     switch (status) {
       case 'APPROVED':
-        title = 'Верификация пройдена';
+        title = 'driver_profile.verification.status.approved'.tr();
         color = Colors.green;
         break;
       case 'IN_REVIEW':
-        title = 'Документы на проверке';
+        title = 'driver_profile.verification.status.in_review'.tr();
         color = Colors.orange;
-        message =
-            'Мы проверяем ваши документы. Это обычно занимает немного времени.';
+        message = 'driver_profile.verification.message.in_review'.tr();
         break;
       case 'REJECTED':
-        title = 'Верификация отклонена';
+        title = 'driver_profile.verification.status.rejected'.tr();
         color = Colors.red;
         message = user?.verificationRejectionReason?.isNotEmpty == true
             ? user!.verificationRejectionReason
-            : 'Проверьте корректность документов и попробуйте снова.';
+            : 'driver_profile.verification.message.rejected_default'.tr();
         onTap = () => context.go(DriverRoutes.verification);
         break;
       default:
-        title = 'Требуется верификация';
+        title = 'driver_profile.verification.status.required'.tr();
         color = Colors.blue;
-        message = 'Загрузите фото прав, техпаспорта и удостоверения личности.';
+        message = 'driver_profile.verification.message.required'.tr();
         onTap = () => context.go(DriverRoutes.verification);
     }
 
@@ -318,7 +317,7 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
                 SizedBox(width: 12.w),
                 _BalanceButton(
                   icon: Icons.history,
-                  text: 'История',
+                  text: 'driver_profile.balance.history'.tr(),
                   onTap: () => context.push(ProfileRoutes.wallet),
                 ),
               ],
@@ -504,7 +503,7 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Активен', // TODO: Make dynamic later
+                'driver_profile.verification.active_status'.tr(),
                 style: TextStyle(
                   color: Colors.green, // Active color
                   fontSize: 12.sp,
@@ -1059,12 +1058,16 @@ class _BalanceButton extends StatelessWidget {
               children: [
                 Icon(icon, size: 16.w, color: Colors.white),
                 SizedBox(width: 6.w),
-                Text(
-                  text,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                Flexible(
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

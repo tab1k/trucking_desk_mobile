@@ -131,12 +131,151 @@
       "privacy_body": "We'll add the privacy policy link soon.",
       "close": "Got it"
     },
+    "delete": {
+      "title": "Delete account",
+      "prompt": "Enter your password to delete your account. This action is irreversible.",
+      "password": "Password",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "success": "Account deleted",
+      "error_empty": "Enter password",
+      "error_failed": "Failed to delete account"
+    },
     "history": "History",
     "socials_title": "We are on social media"
   },
   "favorites": {
     "title": "Favorites",
     "empty": "You haven't added any favorites yet."
+  },
+  "auth_errors": {
+    "send_code_failed": "Failed to send verification code",
+    "send_reset_email_failed": "Failed to send password reset email",
+    "reset_password_failed": "Failed to reset password. Please try again.",
+    "empty_response": "Empty response from server",
+    "token_refresh_failed": "Server did not return a new access token",
+    "session_update_failed": "Failed to update session. Please try again later.",
+    "request_failed": "Failed to complete request. Please try again later.",
+    "delete_account_failed": "Failed to delete account. Please try again.",
+    "timeout": "Server connection timeout",
+    "server_error": "Server returned an error",
+    "connection_error": "No connection to server",
+    "unknown_error": "An unknown error occurred"
+  },
+  "tariffs": {
+    "title": "Tariffs",
+    "empty": "No tariffs available",
+    "error_load": "Loading error: {}",
+    "active": "Active",
+    "price_month": "{} / month",
+    "btn_connected": "Connected",
+    "btn_connect": "Connect",
+    "dialog": {
+      "title": "Connect Tariff",
+      "body_prefix": "You are about to connect tariff ",
+      "body_middle": " for ",
+      "success": "Tariff connected successfully!",
+      "error_default": "Connection error"
+    }
+  },
+  "driver_cargo_filters": {
+    "title": "Filters",
+    "reset": "Reset",
+    "loading_city": "Loading city",
+    "unloading_city": "Unloading city",
+    "select_city": "Select city",
+    "vehicle_type": "Vehicle type",
+    "any_vehicle": "Any vehicle",
+    "transport_date": "Transport date",
+    "any_date": "Any date",
+    "cost_from": "Cost from",
+    "cost_to": "Cost to",
+    "only_with_call": "Only with available call",
+    "only_with_call_subtitle": "Show only orders where you can call the sender.",
+    "show_announcements": "Show announcements",
+    "save_route": "Save route",
+    "route_saved": "Route saved to bookmarks",
+    "save_error": "Save error: {}"
+  },
+  "driver_order_detail": {
+    "cargo_params": "Cargo parameters",
+    "weight": "Weight",
+    "volume": "Volume",
+    "vehicle_type": "Vehicle type",
+    "loading_type": "Loading type",
+    "cost_and_terms": "Cost and terms",
+    "amount": "Amount",
+    "payment": "Payment",
+    "status": "Status",
+    "departure_date": "Departure date",
+    "sender_comment": "Sender comment",
+    "status_pending": "Pending",
+    "status_in_transit": "In transit",
+    "status_completed": "Completed",
+    "status_cancelled": "Cancelled"
+  },
+  "saved_routes": {
+    "title": "Saved routes",
+    "empty": "You don't have any saved routes yet",
+    "error_loading": "Loading error"
+  },
+  "driver_utils": {
+    "verification_needed_title": "Verification needed",
+    "verification_needed_body": "To respond to requests and publish transport, verify driver documents. This helps senders trust you.",
+    "authorize_as_driver": "Log in as a driver to continue",
+    "drivers_only": "Available only for drivers",
+    "later": "Later",
+    "verify": "Verify",
+    "removed_favorite": "Removed from favorites",
+    "added_favorite": "Added to favorites",
+    "update_favorite_error": "Failed to update favorites",
+    "contacts_hidden": "Sender has hidden contacts",
+    "phone_unavailable": "Sender phone unavailable",
+    "dialer_error": "Failed to open dialer",
+    "call_error": "Failed to call sender",
+    "whatsapp_error": "Failed to open WhatsApp"
+  },
+  "repository": {
+    "profile": {
+      "fetch_empty": "Empty profile response",
+      "update_empty": "Empty response when updating profile"
+    },
+    "driver_announcement": {
+      "empty_response": "Empty response from server",
+      "create_error": "Failed to create announcement",
+      "save_error": "Failed to save announcement",
+      "delete_error": "Failed to delete announcement",
+      "load_error": "Failed to load announcements"
+    },
+    "order": {
+      "photos_minimum": "At least 2 photos of the cargo are required",
+      "create_error": "Failed to create order. Please try again later.",
+      "save_error": "Failed to save changes. Please try again later.",
+      "delete_error": "Failed to delete order. Please try again later.",
+      "empty_response": "Empty response from server",
+      "load_locations_error": "Failed to load coordinates. Please try again later.",
+      "send_locations_error": "Failed to send coordinates",
+      "send_bid_error": "Failed to send bid. Please try again later.",
+      "load_bids_error": "Failed to load bids. Please try again later.",
+      "update_error": "Failed to update order. Please try again later.",
+      "process_bid_error": "Failed to process bid. Please try again later."
+    }
+  },
+  "shared": {
+    "no_connection": {
+      "server_error_title": "Server temporarily unavailable",
+      "internet_error_title": "No internet connection",
+      "server_error_body": "We are working on fixing the issue. Please try again later.",
+      "internet_error_body": "Check your network settings or connect to Wi-Fi and try again."
+    },
+    "common": {
+      "ok": "Got it",
+      "required_field": "This field is required"
+    },
+    "address": {
+      "hint_city": "Address in {}",
+      "hint_default": "Street, house"
+    }
   },
   "my_cargo": {
     "title": "My listings",
@@ -147,15 +286,120 @@
       "cancelled": "Cancelled",
       "empty": "No orders found for the selected filter."
     },
-    "error": {
-      "load": "Failed to load orders"
-    },
     "bids": {
       "title": "Bids",
       "empty": "No bids yet.",
       "accepted": "You accepted a bid",
-      "declined": "Bid declined"
+      "declined": "Bid declined",
+      "order_number": "Order TD-{}",
+      "empty_subtitle": "As soon as drivers respond, you will see them here.",
+      "error_process": "Failed to process bid",
+      "offer": "Offer",
+      "comment": "Comment",
+      "status": {
+        "new": "New",
+        "confirmed": "Confirmed",
+        "declined": "Declined",
+        "cancelled": "Cancelled",
+        "driver_declined": "Driver declined"
+      },
+      "actions": {
+        "decline": "Decline",
+        "accept": "Accept",
+        "processing": "Processing..."
+      },
+      "offer_amount": "Bid amount: {}",
+      "date_unknown": "Date unknown"
+    },
+    "edit_title": "Edit order",
+    "repeat_title": "Repeat order",
+    "error": {
+      "load": "Failed to load orders",
+      "load_single": "Failed to load order",
+      "load_detail": "Failed to load order details"
     }
+  },
+  "payment_types": {
+    "cashless_vat": "Bank transfer (VAT)",
+    "cashless_no_vat": "Bank transfer (No VAT)",
+    "cash": "Cash",
+    "card": "To card",
+    "prepayment": "Prepayment",
+    "agreement": "Negotiable"
+  },
+  "vehicle_types": {
+    "tent": "Tent",
+    "ref": "Refrigerator",
+    "isotherm": "Isotherm",
+    "any": "Any vehicle",
+    "covered": "Covered",
+    "car_carrier": "Car carrier",
+    "aerial_platform": "Aerial platform",
+    "car_transporter": "Car transporter",
+    "bulk": "Bulk carrier",
+    "fuel_tanker": "Fuel tanker",
+    "bitumen_tanker": "Bitumen tanker",
+    "flatbed": "Flatbed",
+    "shalanda": "Shalanda",
+    "trailer": "Trailer",
+    "bus": "Bus",
+    "semi_trailer": "Semi-trailer",
+    "container_carrier": "Container carrier",
+    "hyundai_porter": "Hyundai Porter",
+    "fish_truck": "Fish truck",
+    "chemical_tank": "Chemical tank",
+    "platform": "Platform",
+    "sewage": "Sewage truck",
+    "excavator": "Excavator",
+    "glass": "Glass carrier",
+    "incubator": "Incubator",
+    "roll_transporter": "Roll transporter",
+    "gazelle_passenger": "Gazelle passenger",
+    "gazelle_flatbed": "Gazelle flatbed",
+    "cattle_truck": "Cattle truck",
+    "garbage_truck": "Garbage truck",
+    "mega_truck": "Mega truck",
+    "diplomatic": "Diplomatic cargo",
+    "flour_truck": "Flour truck",
+    "open": "Open",
+    "concrete_mixer": "Concrete mixer",
+    "gas": "Gas tanker",
+    "grain": "Grain carrier",
+    "container_platform": "Container platform",
+    "feed": "Feed carrier",
+    "crane": "Crane",
+    "log_truck": "Log truck",
+    "manipulator": "Manipulator",
+    "minibus": "Minibus",
+    "chip_truck": "Chip truck",
+    "open_container": "Open container",
+    "panel_truck": "Panel truck",
+    "loader": "Loader",
+    "dump_truck": "Dump truck",
+    "tractor": "Tractor unit",
+    "trailer_platform": "Lowboy trailer",
+    "pipe_truck": "Pipe truck",
+    "van": "All-metal van",
+    "cement_truck": "Cement truck",
+    "food_tank": "Food tank",
+    "refrigerator": "Refrigerator"
+  },
+  "loading_types": {
+    "top": "Top loading",
+    "side": "Side loading",
+    "back": "Back loading",
+    "any_way": "Any way",
+    "any_type": "Any loading type"
+  },
+  "dimensions": {
+    "length": "{} m length",
+    "width": "{} m width",
+    "height": "{} m height",
+    "not_specified": "Not specified"
+  },
+  "common": {
+    "date_agreement": "Negotiable",
+    "not_specified": "Not specified"
   },
   "cost_estimate": {
     "title": "Cost estimate",
@@ -209,6 +453,7 @@
     "title": "Add Cargo",
     "edit_title": "Edit listing",
     "subtitle": "We'll fill it step by step so nothing is missed.",
+    "default_error": "Failed to create order",
     "location": {
       "pick_departure": "Select pickup point",
       "pick_destination": "Select dropoff point"
@@ -495,7 +740,27 @@
     "photos": "Cargo photos",
     "labels": {
       "departure_date": "Departure date: {}",
-      "status": "Status: {0}"
+      "departure_date_title": "Departure date",
+      "status": "Status: {0}",
+      "delivery_term": "Delivery term",
+      "weight": "Weight",
+      "volume": "Volume",
+      "dimensions": "Dimensions",
+      "budget": "Budget",
+      "payment_type": "Payment type",
+      "contacts_open": "Visible to drivers",
+      "contacts_hidden": "Hidden"
+    },
+    "sections": {
+      "listing": "Listing",
+      "route": "Route",
+      "full_route": "Full route",
+      "loading": "Loading",
+      "unloading": "Unloading",
+      "cargo_params": "Cargo parameters",
+      "cost": "Cost",
+      "contacts": "Contacts",
+      "comment": "Comment"
     },
     "status": {
       "title": "Trip status",
@@ -552,7 +817,11 @@
     "balance": {
       "title": "Total balance",
       "top_up": "Top up",
-      "transfer": "Transfer"
+      "transfer": "Transfer",
+      "history": "History",
+      "tariffs": "Tariffs",
+      "business": "Business services",
+      "partner": "Become a partner"
     },
     "referral": {
       "title": "My referral code",
@@ -601,6 +870,7 @@
       "subtitle": "Track your trips and mark key events.",
       "find_cargo": "Find cargo",
       "loading_status": "Cargo status",
+      "current_orders": "Current orders",
       "expenses": "Calculator",
       "transport": "My transport",
       "create_ad": "Create announcement",
@@ -689,8 +959,20 @@
     }
   },
   "driver_expenses": {
-    "title": "Expenses",
-    "stub": "Expense tracking will be available in the next update."
+    "title": "Expense Calculator",
+    "subtitle": "Calculate fuel costs for your route",
+    "stub": "Expense tracking will be available in the next update.",
+    "from": "From",
+    "to": "To",
+    "select_city": "Select city",
+    "consumption": "Fuel consumption (L/100km)",
+    "hint_consumption": "e.g., 8.5",
+    "price": "Fuel price (₸/L)",
+    "hint_price": "e.g., 250",
+    "calculate": "Calculate",
+    "hint_from": "e.g., 8.5",
+    "hint_to": "e.g., 250",
+    "error_coords": "Could not determine city coordinates"
   },
   "driver_loading": {
     "title": "Cargo status",

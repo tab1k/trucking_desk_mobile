@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -82,7 +83,7 @@ class _DriverVerificationPageState
     if (!_formKey.currentState!.validate()) return;
     if (!_filesReady()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Загрузите все обязательные файлы')),
+        SnackBar(content: Text('driver_verification.errors.upload_all'.tr())),
       );
       return;
     }
@@ -106,9 +107,9 @@ class _DriverVerificationPageState
         idBack: _idBack!,
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Отправлено на проверку')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('driver_verification.success'.tr())),
+      );
       ref.read(driverDashboardTabIndexProvider.notifier).state = 3;
       context.go(AppRoutes.driverHome);
     } catch (e) {
@@ -127,8 +128,9 @@ class _DriverVerificationPageState
     ValueSetter<XFile?> setter,
   ) {
     final hasFile = file != null;
-    final Color statusColor =
-        hasFile ? const Color(0xFF00B26B) : Colors.grey.shade600;
+    final Color statusColor = hasFile
+        ? const Color(0xFF00B26B)
+        : Colors.grey.shade600;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -170,7 +172,7 @@ class _DriverVerificationPageState
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      hasFile ? file!.name : 'JPEG/PNG, до 10 МБ',
+                      'driver_verification.files.placeholder'.tr(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -190,7 +192,9 @@ class _DriverVerificationPageState
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Text(
-                  hasFile ? 'Заменить' : 'Загрузить',
+                  hasFile
+                      ? 'driver_verification.files.replace'.tr()
+                      : 'driver_verification.files.upload'.tr(),
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
@@ -232,7 +236,7 @@ class _DriverVerificationPageState
         title: Padding(
           padding: EdgeInsets.only(left: 12.w),
           child: Text(
-            'Верификация водителя',
+            'driver_verification.title'.tr(),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
@@ -255,98 +259,98 @@ class _DriverVerificationPageState
                   border: Border.all(color: _borderColor),
                 ),
                 child: Text(
-                  'Заполните данные и загрузите фото документов',
+                  'driver_verification.subtitle'.tr(),
                   style: TextStyle(fontSize: 14.sp, color: Colors.black87),
                 ),
               ),
               _buildSection(
-                title: 'Личные данные',
+                title: 'driver_verification.personal_data'.tr(),
                 children: [
                   _buildTextField(
                     _firstNameController,
-                    'Имя',
+                    'driver_verification.fields.first_name'.tr(),
                     icon: Icons.person_outline,
                   ),
                   _buildTextField(
                     _lastNameController,
-                    'Фамилия',
+                    'driver_verification.fields.last_name'.tr(),
                     icon: Icons.person_outline,
                   ),
                   _buildTextField(
                     _middleNameController,
-                    'Отчество',
+                    'driver_verification.fields.middle_name'.tr(),
                     requiredField: false,
                     icon: Icons.person_outline,
                   ),
                 ],
               ),
               _buildSection(
-                title: 'Контакты',
+                title: 'driver_verification.contacts'.tr(),
                 children: [
                   _buildTextField(
                     _emailController,
-                    'Email',
+                    'driver_verification.fields.email'.tr(),
                     keyboardType: TextInputType.emailAddress,
                     icon: Icons.email_outlined,
                   ),
                   _buildTextField(
                     _phoneController,
-                    'Телефон',
+                    'driver_verification.fields.phone'.tr(),
                     keyboardType: TextInputType.phone,
                     icon: Icons.call_outlined,
                   ),
                 ],
               ),
               _buildSection(
-                title: 'Данные документов',
+                title: 'driver_verification.docs_data'.tr(),
                 children: [
                   _buildTextField(
                     _licenseNumberController,
-                    'Номер прав',
+                    'driver_verification.fields.license_number'.tr(),
                     icon: Icons.badge_outlined,
                   ),
                   _buildTextField(
                     _vehiclePassportNumberController,
-                    'Номер техпаспорта',
+                    'driver_verification.fields.vp_number'.tr(),
                     icon: Icons.directions_car_filled_outlined,
                   ),
                   _buildTextField(
                     _idNumberController,
-                    'Номер удостоверения личности',
+                    'driver_verification.fields.id_number'.tr(),
                     icon: Icons.credit_card,
                   ),
                 ],
               ),
               _buildSection(
-                title: 'Файлы документов',
+                title: 'driver_verification.files_data'.tr(),
                 children: [
                   _buildFilePicker(
-                    'Права (лицевая)',
+                    'driver_verification.files.license_front'.tr(),
                     _licenseFront,
                     (f) => _licenseFront = f,
                   ),
                   _buildFilePicker(
-                    'Права (оборотная)',
+                    'driver_verification.files.license_back'.tr(),
                     _licenseBack,
                     (f) => _licenseBack = f,
                   ),
                   _buildFilePicker(
-                    'Техпаспорт (лицевая)',
+                    'driver_verification.files.vp_front'.tr(),
                     _vehiclePassportFront,
                     (f) => _vehiclePassportFront = f,
                   ),
                   _buildFilePicker(
-                    'Техпаспорт (оборотная)',
+                    'driver_verification.files.vp_back'.tr(),
                     _vehiclePassportBack,
                     (f) => _vehiclePassportBack = f,
                   ),
                   _buildFilePicker(
-                    'Удостоверение личности (разворот)',
+                    'driver_verification.files.id_front'.tr(),
                     _idFront,
                     (f) => _idFront = f,
                   ),
                   _buildFilePicker(
-                    'Удостоверение личности (оборотная)',
+                    'driver_verification.files.id_back'.tr(),
                     _idBack,
                     (f) => _idBack = f,
                   ),
@@ -374,17 +378,16 @@ class _DriverVerificationPageState
                 ),
                 textStyle: const TextStyle(fontWeight: FontWeight.w700),
               ),
-              child:
-                  _isSubmitting
-                      ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                      : const Text('Отправить на проверку'),
+              child: _isSubmitting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Text('driver_verification.submit_btn'.tr()),
             ),
           ),
         ),
@@ -404,15 +407,18 @@ class _DriverVerificationPageState
       keyboardType: keyboardType,
       validator: (value) {
         final text = value?.trim() ?? '';
-        if (requiredField && text.isEmpty) return 'Обязательное поле';
+        if (requiredField && text.isEmpty)
+          return 'driver_verification.errors.required'.tr();
         if (label.toLowerCase().contains('email')) {
           final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-          if (!emailRegex.hasMatch(text)) return 'Некорректный email';
+          if (!emailRegex.hasMatch(text))
+            return 'driver_verification.errors.invalid_email'.tr();
         }
         if (label.toLowerCase().contains('телефон')) {
           final cleaned = text.replaceAll(RegExp(r'[^0-9+]'), '');
           final phoneRegex = RegExp(r'^\+?[0-9]{6,20}$');
-          if (!phoneRegex.hasMatch(cleaned)) return 'Некорректный телефон';
+          if (!phoneRegex.hasMatch(cleaned))
+            return 'driver_verification.errors.invalid_phone'.tr();
         }
         return null;
       },
@@ -480,8 +486,9 @@ class _DriverVerificationPageState
     return InputDecoration(
       hintText: hint,
       hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey[500]),
-      prefixIcon:
-          icon != null ? Icon(icon, size: 20, color: Colors.grey[500]) : null,
+      prefixIcon: icon != null
+          ? Icon(icon, size: 20, color: Colors.grey[500])
+          : null,
       filled: true,
       fillColor: Colors.grey[50],
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),

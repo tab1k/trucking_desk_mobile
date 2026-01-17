@@ -7,7 +7,7 @@ class VehicleTypeOption {
 
 const vehicleTypeOptions = <VehicleTypeOption>[
   VehicleTypeOption(value: 'ANY', label: 'Любой транспорт'),
-  VehicleTypeOption(value: 'TENT', label: 'Тент'),
+  VehicleTypeOption(value: 'TENT', label: 'Тентованый'),
   VehicleTypeOption(value: 'REFRIGERATOR', label: 'Рефрижератор'),
   VehicleTypeOption(value: 'ISOTHERM', label: 'Изотерм'),
   VehicleTypeOption(value: 'COVERED', label: 'Крытая'),
@@ -24,7 +24,7 @@ const vehicleTypeOptions = <VehicleTypeOption>[
   VehicleTypeOption(value: 'SEMI_TRAILER', label: 'Полуприцеп'),
   VehicleTypeOption(value: 'CONTAINER_CARRIER', label: 'Контейнеровоз'),
   VehicleTypeOption(value: 'HYUNDAI_PORTER', label: 'Хендай Портер'),
-  VehicleTypeOption(value: 'FISH_TRUCK', label: 'Рыбовод'),
+  VehicleTypeOption(value: 'FISH_TRUCK', label: 'Рыбовоз'),
   VehicleTypeOption(value: 'CHEMICAL_TANK', label: 'Цистерна химическая'),
   VehicleTypeOption(value: 'PLATFORM', label: 'Платформа'),
   VehicleTypeOption(value: 'SEWAGE', label: 'Ассенизатор'),
@@ -43,7 +43,10 @@ const vehicleTypeOptions = <VehicleTypeOption>[
   VehicleTypeOption(value: 'CONCRETE_MIXER', label: 'Бетоновоз'),
   VehicleTypeOption(value: 'GAS', label: 'Газовоз'),
   VehicleTypeOption(value: 'GRAIN', label: 'Зерновоз'),
-  VehicleTypeOption(value: 'CONTAINER_PLATFORM', label: 'Конт. площадка'),
+  VehicleTypeOption(
+    value: 'CONTAINER_PLATFORM',
+    label: 'Контейнерная площадка',
+  ),
   VehicleTypeOption(value: 'FEED', label: 'Кормовоз'),
   VehicleTypeOption(value: 'CRANE', label: 'Кран'),
   VehicleTypeOption(value: 'LOG_TRUCK', label: 'Лесовоз'),
@@ -57,7 +60,7 @@ const vehicleTypeOptions = <VehicleTypeOption>[
   VehicleTypeOption(value: 'TRACTOR', label: 'Седельный тягач'),
   VehicleTypeOption(value: 'TRAILER_PLATFORM', label: 'Трал'),
   VehicleTypeOption(value: 'PIPE_TRUCK', label: 'Трубовоз'),
-  VehicleTypeOption(value: 'VAN', label: 'Цельнометалл'),
+  VehicleTypeOption(value: 'VAN', label: 'Цельнометаллический'),
   VehicleTypeOption(value: 'CEMENT_TRUCK', label: 'Цементовоз'),
   VehicleTypeOption(value: 'FOOD_TANK', label: 'Цистерна пищевая'),
 ];

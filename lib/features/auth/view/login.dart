@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,7 @@ class SignInPageView extends ConsumerStatefulWidget {
 }
 
 class _SignInPageViewState extends ConsumerState<SignInPageView> {
+  // ... existing state logic ...
   final _formKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -145,9 +147,9 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
           padding: EdgeInsets.only(left: 16.w),
           child: Material(
             color: Colors.grey[200],
-            shape: CircleBorder(),
+            shape: const CircleBorder(),
             child: IconButton(
-              icon: Icon(Icons.arrow_back, size: 20),
+              icon: const Icon(Icons.arrow_back, size: 20),
               color: Colors.black87,
               padding: EdgeInsets.zero,
               onPressed: () => context.go(AuthRoutes.welcomeScreen),
@@ -163,7 +165,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
             children: [
               SizedBox(height: 20.h),
               Text(
-                'Добро пожаловать\nобратно!',
+                'auth.welcome_back'.tr(),
                 style: TextStyle(
                   fontSize: 28.sp,
                   fontWeight: FontWeight.w700,
@@ -173,7 +175,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
               ),
               SizedBox(height: 10.h),
               Text(
-                'Введите свои данные, чтобы продолжить работу в Fura24.',
+                'auth.enter_details'.tr(),
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
@@ -201,7 +203,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                   children: [
                     AuthInputField(
                       controller: _loginController,
-                      hintText: 'Телефон или email',
+                      hintText: 'auth.login_hint'.tr(),
                       icon: _isPhoneMode
                           ? null
                           : Icons.alternate_email_outlined,
@@ -223,14 +225,14 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                       validator: (value) {
                         final trimmed = value?.trim() ?? '';
                         if (trimmed.isEmpty) {
-                          return 'Введите телефон или email';
+                          return 'auth.validation_enter_login'.tr();
                         }
                         if (_isPhoneMode) {
                           final digits = _normalizePhoneDigits(
                             _extractDigits(trimmed),
                           );
                           if (digits.length < 10) {
-                            return 'Введите корректный телефон';
+                            return 'auth.validation_correct_phone'.tr();
                           }
                           return null;
                         }
@@ -240,7 +242,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                         final phoneRegex = RegExp(r'^\+?[0-9]{6,20}$');
                         if (!(emailRegex.hasMatch(trimmed) ||
                             phoneRegex.hasMatch(trimmed))) {
-                          return 'Введите корректный телефон или email';
+                          return 'auth.validation_correct_login'.tr();
                         }
                         return null;
                       },
@@ -248,13 +250,13 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                     SizedBox(height: 10.h),
                     AuthInputField(
                       controller: _passwordController,
-                      hintText: 'Пароль',
+                      hintText: 'auth.password_hint'.tr(),
                       icon: Icons.lock_outlined,
                       enabled: !isLoading,
                       obscureText: _obscurePassword,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Введите пароль';
+                          return 'auth.validation_enter_password'.tr();
                         }
                         return null;
                       },
@@ -285,7 +287,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                           Uri.parse('https://fura24.kz/auth/password-reset/'),
                         ),
                         child: Text(
-                          'Забыли пароль?',
+                          'auth.forgot_password'.tr(),
                           style: TextStyle(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w500,
@@ -318,7 +320,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                                 ),
                               )
                             : Text(
-                                'Войти',
+                                'auth.login_btn'.tr(),
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
@@ -334,7 +336,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                         onTap: () => context.go(AuthRoutes.register),
                         child: RichText(
                           text: TextSpan(
-                            text: 'Ещё нет аккаунта? ',
+                            text: 'auth.no_account'.tr(),
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w400,
@@ -342,7 +344,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
                             ),
                             children: [
                               TextSpan(
-                                text: 'Зарегистрироваться',
+                                text: 'auth.register_link'.tr(),
                                 style: TextStyle(
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w600,

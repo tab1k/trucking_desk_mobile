@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -29,11 +30,13 @@ class _SimpleSplashScreenState extends ConsumerState<SimpleSplashScreen> {
 
     if (session != null) {
       final role = session.user.role.toUpperCase();
-      final targetRoute = role == 'DRIVER' ? AppRoutes.driverHome : AppRoutes.home;
+      final targetRoute = role == 'DRIVER'
+          ? AppRoutes.driverHome
+          : AppRoutes.home;
 
       // Пытаемся обновить сессию
       final result = await authController.refreshSession(session: session);
-      
+
       if (result == SessionRefreshResult.refreshed) {
         // Успешно обновили токен - переходим на главную
         if (mounted) context.go(targetRoute);
@@ -69,18 +72,18 @@ class _SimpleSplashScreenState extends ConsumerState<SimpleSplashScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Fura24.kz',
-              style: TextStyle(
+            Text(
+              'app_title'.tr(),
+              style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: Colors.blue,
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Ваши грузоперевозки',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+            Text(
+              'splash.subtitle'.tr(),
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 30),
             const CircularProgressIndicator(color: Colors.blue),

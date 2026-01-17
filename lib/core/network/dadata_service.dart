@@ -39,10 +39,22 @@ class DaDataService {
         final suggestions = response.data['suggestions'] as List;
         return suggestions.map((s) {
           final value = s['value'] as String;
-          // Optimization: If we searched with City, strip it if the user wants purely street address?
-          // But website logic just returns the value.
-          // Let's refine the value to match website logic if needed.
-          // Website: const mainText = item.value;
+          final data = s['data'] as Map<String, dynamic>?;
+
+          // If city is provided, return only street and house
+          if (city != null && city.isNotEmpty && data != null) {
+            final street = data['street'] as String?;
+            final house = data['house'] as String?;
+
+            if (street != null && street.isNotEmpty) {
+              if (house != null && house.isNotEmpty) {
+                return '$street, $house';
+              }
+              return street;
+            }
+          }
+
+          // Otherwise return full address
           return value;
         }).toList();
       }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -43,8 +44,8 @@ class AddressAutocompleteField extends StatelessWidget {
               focusNode: focusNode,
               decoration: InputDecoration(
                 hintText: city != null && city!.isNotEmpty
-                    ? 'Адрес в городе $city'
-                    : 'Улица, дом',
+                    ? tr('shared.address.hint_city', args: [city!])
+                    : tr('shared.address.hint_default'),
                 hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey[500]),
                 prefixIcon: Icon(icon, size: 20),
                 filled: true,
@@ -61,7 +62,7 @@ class AddressAutocompleteField extends StatelessWidget {
               validator: isRequired
                   ? (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Это поле обязательно';
+                        return tr('shared.common.required_field');
                       }
                       return null;
                     }

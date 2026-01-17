@@ -492,9 +492,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     if (rawKey != null) {
       final translated = tr(rawKey);
       if (translated != rawKey) return translated;
-      final fallback = _statusFallbackLabel(rawStatus.toLowerCase());
-      if (fallback != null) return fallback;
     }
+
     final baseKey = () {
       switch (status) {
         case CargoStatus.pending:
@@ -507,73 +506,11 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           return 'order_detail.statuses.cancelled';
       }
     }();
+
     final translated = tr(baseKey);
     if (translated != baseKey) return translated;
-    final fallback = _statusFallbackLabel(baseKey.split('.').last);
-    if (fallback != null) return fallback;
+
     return baseKey.split('.').last;
-  }
-
-  String? _statusFallbackLabel(String key) {
-    final lang = context.locale.languageCode;
-    final normalized = key.toLowerCase();
-    String? pick(Map<String, String> map) => map[normalized];
-
-    const ru = {
-      'waiting_bids': 'Ожидает откликов',
-      'waiting_driver_confirmation': 'Ожидает подтверждения водителя',
-      'ready_for_pickup': 'Водитель на месте',
-      'waiting_pickup_confirmation': 'Ожидает подтверждения передачи',
-      'waiting_delivery_confirmation': 'Ожидает подтверждения доставки',
-      'in_progress': 'В пути',
-      'delivered': 'Доставлен',
-      'cancelled': 'Отменён',
-      'pending': 'Ожидание',
-    };
-    const en = {
-      'waiting_bids': 'Waiting for bids',
-      'waiting_driver_confirmation': 'Waiting for driver confirmation',
-      'ready_for_pickup': 'Driver on site',
-      'waiting_pickup_confirmation': 'Waiting for pickup handoff',
-      'waiting_delivery_confirmation': 'Waiting for delivery confirmation',
-      'in_progress': 'In transit',
-      'delivered': 'Delivered',
-      'cancelled': 'Cancelled',
-      'pending': 'Pending',
-    };
-    const kk = {
-      'waiting_bids': 'Откликтерді күтуде',
-      'waiting_driver_confirmation': 'Жүргізуші растауын күтуде',
-      'ready_for_pickup': 'Жүргізуші орнында',
-      'waiting_pickup_confirmation': 'Тапсыруды күтуде',
-      'waiting_delivery_confirmation': 'Жеткізуді растауды күтуде',
-      'in_progress': 'Жолда',
-      'delivered': 'Жеткізілді',
-      'cancelled': 'Бас тартылған',
-      'pending': 'Күтуде',
-    };
-    const zh = {
-      'waiting_bids': '等待响应',
-      'waiting_driver_confirmation': '等待司机确认',
-      'ready_for_pickup': '司机已到场',
-      'waiting_pickup_confirmation': '等待交接',
-      'waiting_delivery_confirmation': '等待送达确认',
-      'in_progress': '运输中',
-      'delivered': '已送达',
-      'cancelled': '已取消',
-      'pending': '待处理',
-    };
-
-    switch (lang) {
-      case 'en':
-        return pick(en);
-      case 'kk':
-        return pick(kk);
-      case 'zh':
-        return pick(zh);
-      default:
-        return pick(ru);
-    }
   }
 
   String _mapLocationError(Object error) {

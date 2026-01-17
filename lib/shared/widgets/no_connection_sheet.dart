@@ -48,8 +48,8 @@ class NoConnectionSheet extends StatelessWidget {
           SizedBox(height: 24.h),
           Text(
             isServerError
-                ? 'Сервер временно недоступен'
-                : 'Нет соединения с интернетом',
+                ? tr('shared.no_connection.server_error_title')
+                : tr('shared.no_connection.internet_error_title'),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20.sp,
@@ -61,8 +61,8 @@ class NoConnectionSheet extends StatelessWidget {
           SizedBox(height: 12.h),
           Text(
             isServerError
-                ? 'Мы уже работаем над устранением проблемы. Пожалуйста, попробуйте позже.'
-                : 'Проверьте настройки сети или подключитесь к Wi-Fi и попробуйте снова.',
+                ? tr('shared.no_connection.server_error_body')
+                : tr('shared.no_connection.internet_error_body'),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 15.sp,
@@ -88,7 +88,7 @@ class NoConnectionSheet extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'Понятно',
+                tr('shared.common.ok'),
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
               ),
             ),

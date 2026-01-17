@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,12 +32,14 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
   String _dialCode = '+7';
   AuthRole _selectedRole = AuthRole.client;
 
-  String get _roleCode => _selectedRole == AuthRole.client ? 'SENDER' : 'DRIVER';
+  String get _roleCode =>
+      _selectedRole == AuthRole.client ? 'SENDER' : 'DRIVER';
   int get _dialCodeDigitsLength =>
       _dialCode.replaceAll(RegExp(r'[^0-9]'), '').length;
   int get _maxLocalDigits => math.max(0, 20 - _dialCodeDigitsLength);
 
-  String _extractDigits(String value) => value.replaceAll(RegExp(r'[^0-9]'), '');
+  String _extractDigits(String value) =>
+      value.replaceAll(RegExp(r'[^0-9]'), '');
 
   String _normalizePhoneDigits(String digits) {
     if (_dialCode == '+7') {
@@ -121,9 +124,7 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
     if (!_acceptTerms) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(content: Text('Подтвердите согласие с условиями')),
-        );
+        ..showSnackBar(SnackBar(content: Text('auth.confirm_terms'.tr())));
       return;
     }
 
@@ -139,17 +140,11 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
 
     if (success && mounted) {
       // 2. Show Dialog
-      _showVerificationDialog(
-        phoneNumber: loginValue,
-        email: emailValue,
-      );
+      _showVerificationDialog(phoneNumber: loginValue, email: emailValue);
     }
   }
 
-  void _showVerificationDialog({
-    required String phoneNumber,
-    String? email,
-  }) {
+  void _showVerificationDialog({required String phoneNumber, String? email}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -172,9 +167,13 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
 
           if (success && mounted) {
             Navigator.pop(context); // Close sheet
-            final session = await ref.read(authControllerProvider.notifier).readSession();
+            final session = await ref
+                .read(authControllerProvider.notifier)
+                .readSession();
             final role = session?.user.role.toUpperCase() ?? _roleCode;
-            final targetRoute = role == 'DRIVER' ? AppRoutes.driverHome : AppRoutes.home;
+            final targetRoute = role == 'DRIVER'
+                ? AppRoutes.driverHome
+                : AppRoutes.home;
             if (mounted) context.go(targetRoute);
           }
         },
@@ -207,7 +206,7 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
           ),
         ),
       ),
-      
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -215,7 +214,7 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Создайте аккаунт',
+                'auth.create_account'.tr(),
                 style: TextStyle(
                   fontSize: 28.sp,
                   fontWeight: FontWeight.w700,
@@ -225,7 +224,7 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
               ),
               SizedBox(height: 8.h),
               Text(
-                'Зарегистрируйтесь, чтобы начать пользоваться Fura24.',
+                'auth.register_to_start'.tr(),
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
@@ -253,7 +252,7 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                   children: [
                     AuthInputField(
                       controller: _loginController,
-                      hintText: 'Номер телефона *',
+                      hintText: 'auth.phone_number_required'.tr(),
                       icon: Icons.phone_iphone_outlined,
                       prefix: _buildCountryPicker(),
                       keyboardType: TextInputType.phone,
@@ -262,16 +261,19 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                       validator: (value) {
                         final raw = value?.trim() ?? '';
                         if (raw.isEmpty) {
-                          return 'Обязательное поле';
+                          return 'auth.required_field'.tr();
                         }
-                        final digitsOnly = raw.replaceAll(RegExp(r'[^0-9]'), '');
+                        final digitsOnly = raw.replaceAll(
+                          RegExp(r'[^0-9]'),
+                          '',
+                        );
                         if (digitsOnly.isEmpty) {
-                          return 'Введите корректный номер';
+                          return 'auth.enter_correct_number'.tr();
                         }
                         final combined = _dialCode + digitsOnly;
                         final phoneRegex = RegExp(r'^\+?[0-9]{6,20}$');
                         if (!phoneRegex.hasMatch(combined)) {
-                          return 'Введите корректный номер';
+                          return 'auth.enter_correct_number'.tr();
                         }
                         return null;
                       },
@@ -279,23 +281,23 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                     SizedBox(height: 10.h),
                     AuthInputField(
                       controller: _emailController,
-                      hintText: 'Электронная почта *',
+                      hintText: 'auth.email_required'.tr(),
                       icon: Icons.mail_outlined,
                       keyboardType: TextInputType.emailAddress,
                       enabled: !isLoading,
                       validator: (value) {
                         final trimmed = value?.trim() ?? '';
                         if (trimmed.isEmpty) {
-                          return 'Обязательное поле';
+                          return 'auth.required_field'.tr();
                         }
                         final emailRegex = RegExp(
                           r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
                         );
                         if (!emailRegex.hasMatch(trimmed)) {
-                          return 'Некорректный email';
+                          return 'auth.incorrect_email'.tr();
                         }
                         if (trimmed.length > 254) {
-                          return 'Макс. 254 символа';
+                          return 'auth.max_254_chars'.tr();
                         }
                         return null;
                       },
@@ -305,16 +307,16 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                     SizedBox(height: 10.h),
                     AuthInputField(
                       controller: _passwordController,
-                      hintText: 'Пароль *',
+                      hintText: 'auth.password_required'.tr(),
                       icon: Icons.lock_outlined,
                       enabled: !isLoading,
                       obscureText: _obscurePassword,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Обязательное поле';
+                          return 'auth.required_field'.tr();
                         }
                         if (value.length < 6) {
-                          return 'Минимум 6 символов';
+                          return 'auth.min_6_chars'.tr();
                         }
                         return null;
                       },
@@ -328,29 +330,28 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                           color: Colors.grey.shade500,
                           size: 20.w,
                         ),
-                        onPressed:
-                            isLoading
-                                ? null
-                                : () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
                       ),
                     ),
                     SizedBox(height: 10.h),
                     AuthInputField(
                       controller: _passwordConfirmController,
-                      hintText: 'Повторите пароль *',
+                      hintText: 'auth.repeat_password_required'.tr(),
                       icon: Icons.lock_outlined,
                       enabled: !isLoading,
                       obscureText: _obscurePasswordConfirm,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Обязательное поле';
+                          return 'auth.required_field'.tr();
                         }
                         if (value != _passwordController.text) {
-                          return 'Пароли не совпадают';
+                          return 'auth.passwords_do_not_match'.tr();
                         }
                         return null;
                       },
@@ -364,15 +365,14 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                           color: Colors.grey.shade500,
                           size: 20.w,
                         ),
-                        onPressed:
-                            isLoading
-                                ? null
-                                : () {
-                                  setState(() {
-                                    _obscurePasswordConfirm =
-                                        !_obscurePasswordConfirm;
-                                  });
-                        },
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                                setState(() {
+                                  _obscurePasswordConfirm =
+                                      !_obscurePasswordConfirm;
+                                });
+                              },
                       ),
                     ),
                     SizedBox(height: 10.h),
@@ -380,13 +380,13 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                     SizedBox(height: 10.h),
                     AuthInputField(
                       controller: _referralController,
-                      hintText: 'Реферальный код (необязательно)',
+                      hintText: 'auth.referral_code_optional'.tr(),
                       enabled: !isLoading,
                       validator: (value) {
                         final trimmed = value?.trim() ?? '';
                         if (trimmed.isEmpty) return null;
                         if (trimmed.length > 10) {
-                          return 'Макс. 10 символов';
+                          return 'auth.max_10_chars'.tr();
                         }
                         return null;
                       },
@@ -396,18 +396,17 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                       children: [
                         Checkbox(
                           value: _acceptTerms,
-                          onChanged:
-                              isLoading
-                                  ? null
-                                  : (value) {
-                                    setState(() {
-                                      _acceptTerms = value ?? false;
-                                    });
-                                  },
+                          onChanged: isLoading
+                              ? null
+                              : (value) {
+                                  setState(() {
+                                    _acceptTerms = value ?? false;
+                                  });
+                                },
                         ),
                         Expanded(
                           child: Text(
-                            'Я принимаю условия использования и политику конфиденциальности',
+                            'auth.accept_terms'.tr(),
                             style: TextStyle(
                               fontSize: 14.sp,
                               color: Colors.black.withOpacity(0.65),
@@ -428,36 +427,35 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                             borderRadius: BorderRadius.circular(14.r),
                           ),
                         ),
-                        child:
-                            isLoading
-                                ? SizedBox(
-                                  width: 18.w,
-                                  height: 18.w,
-                                  child: const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white,
-                                    ),
-                                  ),
-                                )
-                                : Text(
-                                  'Зарегистрироваться',
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                        child: isLoading
+                            ? SizedBox(
+                                width: 18.w,
+                                height: 18.w,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
                                   ),
                                 ),
+                              )
+                            : Text(
+                                'auth.register_btn'.tr(),
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
                     ),
                     SizedBox(height: 32.h),
-                    
+
                     Center(
                       child: GestureDetector(
                         onTap: () => context.go(AuthRoutes.login),
                         child: RichText(
                           text: TextSpan(
-                            text: 'Уже есть аккаунт? ',
+                            text: 'auth.already_have_account'.tr(),
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w400,
@@ -465,7 +463,7 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                             ),
                             children: [
                               TextSpan(
-                                text: 'Войти',
+                                text: 'auth.login_text'.tr(),
                                 style: TextStyle(
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w600,
@@ -524,10 +522,7 @@ class _AuthErrorBanner extends StatelessWidget {
 }
 
 class _VerificationSheet extends StatefulWidget {
-  const _VerificationSheet({
-    required this.phoneNumber,
-    required this.onVerify,
-  });
+  const _VerificationSheet({required this.phoneNumber, required this.onVerify});
 
   final String phoneNumber;
   final Function(String) onVerify;
@@ -542,7 +537,12 @@ class _VerificationSheetState extends State<_VerificationSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, MediaQuery.of(context).viewInsets.bottom + 20.h),
+      padding: EdgeInsets.fromLTRB(
+        20.w,
+        20.h,
+        20.w,
+        MediaQuery.of(context).viewInsets.bottom + 20.h,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
@@ -555,7 +555,7 @@ class _VerificationSheetState extends State<_VerificationSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Подтверждение номера',
+                'auth.verify_phone_title'.tr(),
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
@@ -573,11 +573,8 @@ class _VerificationSheetState extends State<_VerificationSheet> {
           ),
           SizedBox(height: 12.h),
           Text(
-            'Мы отправили SMS с кодом на номер\n${widget.phoneNumber}',
-            style: TextStyle(
-              fontSize: 16.sp,
-              color: Colors.grey[600],
-            ),
+            'auth.sms_sent_to'.tr(args: [widget.phoneNumber]),
+            style: TextStyle(fontSize: 16.sp, color: Colors.grey[600]),
           ),
           SizedBox(height: 24.h),
           TextField(
@@ -604,7 +601,7 @@ class _VerificationSheetState extends State<_VerificationSheet> {
           ElevatedButton(
             onPressed: () {
               if (_pinController.text.length == 4) {
-                 widget.onVerify(_pinController.text);
+                widget.onVerify(_pinController.text);
               }
             },
             style: ElevatedButton.styleFrom(
@@ -615,7 +612,7 @@ class _VerificationSheetState extends State<_VerificationSheet> {
               ),
             ),
             child: Text(
-              'Подтвердить',
+              'auth.confirm_btn'.tr(),
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.bold,

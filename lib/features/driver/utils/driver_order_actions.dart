@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,12 +19,12 @@ Future<void> toggleDriverOrderFavorite(
     if (order.isFavoriteForDriver) {
       await repository.removeDriverFavorite(order.id);
       messenger.showSnackBar(
-        const SnackBar(content: Text('Удалено из избранного')),
+        SnackBar(content: Text(tr('driver_utils.removed_favorite'))),
       );
     } else {
       await repository.addDriverFavorite(order.id);
       messenger.showSnackBar(
-        const SnackBar(content: Text('Добавлено в избранное')),
+        SnackBar(content: Text(tr('driver_utils.added_favorite'))),
       );
     }
     ref.invalidate(driverFavoritesProvider);
@@ -31,52 +32,52 @@ Future<void> toggleDriverOrderFavorite(
     messenger.showSnackBar(SnackBar(content: Text(error.message)));
   } catch (_) {
     messenger.showSnackBar(
-      const SnackBar(content: Text('Не удалось обновить избранное')),
+      SnackBar(content: Text(tr('driver_utils.update_favorite_error'))),
     );
   }
 }
 
 Future<void> callOrderSender(BuildContext context, OrderSummary order) async {
   if (!order.canDriverCall) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Отправитель не раскрыл контакты')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(tr('driver_utils.contacts_hidden'))));
     return;
   }
   final phone = order.senderPhoneNumber.trim();
   if (phone.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Телефон отправителя недоступен')),
+      SnackBar(content: Text(tr('driver_utils.phone_unavailable'))),
     );
     return;
   }
   final uri = Uri(scheme: 'tel', path: phone);
   try {
     if (!await canLaunchUrl(uri)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Не удалось открыть звонилку')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(tr('driver_utils.dialer_error'))));
       return;
     }
     await launchUrl(uri);
   } catch (_) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Не удалось позвонить отправителю')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(tr('driver_utils.call_error'))));
   }
 }
 
 Future<void> openOrderWhatsApp(BuildContext context, OrderSummary order) async {
   if (!order.canDriverCall) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Отправитель не раскрыл контакты')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(tr('driver_utils.contacts_hidden'))));
     return;
   }
   final phone = order.senderPhoneNumber.trim();
   if (phone.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Телефон отправителя недоступен')),
+      SnackBar(content: Text(tr('driver_utils.phone_unavailable'))),
     );
     return;
   }
@@ -88,14 +89,14 @@ Future<void> openOrderWhatsApp(BuildContext context, OrderSummary order) async {
   try {
     if (!await canLaunchUrl(uri)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Не удалось открыть WhatsApp')),
+        SnackBar(content: Text(tr('driver_utils.whatsapp_error'))),
       );
       return;
     }
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   } catch (_) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Не удалось открыть WhatsApp')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(tr('driver_utils.whatsapp_error'))));
   }
 }

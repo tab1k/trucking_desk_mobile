@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/core/exceptions/api_exception.dart';
@@ -22,7 +23,7 @@ class OrderRepository {
 
   Future<void> createOrder(CreateOrderRequest request) async {
     if (request.photos.length < 2) {
-      throw ApiException('Нужно приложить минимум 2 фото груза');
+      throw ApiException(tr('repository.order.photos_minimum'));
     }
 
     final formData = await _buildFormData(request);
@@ -46,7 +47,7 @@ class OrderRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось создать заявку. Попробуйте позже.');
+      throw ApiException(tr('repository.order.create_error'));
     }
   }
 
@@ -153,7 +154,7 @@ class OrderRepository {
       final data = response.data;
       if (data == null) {
         throw ApiException(
-          'Пустой ответ от сервера',
+          tr('repository.order.empty_response'),
           statusCode: response.statusCode,
         );
       }
@@ -194,7 +195,7 @@ class OrderRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось сохранить изменения. Попробуйте позже.');
+      throw ApiException(tr('repository.order.save_error'));
     }
   }
 
@@ -207,7 +208,7 @@ class OrderRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось удалить заказ. Попробуйте позже.');
+      throw ApiException(tr('repository.order.delete_error'));
     }
   }
 
@@ -218,7 +219,7 @@ class OrderRepository {
 
       if (data == null) {
         throw ApiException(
-          'Пустой ответ от сервера',
+          tr('repository.order.empty_response'),
           statusCode: response.statusCode,
         );
       }
@@ -249,7 +250,7 @@ class OrderRepository {
 
       if (data == null) {
         throw ApiException(
-          'Пустой ответ от сервера',
+          tr('repository.order.empty_response'),
           statusCode: response.statusCode,
         );
       }
@@ -275,7 +276,7 @@ class OrderRepository {
 
       if (data == null) {
         throw ApiException(
-          'Пустой ответ от сервера',
+          tr('repository.order.empty_response'),
           statusCode: response.statusCode,
         );
       }
@@ -368,7 +369,7 @@ class OrderRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось загрузить координаты. Попробуйте позже.');
+      throw ApiException(tr('repository.order.load_locations_error'));
     }
   }
 
@@ -397,7 +398,7 @@ class OrderRepository {
       );
       final data = response.data;
       if (data == null) {
-        throw ApiException('Пустой ответ от сервера');
+        throw ApiException(tr('repository.order.empty_response'));
       }
       return OrderLocationPoint.fromJson(data);
     } on DioException catch (exception) {
@@ -406,7 +407,7 @@ class OrderRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось отправить координаты');
+      throw ApiException(tr('repository.order.send_locations_error'));
     }
   }
 
@@ -431,7 +432,7 @@ class OrderRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось отправить отклик. Попробуйте позже.');
+      throw ApiException(tr('repository.order.send_bid_error'));
     }
   }
 
@@ -474,7 +475,7 @@ class OrderRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось загрузить отклики. Попробуйте позже.');
+      throw ApiException(tr('repository.order.load_bids_error'));
     }
   }
 
@@ -513,7 +514,7 @@ class OrderRepository {
       );
       final body = response.data;
       if (body == null) {
-        throw ApiException('Пустой ответ от сервера');
+        throw ApiException(tr('repository.order.empty_response'));
       }
       return OrderDetail.fromJson(body);
     } on DioException catch (exception) {
@@ -522,7 +523,7 @@ class OrderRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось обновить заказ. Попробуйте позже.');
+      throw ApiException(tr('repository.order.update_error'));
     }
   }
 
@@ -533,7 +534,7 @@ class OrderRepository {
       );
       final data = response.data;
       if (data == null) {
-        throw ApiException('Пустой ответ от сервера');
+        throw ApiException(tr('repository.order.empty_response'));
       }
       return OrderBidInfo.fromJson(data);
     } on DioException catch (exception) {
@@ -542,7 +543,7 @@ class OrderRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось обработать отклик. Попробуйте позже.');
+      throw ApiException(tr('repository.order.process_bid_error'));
     }
   }
 
@@ -594,13 +595,13 @@ class OrderRepository {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return 'Превышено время ожидания ответа сервера';
+        return tr('auth_errors.timeout');
       case DioExceptionType.connectionError:
-        return 'Нет соединения с сервером';
+        return tr('auth_errors.connection_error');
       case DioExceptionType.badResponse:
-        return 'Сервер вернул ошибку';
+        return tr('auth_errors.server_error');
       default:
-        return 'Неизвестная ошибка при создании объявления.';
+        return tr('auth_errors.unknown_error');
     }
   }
 

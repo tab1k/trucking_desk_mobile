@@ -1,5 +1,62 @@
 {
   "app_title": "Fura24.kz",
+  "splash": {
+    "subtitle": "Ваши грузоперевозки"
+  },
+  "welcome": {
+    "subtitle": "Ваш логистический партнер",
+    "title": "Добро пожаловать!",
+    "body": "Создавайте объявления, следите за статусами и управляйте перевозками в одном приложении.",
+    "login": "Войти",
+    "register": "Регистрация"
+  },
+  "auth": {
+    "welcome_back": "Добро пожаловать\nобратно!",
+    "enter_details": "Введите свои данные, чтобы продолжить работу в Fura24.",
+    "role_client": "Клиент",
+    "role_driver": "Водитель",
+    "login_hint": "Телефон или email",
+    "validation_enter_login": "Введите телефон или email",
+    "validation_correct_phone": "Введите корректный телефон",
+    "validation_correct_login": "Введите корректный телефон или email",
+    "password_hint": "Пароль",
+    "validation_enter_password": "Введите пароль",
+    "forgot_password": "Забыли пароль?",
+    "login_btn": "Войти",
+    "no_account": "Ещё нет аккаунта? ",
+    "register_link": "Зарегистрироваться",
+    "create_account": "Создайте аккаунт",
+    "register_to_start": "Зарегистрируйтесь, чтобы начать пользоваться Fura24.",
+    "phone_number_required": "Номер телефона *",
+    "required_field": "Обязательное поле",
+    "enter_correct_number": "Введите корректный номер",
+    "email_required": "Электронная почта *",
+    "incorrect_email": "Некорректный email",
+    "max_254_chars": "Макс. 254 символа",
+    "password_required": "Пароль *",
+    "min_6_chars": "Минимум 6 символов",
+    "repeat_password_required": "Повторите пароль *",
+    "passwords_do_not_match": "Пароли не совпадают",
+    "referral_code_optional": "Реферальный код (необязательно)",
+    "max_10_chars": "Макс. 10 символов",
+    "accept_terms": "Я принимаю условия использования и политику конфиденциальности",
+    "confirm_terms": "Подтвердите согласие с условиями",
+    "register_btn": "Зарегистрироваться",
+    "already_have_account": "Уже есть аккаунт? ",
+    "login_text": "Войти",
+    "verify_phone_title": "Подтверждение номера",
+    "sms_sent_to": "Мы отправили SMS с кодом на номер\n{}",
+    "confirm_btn": "Подтвердить",
+    "select_country_code": "Выбор кода страны",
+    "country_search_hint": "Страна или код",
+    "country_not_found": "Ничего не найдено"
+  },
+  "notifications": {
+    "channel_name": "Fura24 уведомления",
+    "channel_description": "Канал для push-уведомлений Fura24.kz",
+    "default_title": "Fura24.kz",
+    "default_body": "Новое уведомление"
+  },
   "common": {
     "retry": "Повторить",
     "back": "Назад",
@@ -85,6 +142,135 @@
       "title": "Ошибка загрузки"
     }
   },
+  "tariffs": {
+    "title": "Тарифы",
+    "empty": "Нет доступных тарифов",
+    "error_load": "Ошибка загрузки: {}",
+    "active": "Активен",
+    "price_month": "{} / месяц",
+    "btn_connected": "Уже подключен",
+    "btn_connect": "Подключить",
+    "dialog": {
+      "title": "Подключение тарифа",
+      "body_prefix": "Вы собираетесь подключить тариф ",
+      "body_middle": " за ",
+      "success": "Тариф успешно подключен!",
+      "error_default": "Ошибка при подключении"
+    }
+  },
+  "driver_cargo_filters": {
+    "title": "Фильтры",
+    "reset": "Сбросить",
+    "loading_city": "Город погрузки",
+    "unloading_city": "Город разгрузки",
+    "select_city": "Выберите город",
+    "vehicle_type": "Тип транспорта",
+    "any_vehicle": "Любой транспорт",
+    "transport_date": "Дата перевозки",
+    "any_date": "Любая дата",
+    "cost_from": "Стоимость от",
+    "cost_to": "Стоимость до",
+    "only_with_call": "Только с доступным звонком",
+    "only_with_call_subtitle": "Показывать только заказы, по которым вы сможете позвонить отправителю.",
+    "show_announcements": "Показать объявления",
+    "save_route": "Сохранить маршрут",
+    "route_saved": "Маршрут сохранен в закладки",
+    "save_error": "Ошибка сохранения: {}"
+  },
+  "driver_order_detail": {
+    "cargo_params": "Параметры груза",
+    "weight": "Вес",
+    "volume": "Объем",
+    "vehicle_type": "Тип ТС",
+    "loading_type": "Тип погрузки",
+    "cost_and_terms": "Стоимость и сроки",
+    "amount": "Сумма",
+    "payment": "Оплата",
+    "status": "Статус",
+    "departure_date": "Дата отправки",
+    "sender_comment": "Комментарий отправителя",
+    "status_pending": "Ожидание",
+    "status_in_transit": "В пути",
+    "status_completed": "Завершен",
+    "status_cancelled": "Отменен"
+  },
+  "saved_routes": {
+    "title": "Сохраненные маршруты",
+    "empty": "У вас пока нет сохраненных маршрутов",
+    "error_loading": "Ошибка загрузки"
+  },
+  "driver_utils": {
+    "verification_needed_title": "Нужна верификация",
+    "verification_needed_body": "Чтобы откликаться на заявки и публиковать транспорт, подтвердите документы водителя. Это поможет отправителям доверять вам.",
+    "authorize_as_driver": "Авторизуйтесь как водитель, чтобы продолжить",
+    "drivers_only": "Доступно только для водителей",
+    "later": "Позже",
+    "verify": "Пройти",
+    "removed_favorite": "Удалено из избранного",
+    "added_favorite": "Добавлено в избранное",
+    "update_favorite_error": "Не удалось обновить избранное",
+    "contacts_hidden": "Отправитель не раскрыл контакты",
+    "phone_unavailable": "Телефон отправителя недоступен",
+    "dialer_error": "Не удалось открыть звонилку",
+    "call_error": "Не удалось позвонить отправителю",
+    "whatsapp_error": "Не удалось открыть WhatsApp"
+  },
+  "repository": {
+    "profile": {
+      "fetch_empty": "Пустой ответ профиля",
+      "update_empty": "Пустой ответ при обновлении профиля"
+    },
+    "driver_announcement": {
+      "empty_response": "Пустой ответ от сервера",
+      "create_error": "Не удалось создать объявление",
+      "save_error": "Не удалось сохранить объявление",
+      "delete_error": "Не удалось удалить объявление",
+      "load_error": "Не удалось загрузить объявления"
+    },
+    "order": {
+      "photos_minimum": "Нужно приложить минимум 2 фото груза",
+      "create_error": "Не удалось создать заявку. Попробуйте позже.",
+      "save_error": "Не удалось сохранить изменения. Попробуйте позже.",
+      "delete_error": "Не удалось удалить заказ. Попробуйте позже.",
+      "empty_response": "Пустой ответ от сервера",
+      "load_locations_error": "Не удалось загрузить координаты. Попробуйте позже.",
+      "send_locations_error": "Не удалось отправить координаты",
+      "send_bid_error": "Не удалось отправить отклик. Попробуйте позже.",
+      "load_bids_error": "Не удалось загрузить отклики. Попробуйте позже.",
+      "update_error": "Не удалось обновить заказ. Попробуйте позже.",
+      "process_bid_error": "Не удалось обработать отклик. Попробуйте позже."
+    }
+  },
+  "shared": {
+    "no_connection": {
+      "server_error_title": "Сервер временно недоступен",
+      "internet_error_title": "Нет соединения с интернетом",
+      "server_error_body": "Мы уже работаем над устранением проблемы. Пожалуйста, попробуйте позже.",
+      "internet_error_body": "Проверьте настройки сети или подключитесь к Wi-Fi и попробуйте снова."
+    },
+    "common": {
+      "ok": "Понятно",
+      "required_field": "Это поле обязательно"
+    },
+    "address": {
+      "hint_city": "Адрес в городе {}",
+      "hint_default": "Улица, дом"
+    }
+  },
+  "auth_errors": {
+    "send_code_failed": "Не удалось отправить код подтверждения",
+    "send_reset_email_failed": "Не удалось отправить письмо для сброса пароля",
+    "reset_password_failed": "Не удалось сбросить пароль. Попробуйте снова.",
+    "empty_response": "Пустой ответ от сервера",
+    "token_refresh_failed": "Сервер не вернул новый токен доступа",
+    "session_update_failed": "Не удалось обновить сессию. Попробуйте позже.",
+    "request_failed": "Не удалось выполнить запрос. Попробуйте позже.",
+    "delete_account_failed": "Не удалось удалить аккаунт. Попробуйте снова.",
+    "timeout": "Превышено время ожидания ответа сервера",
+    "server_error": "Сервер вернул ошибку",
+    "connection_error": "Нет соединения с сервером",
+    "unknown_error": "Произошла неизвестная ошибка"
+  },
   "profile_edit": {
     "title": "Редактировать профиль",
     "first_name": "Имя",
@@ -149,15 +335,120 @@
       "cancelled": "Отмененные",
       "empty": "Заказы не найдены по выбранному фильтру."
     },
-    "error": {
-      "load": "Не удалось загрузить заказы"
-    },
     "bids": {
       "title": "Отклики",
+      "order_number": "Заказ TD-{}",
       "empty": "Откликов пока нет.",
+      "empty_subtitle": "Как только водители откликнутся, вы увидите их здесь.",
       "accepted": "Вы приняли отклик",
-      "declined": "Отклик отклонён"
+      "declined": "Отклик отклонён",
+      "error_process": "Не удалось обработать отклик",
+      "offer": "Предложение",
+      "comment": "Комментарий",
+      "status": {
+        "new": "Новый",
+        "confirmed": "Подтвержден",
+        "declined": "Отклонен",
+        "cancelled": "Отменен",
+        "driver_declined": "Водитель отказался"
+      },
+      "actions": {
+        "decline": "Отклонить",
+        "accept": "Принять",
+        "processing": "Обработка..."
+      },
+      "offer_amount": "Сумма отклика: {}",
+      "date_unknown": "Дата неизвестна"
+    },
+    "edit_title": "Редактировать заказ",
+    "repeat_title": "Повторить заказ",
+    "error": {
+      "load": "Не удалось загрузить заказы",
+      "load_single": "Не удалось загрузить заказ",
+      "load_detail": "Не удалось загрузить детали заказа"
     }
+  },
+  "payment_types": {
+    "cashless_vat": "Безнал с НДС",
+    "cashless_no_vat": "Безнал без НДС",
+    "cash": "Наличные",
+    "card": "На карту",
+    "prepayment": "Предоплата",
+    "agreement": "По договорённости"
+  },
+  "vehicle_types": {
+    "tent": "Тентованый",
+    "ref": "Рефрижератор",
+    "isotherm": "Изотерм",
+    "any": "Любой транспорт",
+    "covered": "Крытая",
+    "car_carrier": "Автовоз",
+    "aerial_platform": "Автовышка",
+    "car_transporter": "Автотранспортер",
+    "bulk": "Балковоз",
+    "fuel_tanker": "Бензовоз",
+    "bitumen_tanker": "Битумовоз",
+    "flatbed": "Бортовой",
+    "shalanda": "Шаланда",
+    "trailer": "Прицеп",
+    "bus": "Автобус",
+    "semi_trailer": "Полуприцеп",
+    "container_carrier": "Контейнеровоз",
+    "hyundai_porter": "Хендай Портер",
+    "fish_truck": "Рыбовод",
+    "chemical_tank": "Цистерна химическая",
+    "platform": "Платформа",
+    "sewage": "Ассенизатор",
+    "excavator": "Экскаватор",
+    "glass": "Стекловоз",
+    "incubator": "Инкубатор",
+    "roll_transporter": "Рулоновоз",
+    "gazelle_passenger": "Газель пассажирская",
+    "gazelle_flatbed": "Газель бортовая",
+    "cattle_truck": "Скотовоз",
+    "garbage_truck": "Мусоровоз",
+    "mega_truck": "Мега фура",
+    "diplomatic": "Дипломатический груз",
+    "flour_truck": "Муковоз",
+    "open": "Открытая",
+    "concrete_mixer": "Бетоновоз",
+    "gas": "Газовоз",
+    "grain": "Зерновоз",
+    "container_platform": "Конт. площадка",
+    "feed": "Кормовоз",
+    "crane": "Кран",
+    "log_truck": "Лесовоз",
+    "manipulator": "Манипулятор",
+    "minibus": "Микроавтобус",
+    "chip_truck": "Щеповоз",
+    "open_container": "Открытый контейнер",
+    "panel_truck": "Панелевоз",
+    "loader": "Погрузчик",
+    "dump_truck": "Самосвал",
+    "tractor": "Седельный тягач",
+    "trailer_platform": "Трал",
+    "pipe_truck": "Трубовоз",
+    "van": "Цельнометалл",
+    "cement_truck": "Цементовоз",
+    "food_tank": "Цистерна пищевая",
+    "refrigerator": "Рефрижератор"
+  },
+  "loading_types": {
+    "top": "Верхняя погрузка",
+    "side": "Боковая погрузка",
+    "back": "Задняя погрузка",
+    "any_way": "Любой способ",
+    "any_type": "Любой тип погрузки"
+  },
+  "dimensions": {
+    "length": "{} м длина",
+    "width": "{} м ширина",
+    "height": "{} м высота",
+    "not_specified": "Не указаны"
+  },
+  "common": {
+    "date_agreement": "По договорённости",
+    "not_specified": "Не указано"
   },
   "cost_estimate": {
     "title": "Расчет стоимости",
@@ -211,6 +502,7 @@
     "title": "Добавить груз",
     "edit_title": "Изменение объявления",
     "subtitle": "Заполним данные по шагам — так проще ничего не пропустить.",
+    "default_error": "Не удалось создать заявку",
     "location": {
       "pick_departure": "Выбор пункта загрузки",
       "pick_destination": "Выбор пункта разгрузки"
@@ -502,7 +794,27 @@
     "photos": "Фото груза",
     "labels": {
       "departure_date": "Дата отправки: {}",
-      "status": "Статус: {0}"
+      "departure_date_title": "Дата отправки",
+      "status": "Статус: {0}",
+      "delivery_term": "Срок доставки",
+      "weight": "Вес",
+      "volume": "Объём",
+      "dimensions": "Габариты",
+      "budget": "Бюджет",
+      "payment_type": "Тип оплаты",
+      "contacts_open": "Открыты водителям",
+      "contacts_hidden": "Скрыты"
+    },
+    "sections": {
+      "listing": "Объявление",
+      "route": "Маршрут",
+      "full_route": "Полный маршрут",
+      "loading": "Погрузка",
+      "unloading": "Разгрузка",
+      "cargo_params": "Параметры груза",
+      "cost": "Стоимость",
+      "contacts": "Контакты",
+      "comment": "Комментарий"
     },
     "status": {
       "title": "Статус рейса",
@@ -560,6 +872,7 @@
       "title": "Общий баланс",
       "top_up": "Пополнить",
       "transfer": "Перевести",
+      "history": "История",
       "tariffs": "Тарифы",
       "business": "Бизнес-услуги",
       "partner": "Стать партнером"
@@ -623,7 +936,21 @@
       "button": "Выйти из аккаунта",
       "error": "Ошибка при выходе"
     },
-    "app_version": "Версия приложения"
+    "app_version": "Версия приложения",
+    "verification": {
+      "status": {
+        "approved": "Верификация пройдена",
+        "in_review": "Документы на проверке",
+        "rejected": "Верификация отклонена",
+        "required": "Требуется верификация"
+      },
+      "message": {
+        "in_review": "Мы проверяем ваши документы. Это обычно занимает немного времени.",
+        "rejected_default": "Проверьте корректность документов и попробуйте снова.",
+        "required": "Загрузите фото прав, техпаспорта и удостоверения личности."
+      },
+      "active_status": "Активен"
+    }
   },
   "driver_tabs": {
     "home": "Главная",
@@ -742,7 +1069,15 @@
     "price": "Цена топлива (₸/л)",
     "calculate": "Рассчитать",
     "fuel_cost": "Стоимость топлива",
-    "disclaimer": "ⓘ Расчет приблизительный и зависит от реального маршрута."
+    "disclaimer": "ⓘ Расчет приблизительный и зависит от реального маршрута.",
+    "hint_consumption": "Например: 12",
+    "hint_price": "Например: 250",
+    "result_distance": "Расстояние:",
+    "result_consumption": "Расход:",
+    "result_fuel": "Топливо:",
+    "error_select_cities": "Выберите города отправления и назначения",
+    "error_invalid_input": "Введите корректный расход и цену",
+    "error_coords": "Не удалось определить координаты городов"
   },
   "driver_loading": {
     "title": "Статус груза",
@@ -820,5 +1155,42 @@
     "search_hint": "Поиск города",
     "pick_on_map": "Указать на карте",
     "search_subtitle": "Найдите город или отметьте точку на карте"
+  },
+  "driver_verification": {
+    "title": "Верификация водителя",
+    "subtitle": "Заполните данные и загрузите фото документов",
+    "personal_data": "Личные данные",
+    "contacts": "Контакты",
+    "docs_data": "Данные документов",
+    "files_data": "Файлы документов",
+    "fields": {
+      "first_name": "Имя",
+      "last_name": "Фамилия",
+      "middle_name": "Отчество",
+      "email": "Email",
+      "phone": "Телефон",
+      "license_number": "Номер прав",
+      "vp_number": "Номер техпаспорта",
+      "id_number": "Номер удостоверения личности"
+    },
+    "files": {
+      "license_front": "Права (лицевая)",
+      "license_back": "Права (оборотная)",
+      "vp_front": "Техпаспорт (лицевая)",
+      "vp_back": "Техпаспорт (оборотная)",
+      "id_front": "Удостоверение личности (разворот)",
+      "id_back": "Удостоверение личности (оборотная)",
+      "upload": "Загрузить",
+      "replace": "Заменить",
+      "placeholder": "JPEG/PNG, до 10 МБ"
+    },
+    "errors": {
+      "upload_all": "Загрузите все обязательные файлы",
+      "required": "Обязательное поле",
+      "invalid_email": "Некорректный email",
+      "invalid_phone": "Некорректный телефон"
+    },
+    "success": "Отправлено на проверку",
+    "submit_btn": "Отправить на проверку"
   }
 }

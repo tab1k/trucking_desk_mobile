@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -65,9 +66,9 @@ class AuthRoleToggle extends StatelessWidget {
   String _roleLabel(AuthRole role) {
     switch (role) {
       case AuthRole.client:
-        return 'Клиент';
+        return 'auth.role_client'.tr();
       case AuthRole.driver:
-        return 'Водитель';
+        return 'auth.role_driver'.tr();
     }
   }
 }

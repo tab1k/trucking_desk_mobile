@@ -132,7 +132,7 @@ class _DriverExpensesPageState extends ConsumerState<DriverExpensesPage> {
                         inputType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        hint: 'Например: 12',
+                        hint: 'driver_expenses.hint_consumption'.tr(),
                       ),
 
                       SizedBox(height: 16.h),
@@ -142,7 +142,7 @@ class _DriverExpensesPageState extends ConsumerState<DriverExpensesPage> {
                         inputType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        hint: 'Например: 250',
+                        hint: 'driver_expenses.hint_price'.tr(),
                       ),
 
                       SizedBox(height: 24.h),
@@ -286,9 +286,18 @@ class _DriverExpensesPageState extends ConsumerState<DriverExpensesPage> {
             ),
           ),
           SizedBox(height: 12.h),
-          _buildResultRow('Расстояние:', '~${r.distance.round()} км'),
-          _buildResultRow('Расход:', '${r.consumption} л/100км'),
-          _buildResultRow('Топливо:', '${r.fuelNeeded.toStringAsFixed(1)} л'),
+          _buildResultRow(
+            'driver_expenses.result_distance'.tr(),
+            '~${r.distance.round()} км',
+          ),
+          _buildResultRow(
+            'driver_expenses.result_consumption'.tr(),
+            '${r.consumption} л/100км',
+          ),
+          _buildResultRow(
+            'driver_expenses.result_fuel'.tr(),
+            '${r.fuelNeeded.toStringAsFixed(1)} л',
+          ),
 
           SizedBox(height: 16.h),
           Text(
@@ -366,7 +375,7 @@ class _DriverExpensesPageState extends ConsumerState<DriverExpensesPage> {
     FocusScope.of(context).unfocus();
 
     if (_departure == null || _destination == null) {
-      setState(() => _error = 'Выберите города отправления и назначения');
+      setState(() => _error = 'driver_expenses.error_select_cities'.tr());
       return;
     }
 
@@ -376,7 +385,7 @@ class _DriverExpensesPageState extends ConsumerState<DriverExpensesPage> {
     final price = double.tryParse(_priceController.text.replaceAll(',', '.'));
 
     if (cons == null || price == null) {
-      setState(() => _error = 'Введите корректный расход и цену');
+      setState(() => _error = 'driver_expenses.error_invalid_input'.tr());
       return;
     }
 
@@ -417,7 +426,7 @@ class _DriverExpensesPageState extends ConsumerState<DriverExpensesPage> {
       if (_departure!.latitude == null || _destination!.latitude == null) {
         setState(() {
           _isCalculating = false;
-          _error = 'Не удалось определить координаты городов';
+          _error = 'driver_expenses.error_coords'.tr();
         });
         return;
       }

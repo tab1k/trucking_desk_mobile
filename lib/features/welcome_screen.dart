@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -16,10 +17,7 @@ class WelcomeScreenWithImage extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/img/truck.jpg',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/img/truck.jpg', fit: BoxFit.cover),
           ),
           Positioned.fill(
             child: DecoratedBox(
@@ -43,7 +41,7 @@ class WelcomeScreenWithImage extends StatelessWidget {
                 children: [
                   SizedBox(height: 24.h),
                   Text(
-                    'Fura24.kz',
+                    'app_title'.tr(),
                     style: textTheme.headlineMedium?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -52,7 +50,7 @@ class WelcomeScreenWithImage extends StatelessWidget {
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    'Ваш логистический партнер',
+                    'welcome.subtitle'.tr(),
                     style: textTheme.titleMedium?.copyWith(
                       color: Colors.white70,
                     ),
@@ -64,15 +62,13 @@ class WelcomeScreenWithImage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.35),
                       borderRadius: BorderRadius.circular(24.r),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.18),
-                      ),
+                      border: Border.all(color: Colors.white.withOpacity(0.18)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Добро пожаловать!',
+                          'welcome.title'.tr(),
                           style: textTheme.headlineSmall?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -80,7 +76,7 @@ class WelcomeScreenWithImage extends StatelessWidget {
                         ),
                         SizedBox(height: 12.h),
                         Text(
-                          'Создавайте объявления, следите за статусами и управляйте перевозками в одном приложении.',
+                          'welcome.body'.tr(),
                           style: textTheme.bodyLarge?.copyWith(
                             color: Colors.white70,
                             height: 1.4,
@@ -100,7 +96,7 @@ class WelcomeScreenWithImage extends StatelessWidget {
                             ),
                             onPressed: () => context.go(AuthRoutes.login),
                             child: Text(
-                              'Войти',
+                              'welcome.login'.tr(),
                               style: textTheme.titleMedium?.copyWith(
                                 color: colorScheme.onPrimary,
                                 fontWeight: FontWeight.w600,
@@ -125,7 +121,7 @@ class WelcomeScreenWithImage extends StatelessWidget {
                             ),
                             onPressed: () => context.go(AuthRoutes.register),
                             child: Text(
-                              'Регистрация',
+                              'welcome.register'.tr(),
                               style: textTheme.titleMedium?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,

@@ -1,5 +1,8 @@
 {
   "app_title": "Fura24.kz",
+  "splash": {
+    "subtitle": "您的货运服务"
+  },
   "common": {
     "retry": "重试",
     "back": "返回",
@@ -7,6 +10,10 @@
     "reset": "重置",
     "cancel": "取消",
     "error": "错误",
+    "ok": "知道了",
+    "required_field": "此字段为必填项",
+    "date_agreement": "面议",
+    "not_specified": "未指定",
     "months_short": {
       "jan": "1月",
       "feb": "2月",
@@ -83,6 +90,131 @@
       "title": "加载错误"
     }
   },
+  "tariffs": {
+    "title": "费率",
+    "empty": "无可用费率",
+    "error_load": "加载错误：{}",
+    "active": "有效",
+    "price_month": "{} / 月",
+    "btn_connected": "已连接",
+    "btn_connect": "连接",
+    "dialog": {
+      "title": "连接费率",
+      "body_prefix": "您即将连接费率 ",
+      "body_middle": " 价格 ",
+      "success": "费率连接成功！",
+      "error_default": "连接错误"
+    }
+  },
+  "driver_cargo_filters": {
+    "title": "筛选器",
+    "reset": "重置",
+    "loading_city": "装货城市",
+    "unloading_city": "卸货城市",
+    "select_city": "选择城市",
+    "vehicle_type": "车辆类型",
+    "any_vehicle": "任何车辆",
+    "transport_date": "运输日期",
+    "any_date": "任何日期",
+    "cost_from": "价格从",
+    "cost_to": "价格到",
+    "only_with_call": "仅可拨打电话",
+    "only_with_call_subtitle": "仅显示您可以致电发货人的订单。",
+    "show_announcements": "显示公告",
+    "save_route": "保存路线",
+    "route_saved": "路线已保存到书签",
+    "save_error": "保存错误：{}"
+  },
+  "driver_order_detail": {
+    "cargo_params": "货物参数",
+    "weight": "重量",
+    "volume": "体积",
+    "vehicle_type": "车辆类型",
+    "loading_type": "装载类型",
+    "cost_and_terms": "费用和条款",
+    "amount": "金额",
+    "payment": "付款",
+    "status": "状态",
+    "departure_date": "出发日期",
+    "sender_comment": "发送者评论",
+    "status_pending": "待处理",
+    "status_in_transit": "运输中",
+    "status_completed": "已完成",
+    "status_cancelled": "已取消"
+  },
+  "saved_routes": {
+    "title": "已保存的路线",
+    "empty": "您还没有保存的路线",
+    "error_loading": "加载错误"
+  },
+  "driver_utils": {
+    "verification_needed_title": "需要验证",
+    "verification_needed_body": "为了响应请求并发布运输，请验证驾驶员文件。这有助于发货人信任您。",
+    "authorize_as_driver": "以司机身份登录以继续",
+    "drivers_only": "仅适用于司机",
+    "later": "稍后",
+    "verify": "验证",
+    "removed_favorite": "已从收藏夹中移除",
+    "added_favorite": "已添加到收藏夹",
+    "update_favorite_error": "无法更新收藏夹",
+    "contacts_hidden": "发货人隐藏了联系方式",
+    "phone_unavailable": "发货人电话不可用",
+    "dialer_error": "无法打开拨号器",
+    "call_error": "无法致电发货人",
+    "whatsapp_error": "无法打开 WhatsApp"
+  },
+  "repository": {
+    "profile": {
+      "fetch_empty": "资料响应为空",
+      "update_empty": "更新资料时响应为空"
+    },
+    "driver_announcement": {
+      "empty_response": "服务器响应为空",
+      "create_error": "无法创建公告",
+      "save_error": "无法保存公告",
+      "delete_error": "无法删除公告",
+      "load_error": "无法加载公告"
+    },
+    "order": {
+      "photos_minimum": "至少需要上传 2 张货物照片",
+      "create_error": "无法创建订单，请稍后再试",
+      "save_error": "无法保存更改，请稍后再试",
+      "delete_error": "无法删除订单，请稍后再试",
+      "empty_response": "服务器响应为空",
+      "load_locations_error": "无法加载坐标，请稍后再试",
+      "send_locations_error": "无法发送坐标",
+      "send_bid_error": "无法发送响应，请稍后再试",
+      "load_bids_error": "无法加载响应，请稍后再试",
+      "update_error": "无法更新订单，请稍后再试",
+      "process_bid_error": "无法处理响应，请稍后再试"
+    }
+  },
+  "shared": {
+    "no_connection": {
+      "server_error_title": "服务器暂时不可用",
+      "internet_error_title": "无网络连接",
+      "server_error_body": "我们正在解决该问题，请稍后再试。",
+      "internet_error_body": "请检查网络设置或连接 Wi-Fi 后重试。"
+    },
+    "address": {
+      "hint_city": "{} 的地址",
+      "hint_default": "街道，门牌号"
+    }
+  },
+  "auth_errors": {
+    "send_code_failed": "发送验证码失败",
+    "send_reset_email_failed": "无法发送密码重置邮件",
+    "reset_password_failed": "重置密码失败。请重试。",
+    "empty_response": "服务器响应为空",
+    "token_refresh_failed": "服务器未返回新的访问令牌",
+    "session_update_failed": "更新会话失败。请稍后再试。",
+    "request_failed": "请求失败。请稍后再试。",
+    "delete_account_failed": "删除帐户失败。请重试。",
+    "timeout": "服务器响应超时",
+    "server_error": "服务器返回错误",
+    "connection_error": "无法连接到服务器",
+    "unknown_error": "发生未知错误"
+  },
   "profile_edit": {
     "title": "编辑资料",
     "first_name": "名字",
@@ -147,15 +279,116 @@
       "cancelled": "已取消",
       "empty": "所选筛选条件下没有订单。"
     },
-    "error": {
-      "load": "无法加载订单"
-    },
     "bids": {
       "title": "回应",
       "empty": "暂无回应。",
       "accepted": "已接受回应",
-      "declined": "回应已拒绝"
+      "declined": "回应已拒绝",
+      "order_number": "订单 TD-{}",
+      "empty_subtitle": "一旦司机响应，您将在这里看到他们。",
+      "error_process": "无法处理回应",
+      "offer": "报价",
+      "comment": "备注",
+      "status": {
+        "new": "新",
+        "confirmed": "已确认",
+        "declined": "已拒绝",
+        "cancelled": "已取消",
+        "driver_declined": "司机已拒绝"
+      },
+      "actions": {
+        "decline": "拒绝",
+        "accept": "接受",
+        "processing": "处理中..."
+      },
+      "offer_amount": "报价金额: {}",
+      "date_unknown": "日期未知"
+    },
+    "edit_title": "编辑订单",
+    "repeat_title": "重复订单",
+    "error": {
+      "load": "无法加载订单",
+      "load_single": "无法加载订单",
+      "load_detail": "无法加载订单详情"
     }
+  },
+  "payment_types": {
+    "cashless_vat": "银行转账 (含税)",
+    "cashless_no_vat": "银行转账 (不含税)",
+    "cash": "现金",
+    "card": "转账到卡",
+    "prepayment": "预付款",
+    "agreement": "面议"
+  },
+  "vehicle_types": {
+    "tent": "篷布车",
+    "ref": "冷藏车",
+    "isotherm": "保温车",
+    "any": "任何车辆",
+    "covered": "有盖车",
+    "car_carrier": "运车车",
+    "aerial_platform": "高空作业车",
+    "car_transporter": "汽车运输车",
+    "bulk": "散装货车",
+    "fuel_tanker": "油罐车",
+    "bitumen_tanker": "沥青罐车",
+    "flatbed": "平板车",
+    "shalanda": "沙兰达",
+    "trailer": "拖车",
+    "bus": "巴士",
+    "semi_trailer": "半挂车",
+    "container_carrier": "集装箱车",
+    "hyundai_porter": "现代波特",
+    "fish_truck": "运鱼车",
+    "chemical_tank": "化学罐车",
+    "platform": "平台车",
+    "sewage": "吸污车",
+    "excavator": "挖掘机",
+    "glass": "运玻车",
+    "incubator": "保温车",
+    "roll_transporter": "卷材运输车",
+    "gazelle_passenger": "瞪羚载客车",
+    "gazelle_flatbed": "瞪羚平板车",
+    "cattle_truck": "运畜车",
+    "garbage_truck": "垃圾车",
+    "mega_truck": "超级卡车",
+    "diplomatic": "外交货物",
+    "flour_truck": "面粉车",
+    "open": "敞篷车",
+    "concrete_mixer": "混凝土搅拌车",
+    "gas": "气罐车",
+    "grain": "运粮车",
+    "container_platform": "集装箱平台",
+    "feed": "饲料车",
+    "crane": "吊车",
+    "log_truck": "运木车",
+    "manipulator": "机械手",
+    "minibus": "小巴",
+    "chip_truck": "木片车",
+    "open_container": "开顶集装箱",
+    "panel_truck": "板材车",
+    "loader": "装载机",
+    "dump_truck": "自卸车",
+    "tractor": "牵引车",
+    "trailer_platform": "低平板拖车",
+    "pipe_truck": "运管车",
+    "van": "全金属厢式车",
+    "cement_truck": "水泥车",
+    "food_tank": "食品罐车",
+    "refrigerator": "冷藏车"
+  },
+  "loading_types": {
+    "top": "顶部装载",
+    "side": "侧面装载",
+    "back": "后部装载",
+    "any_way": "任何方式",
+    "any_type": "任何装载类型"
+  },
+  "dimensions": {
+    "length": "长 {} 米",
+    "width": "宽 {} 米",
+    "height": "高 {} 米",
+    "not_specified": "未指定"
   },
   "cost_estimate": {
     "title": "费用计算",
@@ -209,6 +442,7 @@
     "title": "添加货物",
     "edit_title": "编辑发布",
     "subtitle": "一步步填写，避免遗漏。",
+    "default_error": "无法创建订单",
     "location": {
       "pick_departure": "选择装货点",
       "pick_destination": "选择卸货点"
@@ -495,7 +729,27 @@
     "photos": "货物照片",
     "labels": {
       "departure_date": "发车日期：{}",
-      "status": "状态：{0}"
+      "departure_date_title": "发车日期",
+      "status": "状态：{0}",
+      "delivery_term": "交货期限",
+      "weight": "重量",
+      "volume": "体积",
+      "dimensions": "尺寸",
+      "budget": "预算",
+      "payment_type": "付款方式",
+      "contacts_open": "对司机可见",
+      "contacts_hidden": "隐藏"
+    },
+    "sections": {
+      "listing": "列表",
+      "route": "路线",
+      "full_route": "完整路线",
+      "loading": "装货",
+      "unloading": "卸货",
+      "cargo_params": "货物参数",
+      "cost": "费用",
+      "contacts": "联系人",
+      "comment": "备注"
     },
     "status": {
       "title": "行程状态",
@@ -552,7 +806,11 @@
     "balance": {
       "title": "总余额",
       "top_up": "充值",
-      "transfer": "转账"
+      "transfer": "转账",
+      "history": "历史",
+      "tariffs": "费率",
+      "business": "商业服务",
+      "partner": "成为合作伙伴"
     },
     "referral": {
       "title": "我的推荐码",
@@ -581,6 +839,19 @@
     "support": {
       "close": "关闭",
       "help_body": "需要帮助吗？请通过下方任意方式联系我们。"
+    },
+    "verification": {
+      "status": {
+        "in_review": "审核中",
+        "rejected": "被拒绝",
+        "required": "需要验证"
+      },
+      "message": {
+        "in_review": "我们正在审核您的文件。这通常需要一些时间。",
+        "rejected_default": "请检查文件的正确性并重试。",
+        "required": "请上传驾驶证、行驶证和身份证的照片。"
+      },
+      "active_status": "活跃"
     }
   },
   "driver_tabs": {
@@ -601,6 +872,7 @@
       "subtitle": "跟踪行程并标记关键事件。",
       "find_cargo": "寻找货物",
       "loading_status": "货物状态",
+      "current_orders": "当前订单",
       "expenses": "费用",
       "transport": "我的运输",
       "create_ad": "创建公告",
@@ -690,6 +962,15 @@
   },
   "driver_expenses": {
     "title": "费用",
+    "subtitle": "计算您的旅行费用",
+    "from": "从",
+    "to": "到",
+    "select_city": "选择城市",
+    "consumption": "油耗，升/100公里",
+    "hint_consumption": "例如：8.5",
+    "price": "燃料价格，₸/升",
+    "hint_price": "例如：250",
+    "calculate": "计算",
     "stub": "费用记录功能将在下个版本提供。"
   },
   "driver_loading": {

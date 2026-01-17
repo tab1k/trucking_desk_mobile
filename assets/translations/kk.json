@@ -1,5 +1,62 @@
 {
   "app_title": "Fura24.kz",
+  "splash": {
+    "subtitle": "Сіздің жүк тасымалдауыңыз"
+  },
+  "welcome": {
+    "subtitle": "Сіздің логистикалық серіктесіңіз",
+    "title": "Қош келдіңіз!",
+    "body": "Хабарландырулар жасаңыз, мәртебелерді бақылаңыз және бір қосымшада тасымалдарды басқарыңыз.",
+    "login": "Кіру",
+    "register": "Тіркелу"
+  },
+  "auth": {
+    "welcome_back": "Қайта қош келдіңіз!",
+    "enter_details": "Fura24-те жұмысты жалғастыру үшін деректеріңізді енгізіңіз.",
+    "role_client": "Тапсырыс беруші",
+    "role_driver": "Жүргізуші",
+    "login_hint": "Телефон немесе email",
+    "validation_enter_login": "Телефон немесе email енгізіңіз",
+    "validation_correct_phone": "Дұрыс телефон нөмірін енгізіңіз",
+    "validation_correct_login": "Дұрыс телефон немесе email енгізіңіз",
+    "password_hint": "Құпия сөз",
+    "validation_enter_password": "Құпия сөзді енгізіңіз",
+    "forgot_password": "Құпия сөзді ұмыттыңыз ба?",
+    "login_btn": "Кіру",
+    "no_account": "Аккаунтыңыз жоқ па? ",
+    "register_link": "Тіркелу",
+    "create_account": "Аккаунт жасаңыз",
+    "register_to_start": "Fura24 пайдалануды бастау үшін тіркеліңіз.",
+    "phone_number_required": "Телефон нөмірі *",
+    "required_field": "Міндетті өріс",
+    "enter_correct_number": "Дұрыс нөмір енгізіңіз",
+    "email_required": "Электрондық пошта *",
+    "incorrect_email": "Бұрыс email",
+    "max_254_chars": "Макс. 254 таңба",
+    "password_required": "Құпия сөз *",
+    "min_6_chars": "Кемінде 6 таңба",
+    "repeat_password_required": "Құпия сөзді қайталаңыз *",
+    "passwords_do_not_match": "Құпия сөздер сәйкес келмейді",
+    "referral_code_optional": "Реферал коды (міндетті емес)",
+    "max_10_chars": "Макс. 10 таңба",
+    "accept_terms": "Мен пайдалану шарттарын және құпиялылық саясатын қабылдаймын",
+    "confirm_terms": "Шарттармен келісіміңізді растаңыз",
+    "register_btn": "Тіркелу",
+    "already_have_account": "Аккаунтыңыз бар ма? ",
+    "login_text": "Кіру",
+    "verify_phone_title": "Нөмірді растау",
+    "sms_sent_to": "Біз мына нөмірге кодпен SMS жібердік:\n{}",
+    "confirm_btn": "Растау",
+    "select_country_code": "Ел кодын таңдау",
+    "country_search_hint": "Ел немесе код",
+    "country_not_found": "Ештеңе табылмады"
+  },
+  "notifications": {
+    "channel_name": "Fura24 хабарландырулары",
+    "channel_description": "Fura24.kz push-хабарландырулар арнасы",
+    "default_title": "Fura24.kz",
+    "default_body": "Жаңа хабарландыру"
+  },
   "common": {
     "retry": "Қайталау",
     "back": "Артқа",
@@ -83,6 +140,135 @@
       "title": "Жүктеу қатесі"
     }
   },
+  "tariffs": {
+    "title": "Тарифтер",
+    "empty": "Қолжетімді тарифтер жоқ",
+    "error_load": "Жүктеу қатесі: {}",
+    "active": "Белсенді",
+    "price_month": "{} / айына",
+    "btn_connected": "Қосылған",
+    "btn_connect": "Қосу",
+    "dialog": {
+      "title": "Тарифті қосу",
+      "body_prefix": "Сіз тарифті қосуға дайындалып жатырсыз: ",
+      "body_middle": ", бағасы: ",
+      "success": "Тариф сәтті қосылды!",
+      "error_default": "Қосу кезінде қате шықты"
+    }
+  },
+  "driver_cargo_filters": {
+    "title": "Сүзгілер",
+    "reset": "Тазалау",
+    "loading_city": "Жүк тиеу қаласы",
+    "unloading_city": "Жүк түсіру қаласы",
+    "select_city": "Қаланы таңдаңыз",
+    "vehicle_type": "Көлік түрі",
+    "any_vehicle": "Кез келген көлік",
+    "transport_date": "Тасымалдау күні",
+    "any_date": "Кез келген күн",
+    "cost_from": "Бағасы бастап",
+    "cost_to": "Бағасы дейін",
+    "only_with_call": "Тек қоңырау шалуға болатындар",
+    "only_with_call_subtitle": "Жөнелтушіге қоңырау шалуға болатын тапсырыстарды ғана көрсету.",
+    "show_announcements": "Хабарландыруларды көрсету",
+    "save_route": "Бағытты сақтау",
+    "route_saved": "Бағыт бетбелгілерге сақталды",
+    "save_error": "Сақтау қатесі: {}"
+  },
+  "driver_order_detail": {
+    "cargo_params": "Жүк параметрлері",
+    "weight": "Салмақ",
+    "volume": "Көлем",
+    "vehicle_type": "Көлік түрі",
+    "loading_type": "Тиеу түрі",
+    "cost_and_terms": "Бағасы және мерзімдер",
+    "amount": "Сома",
+    "payment": "Төлем",
+    "status": "Мәртебе",
+    "departure_date": "Жіберу күні",
+    "sender_comment": "Жөнелтушінің пікірі",
+    "status_pending": "Күтуде",
+    "status_in_transit": "Жолда",
+    "status_completed": "Аяқталды",
+    "status_cancelled": "Болдырылмады"
+  },
+  "saved_routes": {
+    "title": "Сақталған бағыттар",
+    "empty": "Сізде әлі сақталған бағыттар жоқ",
+    "error_loading": "Жүктеу қатесі"
+  },
+  "driver_utils": {
+    "verification_needed_title": "Верификация қажет",
+    "verification_needed_body": "Өтінімдерге жауап беру және көлікті жариялау үшін жүргізуші құжаттарын растаңыз. Бұл жөнелтушілердің сізге сенім білдіруіне көмектеседі.",
+    "authorize_as_driver": "Жалғастыру үшін жүргізуші ретінде кіріңіз",
+    "drivers_only": "Тек жүргізушілерге қолжетімді",
+    "later": "Кейінірек",
+    "verify": "Өту",
+    "removed_favorite": "Таңдаулылардан жойылды",
+    "added_favorite": "Таңдаулыларға қосылды",
+    "update_favorite_error": "Таңдаулыларды жаңарту мүмкін болмады",
+    "contacts_hidden": "Жөнелтуші байланыстарын жасырды",
+    "phone_unavailable": "Жөнелтуші телефоны қолжетімсіз",
+    "dialer_error": "Қоңырау шалу мүмкін болмады",
+    "call_error": "Жөнелтушіге қоңырау шалу мүмкін болмады",
+    "whatsapp_error": "WhatsApp ашу мүмкін болмады"
+  },
+  "repository": {
+    "profile": {
+      "fetch_empty": "Профиль дерегі бос",
+      "update_empty": "Профильді жаңарту кезінде бос жауап"
+    },
+    "driver_announcement": {
+      "empty_response": "Серверден бос жауап",
+      "create_error": "Хабарландыру құру мүмкін болмады",
+      "save_error": "Хабарландыру сақтау мүмкін болмады",
+      "delete_error": "Хабарландыру жою мүмкін болмады",
+      "load_error": "Хабарландыруларды жүктеу мүмкін болмады"
+    },
+    "order": {
+      "photos_minimum": "Жүктің кемінде 2 фотосуретін қосу керек",
+      "create_error": "Тапсырыс құру мүмкін болмады. Кейінірек қайталап көріңіз.",
+      "save_error": "Өзгерістерді сақтау мүмкін болмады. Кейінірек қайталап көріңіз.",
+      "delete_error": "Тапсырысты жою мүмкін болмады. Кейінірек қайталап көріңіз.",
+      "empty_response": "Серверден бос жауап",
+      "load_locations_error": "Координаттарды жүктеу мүмкін болмады. Кейінірек қайталап көріңіз.",
+      "send_locations_error": "Координаттарды жіберу мүмкін болмады",
+      "send_bid_error": "Жауап жіберу мүмкін болмады. Кейінірек қайталап көріңіз.",
+      "load_bids_error": "Жауаптарды жүктеу мүмкін болмады. Кейінірек қайталап көріңіз.",
+      "update_error": "Тапсырысты жаңарту мүмкін болмады. Кейінірек қайталап көріңіз.",
+      "process_bid_error": "Жауапты өңдеу мүмкін болмады. Кейінірек қайталап көріңіз."
+    }
+  },
+  "shared": {
+    "no_connection": {
+      "server_error_title": "Сервер уақытша қолжетімсіз",
+      "internet_error_title": "Интернет байланысы жоқ",
+      "server_error_body": "Біз мәселені шешу үстіндеміз. Кейінірек қайталап көріңіз.",
+      "internet_error_body": "Желі параметрлерін тексеріңіз немесе Wi-Fi желісіне қосылып, қайталап көріңіз."
+    },
+    "common": {
+      "ok": "Түсінікті",
+      "required_field": "Бұл өрісті толтыру міндетті"
+    },
+    "address": {
+      "hint_city": "{} қаласындағы мекенжай",
+      "hint_default": "Көше, үй"
+    }
+  },
+  "auth_errors": {
+    "send_code_failed": "Растау кодын жіберу сәтсіз аяқталды",
+    "send_reset_email_failed": "Құпия сөзді қалпына келтіру хаты жіберілмеді",
+    "reset_password_failed": "Құпия сөзді қалпына келтіру мүмкін болмады. Қайталап көріңіз.",
+    "empty_response": "Серверден бос жауап келді",
+    "token_refresh_failed": "Сервер жаңа кіру токенін қайтармады",
+    "session_update_failed": "Сессияны жаңарту мүмкін болмады. Кейінірек қайталап көріңіз.",
+    "request_failed": "Сұрауды орындау мүмкін болмады. Кейінірек қайталап көріңіз.",
+    "delete_account_failed": "Аккаунтты жою мүмкін болмады. Қайталап көріңіз.",
+    "timeout": "Сервер жауабын күту уақыты асып кетті",
+    "server_error": "Сервер қате қайтарды",
+    "connection_error": "Сервермен байланыс жоқ",
+    "unknown_error": "Белгісіз қате орын алды"
+  },
   "profile_edit": {
     "title": "Профильді өзгерту",
     "first_name": "Аты",
@@ -147,15 +333,120 @@
       "cancelled": "Бас тартылған",
       "empty": "Таңдалған сүзгі бойынша тапсырыстар табылмады."
     },
-    "error": {
-      "load": "Тапсырыстарды жүктеу мүмкін болмады"
-    },
     "bids": {
       "title": "Откликтер",
+      "order_number": "Тапсырыс TD-{}",
       "empty": "Әзірге отклик жоқ.",
+      "empty_subtitle": "Жүргізушілер жауап бергенде, оларды осында көресіз.",
       "accepted": "Отклик қабылданды",
-      "declined": "Отклик қабылданбады"
+      "declined": "Отклик қабылданбады",
+      "error_process": "Откликті өңдеу мүмкін болмады",
+      "offer": "Ұсыныс",
+      "comment": "Пікір",
+      "status": {
+        "new": "Жаңа",
+        "confirmed": "Расталды",
+        "declined": "Бас тартылды",
+        "cancelled": "Болдырылмады",
+        "driver_declined": "Жүргізуші бас тартты"
+      },
+      "actions": {
+        "decline": "Бас тарту",
+        "accept": "Қабылдау",
+        "processing": "Өңдеу..."
+      },
+      "offer_amount": "Отклик сомасы: {}",
+      "date_unknown": "Күні белгісіз"
+    },
+    "edit_title": "Тапсырысты өңдеу",
+    "repeat_title": "Тапсырысты қайталау",
+    "error": {
+      "load": "Тапсырыстарды жүктеу мүмкін болмады",
+      "load_single": "Тапсырысты жүктеу мүмкін болмады",
+      "load_detail": "Тапсырыс мәліметтерін жүктеу мүмкін болмады"
     }
+  },
+  "payment_types": {
+    "cashless_vat": "ҚҚС-пен аударым",
+    "cashless_no_vat": "ҚҚС-сыз аударым",
+    "cash": "Қолма-қол",
+    "card": "Картаға",
+    "prepayment": "Алдын ала төлем",
+    "agreement": "Келісім бойынша"
+  },
+  "vehicle_types": {
+    "tent": "Тент",
+    "ref": "Рефрижератор",
+    "isotherm": "Изотерм",
+    "any": "Кез келген көлік",
+    "covered": "Жабық",
+    "car_carrier": "Автокөлік тасымалдағыш",
+    "aerial_platform": "Автовышка",
+    "car_transporter": "Автотасымалдаушы",
+    "bulk": "Балковоз",
+    "fuel_tanker": "Жанармай тасушы",
+    "bitumen_tanker": "Битум тасушы",
+    "flatbed": "Бортты",
+    "shalanda": "Шаланда",
+    "trailer": "Тіркеме",
+    "bus": "Автобус",
+    "semi_trailer": "Жартылай тіркеме",
+    "container_carrier": "Контейнер тасушы",
+    "hyundai_porter": "Хендай Портер",
+    "fish_truck": "Балық тасушы",
+    "chemical_tank": "Химиялық цистерна",
+    "platform": "Платформа",
+    "sewage": "Ассенизатор",
+    "excavator": "Экскаватор",
+    "glass": "Шыны тасушы",
+    "incubator": "Инкубатор",
+    "roll_transporter": "Орам тасушы",
+    "gazelle_passenger": "Жолаушылар Газелі",
+    "gazelle_flatbed": "Бортты Газель",
+    "cattle_truck": "Мал тасушы",
+    "garbage_truck": "Қоқыс тасушы",
+    "mega_truck": "Мега фура",
+    "diplomatic": "Дипломатиялық жүк",
+    "flour_truck": "Ұн тасушы",
+    "open": "Ашық",
+    "concrete_mixer": "Бетон араластырғыш",
+    "gas": "Газ тасушы",
+    "grain": "Астық тасушы",
+    "container_platform": "Конт. алаңы",
+    "feed": "Жем тасушы",
+    "crane": "Кран",
+    "log_truck": "Ағаш тасушы",
+    "manipulator": "Манипулятор",
+    "minibus": "Микроавтобус",
+    "chip_truck": "Жоңқа тасушы",
+    "open_container": "Ашық контейнер",
+    "panel_truck": "Панель тасушы",
+    "loader": "Тиегіш",
+    "dump_truck": "Самосвал",
+    "tractor": "Ершікті тартқыш",
+    "trailer_platform": "Трал",
+    "pipe_truck": "Құбыр тасушы",
+    "van": "Тұтас металл",
+    "cement_truck": "Цемент тасушы",
+    "food_tank": "Азық-түлік цистернасы",
+    "refrigerator": "Рефрижератор"
+  },
+  "loading_types": {
+    "top": "Жоғарғы тиеу",
+    "side": "Бүйірлік тиеу",
+    "back": "Артқы тиеу",
+    "any_way": "Кез келген әдіс",
+    "any_type": "Кез келген тиеу түрі"
+  },
+  "dimensions": {
+    "length": "{} м ұзындығы",
+    "width": "{} м ені",
+    "height": "{} м биіктігі",
+    "not_specified": "Көрсетілмеген"
+  },
+  "common": {
+    "date_agreement": "Келісім бойынша",
+    "not_specified": "Көрсетілмеген"
   },
   "cost_estimate": {
     "title": "Құнын есептеу",
@@ -209,6 +500,7 @@
     "title": "Жүк қосу",
     "edit_title": "Хабарламаны өзгерту",
     "subtitle": "Қадамдап толтырамыз — ештеңе ұмытылмайды.",
+    "default_error": "Тапсырыс құру мүмкін болмады",
     "location": {
       "pick_departure": "Жүктеу нүктесін таңдау",
       "pick_destination": "Түсіру нүктесін таңдау"
@@ -495,7 +787,27 @@
     "photos": "Жүк фотосы",
     "labels": {
       "departure_date": "Жөнелту күні: {}",
-      "status": "Статус: {0}"
+      "departure_date_title": "Жөнелту күні",
+      "status": "Статус: {0}",
+      "delivery_term": "Жеткізу мерзімі",
+      "weight": "Салмағы",
+      "volume": "Көлемі",
+      "dimensions": "Өлшемдері",
+      "budget": "Бюджет",
+      "payment_type": "Төлем түрі",
+      "contacts_open": "Жүргізушілерге ашық",
+      "contacts_hidden": "Жасырын"
+    },
+    "sections": {
+      "listing": "Хабарландыру",
+      "route": "Маршрут",
+      "full_route": "Толық маршрут",
+      "loading": "Жүктеу",
+      "unloading": "Түсіру",
+      "cargo_params": "Жүк параметрлері",
+      "cost": "Құны",
+      "contacts": "Байланыстар",
+      "comment": "Пікір"
     },
     "status": {
       "title": "Рейс статусы",
@@ -552,7 +864,11 @@
     "balance": {
       "title": "Жалпы баланс",
       "top_up": "Толықтыру",
-      "transfer": "Аудару"
+      "transfer": "Аудару",
+      "history": "Тарих",
+      "tariffs": "Тарифтер",
+      "business": "Бизнес қызметтері",
+      "partner": "Серіктес болу"
     },
     "referral": {
       "title": "Менің рефералдық кодым",
@@ -578,6 +894,20 @@
       "error": "Шығу кезінде қате"
     },
     "app_version": "Қолданба нұсқасы",
+    "verification": {
+      "status": {
+        "approved": "Верификация өтті",
+        "in_review": "Құжаттар тексерілуде",
+        "rejected": "Верификация қабылданбады",
+        "required": "Верификация қажет"
+      },
+      "message": {
+        "in_review": "Біз құжаттарыңызды тексеріп жатырмыз. Бұл әдетте аз уақыт алады.",
+        "rejected_default": "Құжаттардың дұрыстығын тексеріп, қайтадан көріңіз.",
+        "required": "Куәлік, техпаспорт және жеке куәлік фотоларын жүктеңіз."
+      },
+      "active_status": "Белсенді"
+    },
     "support": {
       "close": "Жабу",
       "help_body": "Көмек керек пе? Төмендегі кез келген тәсілмен жазыңыз."
@@ -601,6 +931,7 @@
       "subtitle": "Рейсті бақылаңыз және маңызды оқиғаларды белгілеңіз.",
       "find_cargo": "Жүк табу",
       "loading_status": "Жүк статусы",
+      "current_orders": "Ағымдағы тапсырыстар",
       "expenses": "Калькулятор",
       "transport": "Менің көлігім",
       "create_ad": "Хабарландыру жасау",
@@ -689,8 +1020,24 @@
     }
   },
   "driver_expenses": {
-    "title": "Шығындар",
-    "stub": "Шығындар есебі келесі жаңартуда қолжетімді болады."
+    "title": "Шығындар калькуляторы",
+    "subtitle": "Маршрутқа кететін жанармай шығынын есептеңіз",
+    "from": "Қайдан",
+    "to": "Қайда",
+    "select_city": "Қаланы таңдаңыз",
+    "consumption": "Шығын (л/100км)",
+    "price": "Жанармай бағасы (₸/л)",
+    "calculate": "Есептеу",
+    "fuel_cost": "Жанармай құны",
+    "disclaimer": "ⓘ Есептеу шамамен алынған және нақты маршрутқа байланысты.",
+    "hint_consumption": "Мысалы: 12",
+    "hint_price": "Мысалы: 250",
+    "result_distance": "Қашықтық:",
+    "result_consumption": "Шығын:",
+    "result_fuel": "Жанармай:",
+    "error_select_cities": "Жөнелту және жеткізу қалаларын таңдаңыз",
+    "error_invalid_input": "Дұрыс шығын мен бағаны енгізіңіз",
+    "error_coords": "Қала координаттарын анықтау мүмкін болмады"
   },
   "driver_loading": {
     "title": "Жүктің статусы",
@@ -768,5 +1115,42 @@
     "search_hint": "Қаланы іздеу",
     "pick_on_map": "Картадан көрсету",
     "search_subtitle": "Қаланы табыңыз немесе картадан белгілеңіз"
+  },
+  "driver_verification": {
+    "title": "Жүргізуші верификациясы",
+    "subtitle": "Деректерді толтырыңыз және құжаттардың фотоларын жүктеңіз",
+    "personal_data": "Жеке деректер",
+    "contacts": "Байланыстар",
+    "docs_data": "Құжат деректері",
+    "files_data": "Құжат файлдары",
+    "fields": {
+      "first_name": "Аты",
+      "last_name": "Тегі",
+      "middle_name": "Әкесінің аты",
+      "email": "Email",
+      "phone": "Телефон",
+      "license_number": "Куәлік нөмірі",
+      "vp_number": "Техпаспорт нөмірі",
+      "id_number": "Жеке куәлік нөмірі"
+    },
+    "files": {
+      "license_front": "Куәлік (алдыңғы)",
+      "license_back": "Куәлік (артқы)",
+      "vp_front": "Техпаспорт (алдыңғы)",
+      "vp_back": "Техпаспорт (артқы)",
+      "id_front": "Жеке куәлік (алдыңғы)",
+      "id_back": "Жеке куәлік (артқы)",
+      "upload": "Жүктеу",
+      "replace": "Ауыстыру",
+      "placeholder": "JPEG/PNG, 10 МБ дейін"
+    },
+    "errors": {
+      "upload_all": "Барлық міндетті файлдарды жүктеңіз",
+      "required": "Міндетті өріс",
+      "invalid_email": "Бұрыс email",
+      "invalid_phone": "Бұрыс телефон"
+    },
+    "success": "Тексеруге жіберілді",
+    "submit_btn": "Тексеруге жіберу"
   }
 }

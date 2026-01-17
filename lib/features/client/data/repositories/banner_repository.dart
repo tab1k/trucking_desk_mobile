@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/core/network/dio_provider.dart';
@@ -20,86 +21,87 @@ class BannerRepository {
 
   Future<List<BannerModel>> getActiveBanners() async {
     try {
-      print('🔄 Loading banners from API...');
-      
+      debugPrint('🔄 Loading banners from API...');
+
       final response = await _dio.get('/banners/');
-      
-      print('✅ API Response status: ${response.statusCode}');
-      print('📦 API Response data type: ${response.data.runtimeType}');
-      
+
+      debugPrint('✅ API Response status: ${response.statusCode}');
+      debugPrint('📦 API Response data type: ${response.data.runtimeType}');
+
       // Обрабатываем разные форматы ответа
       List<dynamic> data;
-      
+
       if (response.data is List) {
         // Если ответ прямо список: [{...}, {...}]
         data = response.data;
-        print('📋 Response is direct List with ${data.length} items');
+        debugPrint('📋 Response is direct List with ${data.length} items');
       } else if (response.data is Map) {
         // Если ответ в формате JSON объекта
         if (response.data.containsKey('results')) {
           data = response.data['results'] ?? [];
-          print('📋 Response has "results" key with ${data.length} items');
+          debugPrint('📋 Response has "results" key with ${data.length} items');
         } else if (response.data.containsKey('data')) {
           data = response.data['data'] ?? [];
-          print('📋 Response has "data" key with ${data.length} items');
+          debugPrint('📋 Response has "data" key with ${data.length} items');
         } else {
           // Пробуем найти любой список в ответе
           data = [];
           response.data.forEach((key, value) {
             if (value is List) {
               data = value;
-              print('📋 Found List in key "$key" with ${data.length} items');
+              debugPrint(
+                '📋 Found List in key "$key" with ${data.length} items',
+              );
             }
           });
         }
       } else {
         data = [];
-        print('❓ Unknown response format');
+        debugPrint('❓ Unknown response format');
       }
-      
+
       if (data.isEmpty) {
-        print('⚠️ No banners found, using mock data');
+        debugPrint('⚠️ No banners found, using mock data');
         return _getMockBanners();
       }
-      
-      print('🎯 Processing ${data.length} banner items...');
-      
+
+      debugPrint('🎯 Processing ${data.length} banner items...');
+
       final banners = <BannerModel>[];
-      
+
       for (var i = 0; i < data.length; i++) {
         try {
           final item = data[i];
-          print('📝 Item $i: $item');
-          
+          debugPrint('📝 Item $i: $item');
+
           if (item is Map<String, dynamic>) {
             final banner = BannerModel.fromJson(item);
             banners.add(banner);
-            print('✅ Successfully parsed banner: ${banner.title}');
+            debugPrint('✅ Successfully parsed banner: ${banner.title}');
           } else {
-            print('❌ Item $i is not a Map, skipping');
+            debugPrint('❌ Item $i is not a Map, skipping');
           }
         } catch (e) {
-          print('❌ Error parsing item $i: $e');
+          debugPrint('❌ Error parsing item $i: $e');
         }
       }
-      
-      print('🎨 Successfully loaded ${banners.length} banners');
-      
+
+      debugPrint('🎨 Successfully loaded ${banners.length} banners');
+
       return banners;
-      
     } on DioException catch (e) {
-      print('❌ Dio Error: ${e.message}');
-      print('📡 Error type: ${e.type}');
-      print('🔗 URL: ${e.requestOptions.uri}');
-      print('📊 Response status: ${e.response?.statusCode}');
-      print('📄 Response data: ${e.response?.data}');
-      
+      debugPrint('❌ Dio Error: ${e.message}');
+      debugPrint('📡 Error type: ${e.type}');
+      debugPrint('🔗 URL: ${e.requestOptions.uri}');
+      debugPrint('📊 Response status: ${e.response?.statusCode}');
+      debugPrint('📄 Response data: ${e.response?.data}');
+
       // Используем мок данные при ошибке
-      print('🔄 Using mock data due to error');
+      debugPrint('🔄 Using mock data due to error');
       return _getMockBanners();
     } catch (e) {
-      print('❌ Unexpected error: $e');
-      print('🔄 Using mock data due to error');
+      debugPrint('❌ Unexpected error: $e');
+      debugPrint('🔄 Using mock data due to error');
       return _getMockBanners();
     }
   }
@@ -109,19 +111,22 @@ class BannerRepository {
       BannerModel(
         id: 1,
         title: 'Специальное предложение',
-        imageUrl: 'https://via.placeholder.com/300x150/6E41E2/FFFFFF?text=Banner+1',
+        imageUrl:
+            'https://via.placeholder.com/300x150/6E41E2/FFFFFF?text=Banner+1',
         link: '/promo1',
       ),
       BannerModel(
         id: 2,
         title: 'Новые возможности',
-        imageUrl: 'https://via.placeholder.com/300x150/2196F3/FFFFFF?text=Banner+2',
+        imageUrl:
+            'https://via.placeholder.com/300x150/2196F3/FFFFFF?text=Banner+2',
         link: '/promo2',
       ),
       BannerModel(
         id: 3,
         title: 'Акция недели',
-        imageUrl: 'https://via.placeholder.com/300x150/00C968/FFFFFF?text=Banner+3',
+        imageUrl:
+            'https://via.placeholder.com/300x150/00C968/FFFFFF?text=Banner+3',
         link: '/promo3',
       ),
     ];

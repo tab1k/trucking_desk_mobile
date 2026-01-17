@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -109,28 +110,52 @@ class _DriverOrderDetailSheet extends StatelessWidget {
             ],
             SizedBox(height: 20.h),
             _InfoBlock(
-              title: 'Параметры груза',
+              title: tr('driver_order_detail.cargo_params'),
               children: [
-                _InfoRow(label: 'Вес', value: order.weightLabel),
-                _InfoRow(label: 'Объем', value: order.volumeLabel),
-                _InfoRow(label: 'Тип ТС', value: order.vehicleTypeLabel),
-                _InfoRow(label: 'Тип погрузки', value: order.loadingTypeLabel),
+                _InfoRow(
+                  label: tr('driver_order_detail.weight'),
+                  value: order.weightLabel,
+                ),
+                _InfoRow(
+                  label: tr('driver_order_detail.volume'),
+                  value: order.volumeLabel,
+                ),
+                _InfoRow(
+                  label: tr('driver_order_detail.vehicle_type'),
+                  value: order.vehicleTypeLabel,
+                ),
+                _InfoRow(
+                  label: tr('driver_order_detail.loading_type'),
+                  value: order.loadingTypeLabel,
+                ),
               ],
             ),
             SizedBox(height: 16.h),
             _InfoBlock(
-              title: 'Стоимость и сроки',
+              title: tr('driver_order_detail.cost_and_terms'),
               children: [
-                _InfoRow(label: 'Сумма', value: order.priceLabel),
-                _InfoRow(label: 'Оплата', value: order.paymentTypeLabel),
-                _InfoRow(label: 'Статус', value: _statusLabel(order.status)),
-                _InfoRow(label: 'Дата отправки', value: order.dateLabel),
+                _InfoRow(
+                  label: tr('driver_order_detail.amount'),
+                  value: order.priceLabel,
+                ),
+                _InfoRow(
+                  label: tr('driver_order_detail.payment'),
+                  value: order.paymentTypeLabel,
+                ),
+                _InfoRow(
+                  label: tr('driver_order_detail.status'),
+                  value: _statusLabel(order.status),
+                ),
+                _InfoRow(
+                  label: tr('driver_order_detail.departure_date'),
+                  value: order.dateLabel,
+                ),
               ],
             ),
             if (order.description.isNotEmpty) ...[
               SizedBox(height: 16.h),
               Text(
-                'Комментарий отправителя',
+                tr('driver_order_detail.sender_comment'),
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 8.h),
@@ -148,13 +173,13 @@ class _DriverOrderDetailSheet extends StatelessWidget {
   String _statusLabel(CargoStatus status) {
     switch (status) {
       case CargoStatus.pending:
-        return 'Ожидание';
+        return tr('driver_order_detail.status_pending');
       case CargoStatus.inTransit:
-        return 'В пути';
+        return tr('driver_order_detail.status_in_transit');
       case CargoStatus.completed:
-        return 'Завершен';
+        return tr('driver_order_detail.status_completed');
       case CargoStatus.cancelled:
-        return 'Отменен';
+        return tr('driver_order_detail.status_cancelled');
     }
   }
 

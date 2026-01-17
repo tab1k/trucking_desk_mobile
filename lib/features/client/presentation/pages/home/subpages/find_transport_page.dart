@@ -10,6 +10,8 @@ import 'package:fura24.kz/features/client/presentation/pages/home/subpages/find_
 import 'package:fura24.kz/features/client/presentation/providers/driver_announcements_provider.dart';
 import 'package:fura24.kz/features/client/presentation/widgets/driver_announcement_card.dart';
 import 'package:fura24.kz/features/driver/view/widgets/driver_announcement_detail_sheet.dart';
+import 'package:fura24.kz/features/driver/view/widgets/saved_routes_sheet.dart';
+import 'package:fura24.kz/features/driver/domain/models/saved_route.dart';
 
 class FindTransportPage extends ConsumerStatefulWidget {
   const FindTransportPage({super.key});
@@ -80,6 +82,12 @@ class _FindTransportPageState extends ConsumerState<FindTransportPage> {
               ),
             ),
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.bookmark_outline, color: Colors.black87),
+              onPressed: _openSavedRoutes,
+            ),
+          ],
         ),
         body: SafeArea(
           top: false,
@@ -170,7 +178,9 @@ class _FindTransportPageState extends ConsumerState<FindTransportPage> {
                 Icon(
                   Icons.tune,
                   size: 28,
-                  color: hasFilters ? const Color(0xFF00B2FF) : Color(0xFF00B2FF),
+                  color: hasFilters
+                      ? const Color(0xFF00B2FF)
+                      : Color(0xFF00B2FF),
                 ),
               ],
             ),
@@ -222,10 +232,8 @@ class _FindTransportPageState extends ConsumerState<FindTransportPage> {
           return Padding(
             padding: EdgeInsets.only(bottom: 16.h),
             child: GestureDetector(
-              onTap: () => showDriverAnnouncementDetailSheet(
-                context,
-                announcement,
-              ),
+              onTap: () =>
+                  showDriverAnnouncementDetailSheet(context, announcement),
               behavior: HitTestBehavior.opaque,
               child: DriverAnnouncementCard(
                 offer: offer,
@@ -267,6 +275,24 @@ class _FindTransportPageState extends ConsumerState<FindTransportPage> {
       ref
           .read(driverAnnouncementFiltersProvider.notifier)
           .updateFilters(result);
+    }
+  }
+
+  Future<void> _openSavedRoutes() async {
+    final route = await showSavedRoutesSheet(
+      context,
+      type: SavedRoute.typeTransport,
+    );
+    if (route != null) {
+      if (!mounted) return;
+      final current = ref.read(driverAnnouncementFiltersProvider);
+      final updated = current.copyWith(
+        departureCity: route.departureCityName,
+        destinationCity: route.destinationCityName,
+      );
+      ref
+          .read(driverAnnouncementFiltersProvider.notifier)
+          .updateFilters(updated);
     }
   }
 

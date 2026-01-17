@@ -1,5 +1,6 @@
 import 'package:country_code_picker/country_code_picker.dart'
     show CountryCode, codes;
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,8 +17,9 @@ class AuthDialCodeSelector extends StatelessWidget {
   final ValueChanged<String> onDialCodeChanged;
   final IconData? icon;
 
-  static final List<CountryCode> _countries =
-      codes.map((json) => CountryCode.fromJson(json)).toList();
+  static final List<CountryCode> _countries = codes
+      .map((json) => CountryCode.fromJson(json))
+      .toList();
 
   Future<void> _openPicker(BuildContext context) async {
     final theme = Theme.of(context);
@@ -42,15 +44,14 @@ class AuthDialCodeSelector extends StatelessWidget {
             void applyFilter(String value) {
               final query = value.trim().toUpperCase();
               setState(() {
-                filtered =
-                    _countries.where((country) {
-                      final name = (country.name ?? '').toUpperCase();
-                      final code = (country.code ?? '').toUpperCase();
-                      final dial = (country.dialCode ?? '').toUpperCase();
-                      return name.contains(query) ||
-                          code.contains(query) ||
-                          dial.contains(query);
-                    }).toList();
+                filtered = _countries.where((country) {
+                  final name = (country.name ?? '').toUpperCase();
+                  final code = (country.code ?? '').toUpperCase();
+                  final dial = (country.dialCode ?? '').toUpperCase();
+                  return name.contains(query) ||
+                      code.contains(query) ||
+                      dial.contains(query);
+                }).toList();
               });
             }
 
@@ -59,7 +60,6 @@ class AuthDialCodeSelector extends StatelessWidget {
               curve: Curves.easeOut,
               padding: EdgeInsets.only(bottom: keyboardPadding),
               child: Container(
-                
                 child: FractionallySizedBox(
                   heightFactor: 0.75,
                   child: Material(
@@ -90,7 +90,7 @@ class AuthDialCodeSelector extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Выбор кода страны',
+                                'auth.select_country_code'.tr(),
                                 style: textTheme.titleLarge?.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -107,9 +107,7 @@ class AuthDialCodeSelector extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: TextField(
                             controller: searchController,
                             onChanged: applyFilter,
@@ -119,14 +117,13 @@ class AuthDialCodeSelector extends StatelessWidget {
                                 size: 18.sp,
                                 color: Colors.grey.shade500,
                               ),
-                              hintText: 'Страна или код',
+                              hintText: 'auth.country_search_hint'.tr(),
                               filled: true,
                               fillColor: colorScheme.surfaceVariant.withOpacity(
                                 0.35,
                               ),
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 14.w,
-                  
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14.r),
@@ -150,58 +147,53 @@ class AuthDialCodeSelector extends StatelessWidget {
                           ),
                         ),
                         Expanded(
-                          child:
-                              filtered.isEmpty
-                                  ? Center(
-                                    child: Text(
-                                      'Ничего не найдено',
-                                      style: textTheme.bodyMedium?.copyWith(
-                                        color: Colors.grey.shade500,
-                                      ),
+                          child: filtered.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    'auth.country_not_found'.tr(),
+                                    style: textTheme.bodyMedium?.copyWith(
+                                      color: Colors.grey.shade500,
                                     ),
-                                  )
-                                  : ListView.separated(
-                                    padding: EdgeInsets.only(bottom: 16.h),
-                                    itemBuilder: (context, index) {
-                                      final country = filtered[index];
-                                      final isActive =
-                                          country.dialCode == currentDialCode;
-                                      return ListTile(
-                                        onTap:
-                                            () => Navigator.of(
-                                              context,
-                                            ).pop<CountryCode>(country),
-                                        contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 16.w,
-                                          vertical: 6.h,
-                                        ),
-                                        title: Text(
-                                          '${country.dialCode ?? ''} '
-                                          '${country.name ?? ''}',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            fontWeight:
-                                                isActive
-                                                    ? FontWeight.w600
-                                                    : FontWeight.w400,
-                                          ),
-                                        ),
-                                        trailing:
-                                            isActive
-                                                ? Icon(
-                                                  Icons.check_rounded,
-                                                  color: colorScheme.primary,
-                                                  size: 20.sp,
-                                                )
-                                                : null,
-                                      );
-                                    },
-                                    separatorBuilder:
-                                        (_, __) => Divider(
-                                          height: 1,
-                                          color: Colors.grey.shade200,
-                                        ),
-                                    itemCount: filtered.length,
                                   ),
+                                )
+                              : ListView.separated(
+                                  padding: EdgeInsets.only(bottom: 16.h),
+                                  itemBuilder: (context, index) {
+                                    final country = filtered[index];
+                                    final isActive =
+                                        country.dialCode == currentDialCode;
+                                    return ListTile(
+                                      onTap: () => Navigator.of(
+                                        context,
+                                      ).pop<CountryCode>(country),
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16.w,
+                                        vertical: 6.h,
+                                      ),
+                                      title: Text(
+                                        '${country.dialCode ?? ''} '
+                                        '${country.name ?? ''}',
+                                        style: textTheme.bodyMedium?.copyWith(
+                                          fontWeight: isActive
+                                              ? FontWeight.w600
+                                              : FontWeight.w400,
+                                        ),
+                                      ),
+                                      trailing: isActive
+                                          ? Icon(
+                                              Icons.check_rounded,
+                                              color: colorScheme.primary,
+                                              size: 20.sp,
+                                            )
+                                          : null,
+                                    );
+                                  },
+                                  separatorBuilder: (_, __) => Divider(
+                                    height: 1,
+                                    color: Colors.grey.shade200,
+                                  ),
+                                  itemCount: filtered.length,
+                                ),
                         ),
                       ],
                     ),

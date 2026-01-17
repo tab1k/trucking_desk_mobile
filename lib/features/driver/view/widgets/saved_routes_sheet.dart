@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,7 +37,7 @@ class SavedRoutesSheet extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Сохраненные маршруты',
+                  tr('saved_routes.title'),
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
@@ -72,7 +73,7 @@ class SavedRoutesSheet extends ConsumerWidget {
                         ),
                         SizedBox(height: 16.h),
                         Text(
-                          'У вас пока нет сохраненных маршрутов',
+                          tr('saved_routes.empty'),
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: Colors.grey[600],
@@ -155,7 +156,7 @@ class SavedRoutesSheet extends ConsumerWidget {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => Center(
                 child: Text(
-                  'Ошибка загрузки',
+                  tr('saved_routes.error_loading'),
                   style: TextStyle(color: Colors.red[400]),
                 ),
               ),

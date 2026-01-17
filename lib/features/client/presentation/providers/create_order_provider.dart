@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/core/exceptions/api_exception.dart';
 import 'package:fura24.kz/features/client/data/repositories/order_repository.dart';
@@ -6,15 +7,13 @@ import 'package:fura24.kz/features/client/domain/models/create_order_request.dar
 final createOrderControllerProvider =
     StateNotifierProvider<CreateOrderController, AsyncValue<void>>((ref) {
       final repository = ref.watch(orderRepositoryProvider);
-      return CreateOrderController(
-        repository: repository,
-      );
+      return CreateOrderController(repository: repository);
     });
 
 class CreateOrderController extends StateNotifier<AsyncValue<void>> {
-  CreateOrderController({
-    required OrderRepository repository,
-  }) : _repository = repository, super(const AsyncData(null));
+  CreateOrderController({required OrderRepository repository})
+    : _repository = repository,
+      super(const AsyncData(null));
 
   final OrderRepository _repository;
 
@@ -55,7 +54,7 @@ String? createOrderError(AsyncValue<void> state) {
   return state.whenOrNull(
     error: (error, _) {
       if (error is ApiException) return error.message;
-      return 'Не удалось создать заявку';
+      return tr('create_order.default_error');
     },
   );
 }

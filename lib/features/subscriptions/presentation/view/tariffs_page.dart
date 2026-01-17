@@ -73,7 +73,7 @@ class TariffsPage extends ConsumerWidget {
                   SizedBox(width: 16.w),
                   Expanded(
                     child: Text(
-                      'Подключение тарифа',
+                      tr('tariffs.dialog.title'),
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
@@ -95,7 +95,7 @@ class TariffsPage extends ConsumerWidget {
                       height: 1.5,
                     ),
                     children: [
-                      const TextSpan(text: 'Вы собираетесь подключить тариф '),
+                      TextSpan(text: tr('tariffs.dialog.body_prefix')),
                       TextSpan(
                         text: tariff.title,
                         style: TextStyle(
@@ -103,7 +103,7 @@ class TariffsPage extends ConsumerWidget {
                           color: color,
                         ),
                       ),
-                      const TextSpan(text: ' за '),
+                      TextSpan(text: tr('tariffs.dialog.body_middle')),
                       TextSpan(
                         text:
                             '${NumberFormat('#,##0', 'ru_RU').format(tariff.price)} ₸',
@@ -194,8 +194,8 @@ class TariffsPage extends ConsumerWidget {
 
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Тариф успешно подключен!'),
+            SnackBar(
+              content: Text(tr('tariffs.dialog.success')),
               backgroundColor: Colors.green,
             ),
           );
@@ -209,7 +209,7 @@ class TariffsPage extends ConsumerWidget {
           Navigator.of(context, rootNavigator: true).pop();
         }
 
-        String errorMsg = 'Ошибка при подключении';
+        String errorMsg = tr('tariffs.dialog.error_default');
         if (e is DioException) {
           errorMsg = e.response?.data?['error'] ?? errorMsg;
         } else {
@@ -254,7 +254,7 @@ class TariffsPage extends ConsumerWidget {
         title: Padding(
           padding: EdgeInsets.only(left: 12.w),
           child: Text(
-            'Тарифы',
+            tr('tariffs.title'),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
@@ -266,7 +266,7 @@ class TariffsPage extends ConsumerWidget {
       body: tariffsAsync.when(
         data: (tariffs) {
           if (tariffs.isEmpty) {
-            return const Center(child: Text('Нет доступных тарифов'));
+            return Center(child: Text(tr('tariffs.empty')));
           }
           return ListView.separated(
             padding: EdgeInsets.all(16.w),
@@ -281,7 +281,10 @@ class TariffsPage extends ConsumerWidget {
           );
         },
         error: (err, stack) => Center(
-          child: Text('Ошибка загрузки: $err', textAlign: TextAlign.center),
+          child: Text(
+            tr('tariffs.error_load', args: [err.toString()]),
+            textAlign: TextAlign.center,
+          ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
@@ -348,7 +351,7 @@ class _TariffCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
-                      'Активен',
+                      tr('tariffs.active'),
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.bold,
@@ -366,7 +369,10 @@ class _TariffCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${NumberFormat('#,##0', 'ru_RU').format(tariff.price)} ₸ / месяц',
+                  tr(
+                    'tariffs.price_month',
+                    args: [NumberFormat('#,##0', 'ru_RU').format(tariff.price)],
+                  ),
                   style: TextStyle(
                     fontSize: 22.sp,
                     fontWeight: FontWeight.w700,
@@ -402,7 +408,9 @@ class _TariffCard extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 14.h),
                     ),
                     child: Text(
-                      tariff.isActive ? 'Уже подключен' : 'Подключить',
+                      tariff.isActive
+                          ? tr('tariffs.btn_connected')
+                          : tr('tariffs.btn_connect'),
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,

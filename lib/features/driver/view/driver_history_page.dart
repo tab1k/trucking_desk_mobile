@@ -326,21 +326,7 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
   }
 
   String _formatDate(DateTime date) {
-    final months = [
-      'янв',
-      'фев',
-      'мар',
-      'апр',
-      'май',
-      'июн',
-      'июл',
-      'авг',
-      'сен',
-      'окт',
-      'ноя',
-      'дек',
-    ];
-    return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
+    return DateFormat('dd MMM yyyy', context.locale.toString()).format(date);
   }
 
   @override

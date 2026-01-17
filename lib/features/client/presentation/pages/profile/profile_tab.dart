@@ -186,7 +186,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
     if (password.trim().isEmpty) {
       ScaffoldMessenger.of(
         modalContext,
-      ).showSnackBar(const SnackBar(content: Text('Введите пароль')));
+      ).showSnackBar(SnackBar(content: Text(tr('profile.delete.error_empty'))));
       return;
     }
 
@@ -208,12 +208,12 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
       Navigator.of(modalContext).pop(); // закрыть sheet
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Аккаунт удален')));
+      ).showSnackBar(SnackBar(content: Text(tr('profile.delete.success'))));
       context.go(AuthRoutes.welcomeScreen);
     } else {
       final error =
           authErrorMessage(ref.read(authControllerProvider)) ??
-          'Не удалось удалить аккаунт';
+          tr('profile.delete.error_failed');
       ScaffoldMessenger.of(
         modalContext,
       ).showSnackBar(SnackBar(content: Text(error)));
@@ -243,7 +243,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Удаление аккаунта',
+                    tr('profile.delete.title'),
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
@@ -251,7 +251,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    'Введите пароль, чтобы удалить аккаунт. Действие необратимо.',
+                    tr('profile.delete.prompt'),
                     style: TextStyle(fontSize: 14.sp, color: Colors.grey[700]),
                   ),
                   SizedBox(height: 16.h),
@@ -259,7 +259,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                     controller: _deletePasswordController,
                     obscureText: obscure,
                     decoration: InputDecoration(
-                      labelText: 'Пароль',
+                      labelText: tr('profile.delete.password'),
                       border: const OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -280,7 +280,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                           onPressed: _isDeleting
                               ? null
                               : () => Navigator.of(modalContext).pop(),
-                          child: const Text('Отмена'),
+                          child: Text(tr('profile.delete.cancel')),
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -304,7 +304,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : const Text('Удалить'),
+                              : Text(tr('profile.delete.confirm')),
                         ),
                       ),
                     ],

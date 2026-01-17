@@ -21,11 +21,10 @@ Future<void> showClientOrderDetailSheet(BuildContext context, String orderId) {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
     ),
-    builder:
-        (_) => FractionallySizedBox(
-          heightFactor: 0.85,
-          child: ClientOrderDetailSheet(orderId: orderId),
-        ),
+    builder: (_) => FractionallySizedBox(
+      heightFactor: 0.85,
+      child: ClientOrderDetailSheet(orderId: orderId),
+    ),
   );
 }
 
@@ -55,35 +54,29 @@ class _ClientOrderDetailSheetState
     final safeBottom = MediaQuery.of(context).padding.bottom;
 
     return detailAsync.when(
-      data:
-          (detail) => Padding(
-            padding: EdgeInsets.fromLTRB(
-              20.w,
-              16.h,
-              20.w,
-              bottomInset + safeBottom + 12.h,
-            ),
-            child: _OrderDetailContent(
-              orderId: widget.orderId,
-              detail: detail,
-            ),
+      data: (detail) => Padding(
+        padding: EdgeInsets.fromLTRB(
+          20.w,
+          16.h,
+          20.w,
+          bottomInset + safeBottom + 12.h,
+        ),
+        child: _OrderDetailContent(orderId: widget.orderId, detail: detail),
+      ),
+      loading: () => Padding(
+        padding: EdgeInsets.symmetric(vertical: 60.h),
+        child: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, _) => Padding(
+        padding: EdgeInsets.symmetric(vertical: 60.h),
+        child: Center(
+          child: Text(
+            tr('my_cargo.error.load_detail'),
+            style: TextStyle(color: Colors.red[400]),
+            textAlign: TextAlign.center,
           ),
-      loading:
-          () => Padding(
-            padding: EdgeInsets.symmetric(vertical: 60.h),
-            child: const Center(child: CircularProgressIndicator()),
-          ),
-      error:
-          (error, _) => Padding(
-            padding: EdgeInsets.symmetric(vertical: 60.h),
-            child: Center(
-              child: Text(
-                'Не удалось загрузить детали заказа',
-                style: TextStyle(color: Colors.red[400]),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
+        ),
+      ),
     );
   }
 }
@@ -95,7 +88,8 @@ class _OrderDetailContent extends ConsumerStatefulWidget {
   final OrderDetail detail;
 
   @override
-  ConsumerState<_OrderDetailContent> createState() => _OrderDetailContentState();
+  ConsumerState<_OrderDetailContent> createState() =>
+      _OrderDetailContentState();
 }
 
 class _OrderDetailContentState extends ConsumerState<_OrderDetailContent> {
@@ -146,10 +140,9 @@ class _OrderDetailContentState extends ConsumerState<_OrderDetailContent> {
               width: isActive ? 22.w : 8.w,
               height: 6.h,
               decoration: BoxDecoration(
-                color:
-                    isActive
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.primary.withValues(alpha: 0.25),
+                color: isActive
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.primary.withValues(alpha: 0.25),
                 borderRadius: BorderRadius.circular(999),
               ),
             );
@@ -175,7 +168,9 @@ class _PrimaryInfoPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            detail.cargoName.isEmpty ? 'Объявление' : detail.cargoName,
+            detail.cargoName.isEmpty
+                ? tr('order_detail.sections.listing')
+                : detail.cargoName,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -219,12 +214,11 @@ class _PrimaryInfoPage extends StatelessWidget {
                   final url = detail.photoUrls[index];
                   return _PhotoThumbnail(
                     url: url,
-                    onTap:
-                        () => showDriverPhotoViewer(
-                          context,
-                          detail.photoUrls,
-                          initialIndex: index,
-                        ),
+                    onTap: () => showDriverPhotoViewer(
+                      context,
+                      detail.photoUrls,
+                      initialIndex: index,
+                    ),
                   );
                 },
               ),
@@ -256,53 +250,54 @@ class _SecondaryInfoPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _Section(
-            title: 'Маршрут',
+            title: tr('order_detail.sections.route'),
             children: [
-              _InfoRow(label: 'Полный маршрут', value: fullRoute),
               _InfoRow(
-                label: 'Погрузка',
+                label: tr('order_detail.sections.full_route'),
+                value: fullRoute,
+              ),
+              _InfoRow(
+                label: tr('order_detail.sections.loading'),
                 value: _locationWithAddress(
                   detail.departurePoint.cityName,
                   detail.departureAddressDetail,
                 ),
               ),
               _InfoRow(
-                label: 'Разгрузка',
+                label: tr('order_detail.sections.unloading'),
                 value: _locationWithAddress(
                   detail.destinationPoint.cityName,
                   detail.destinationAddressDetail,
                 ),
               ),
               _InfoRow(
-                label: 'Дата отправки',
+                label: tr('order_detail.labels.departure_date_title'),
                 value: _dateLabel(detail.transportationDate),
               ),
               _InfoRow(
-                label: 'Срок доставки',
-                value:
-                    detail.transportationTermDays != null
-                        ? '${detail.transportationTermDays} дн.'
-                        : 'Не указано',
+                label: tr('order_detail.labels.delivery_term'),
+                value: detail.transportationTermDays != null
+                    ? '${detail.transportationTermDays} дн.'
+                    : tr('common.not_specified'),
               ),
             ],
           ),
           SizedBox(height: 16.h),
           _Section(
-            title: 'Параметры груза',
+            title: tr('order_detail.sections.cargo_params'),
             children: [
               _InfoRow(
-                label: 'Вес',
+                label: tr('order_detail.labels.weight'),
                 value: '${_formatNumber(detail.weightTons)} т',
               ),
               _InfoRow(
-                label: 'Объём',
-                value:
-                    detail.volumeCubicMeters != null
-                        ? '${_formatNumber(detail.volumeCubicMeters!)} м³'
-                        : 'Не указано',
+                label: tr('order_detail.labels.volume'),
+                value: detail.volumeCubicMeters != null
+                    ? '${_formatNumber(detail.volumeCubicMeters!)} м³'
+                    : tr('common.not_specified'),
               ),
               _InfoRow(
-                label: 'Габариты',
+                label: tr('order_detail.labels.dimensions'),
                 value: _dimensionsLabel(
                   detail.lengthMeters,
                   detail.widthMeters,
@@ -313,19 +308,21 @@ class _SecondaryInfoPage extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           _Section(
-            title: 'Стоимость',
+            title: tr('order_detail.sections.cost'),
             children: [
               _InfoRow(
-                label: 'Бюджет',
+                label: tr('order_detail.labels.budget'),
                 value: '${_formatPrice(detail.amount)} ${detail.currency}',
               ),
-              _InfoRow(label: 'Тип оплаты', value: _paymentLabel(detail)),
               _InfoRow(
-                label: 'Контакты',
-                value:
-                    detail.showPhoneToDrivers
-                        ? 'Открыты водителям'
-                        : 'Скрыты',
+                label: tr('order_detail.labels.payment_type'),
+                value: _paymentLabel(detail),
+              ),
+              _InfoRow(
+                label: tr('order_detail.sections.contacts'),
+                value: detail.showPhoneToDrivers
+                    ? tr('order_detail.labels.contacts_open')
+                    : tr('order_detail.labels.contacts_hidden'),
               ),
             ],
           ),
@@ -333,10 +330,10 @@ class _SecondaryInfoPage extends StatelessWidget {
               detail.description!.trim().isNotEmpty) ...[
             SizedBox(height: 16.h),
             Text(
-              'Комментарий',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              tr('order_detail.sections.comment'),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 6.h),
             Text(
@@ -439,7 +436,10 @@ class _BidTile extends StatelessWidget {
                 if (bid.amount != null) ...[
                   SizedBox(height: 4.h),
                   Text(
-                    'Сумма: ${bid.amount!.toStringAsFixed(0)}',
+                    tr(
+                      'my_cargo.bids.offer_amount',
+                      args: [bid.amount!.toStringAsFixed(0)],
+                    ),
                     style: theme.textTheme.bodySmall,
                   ),
                 ],
@@ -466,7 +466,6 @@ class _BidTile extends StatelessWidget {
     return tr('order_detail.bid_status.new');
   }
 }
-
 
 class _StatusTimeline extends StatelessWidget {
   const _StatusTimeline({required this.steps, required this.currentStatus});
@@ -530,12 +529,11 @@ class _TimelineStep extends StatelessWidget {
               height: dotSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color:
-                    isActive
-                        ? color
-                        : isPassed
-                            ? color.withValues(alpha: 0.4)
-                            : Colors.white,
+                color: isActive
+                    ? color
+                    : isPassed
+                    ? color.withValues(alpha: 0.4)
+                    : Colors.white,
                 border: Border.all(
                   color: isActive || isPassed
                       ? color
@@ -548,10 +546,9 @@ class _TimelineStep extends StatelessWidget {
               Container(
                 width: 2.w,
                 height: 28.h,
-                color:
-                    isPassed
-                        ? color.withValues(alpha: 0.6)
-                        : Colors.grey.withValues(alpha: 0.3),
+                color: isPassed
+                    ? color.withValues(alpha: 0.6)
+                    : Colors.grey.withValues(alpha: 0.3),
               ),
           ],
         ),
@@ -564,10 +561,7 @@ class _TimelineStep extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                color:
-                    isActive
-                        ? color
-                        : Colors.black.withValues(alpha: 0.6),
+                color: isActive ? color : Colors.black.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -578,81 +572,82 @@ class _TimelineStep extends StatelessWidget {
 }
 
 String _locationWithAddress(String city, String? address) {
-    if (address == null || address.isEmpty) return city;
-    return '$city, $address';
-  }
+  if (address == null || address.isEmpty) return city;
+  return '$city, $address';
+}
 
-  String _dimensionsLabel(double? l, double? w, double? h) {
-    if (l == null && w == null && h == null) return 'Не указаны';
-    final parts = [
-      if (l != null) '${_formatNumber(l)} м длина',
-      if (w != null) '${_formatNumber(w)} м ширина',
-      if (h != null) '${_formatNumber(h)} м высота',
-    ];
-    return parts.join(' · ');
-  }
+String _dimensionsLabel(double? l, double? w, double? h) {
+  if (l == null && w == null && h == null)
+    return tr('dimensions.not_specified');
+  final parts = [
+    if (l != null) tr('dimensions.length', args: [_formatNumber(l)]),
+    if (w != null) tr('dimensions.width', args: [_formatNumber(w)]),
+    if (h != null) tr('dimensions.height', args: [_formatNumber(h)]),
+  ];
+  return parts.join(' · ');
+}
 
-  String _dateLabel(DateTime? date) {
-    if (date == null) return 'По договорённости';
-    return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
-  }
+String _dateLabel(DateTime? date) {
+  if (date == null) return tr('common.date_agreement');
+  return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+}
 
-  String _paymentLabel(OrderDetail detail) {
-    switch (detail.paymentType) {
-      case 'CASH':
-        return 'Наличные';
-      case 'CASHLESS':
-        return 'Безналичный расчет';
-      case 'PREPAYMENT':
-        return 'Предоплата';
-      default:
-        return 'По договорённости';
-    }
+String _paymentLabel(OrderDetail detail) {
+  switch (detail.paymentType) {
+    case 'CASH':
+      return tr('payment_types.cash');
+    case 'CASHLESS':
+      return tr('payment_types.cashless_no_vat'); // Assuming default cashless
+    case 'PREPAYMENT':
+      return tr('payment_types.prepayment');
+    default:
+      return tr('payment_types.agreement');
   }
+}
 
-  String _vehicleLabel(String value) {
-    switch (value) {
-      case 'TENT':
-        return 'Тентованый';
-      case 'REF':
-        return 'Рефрижератор';
-      case 'ISOTHERM':
-        return 'Изотерм';
-      case 'ANY':
-      default:
-        return 'Любой транспорт';
-    }
+String _vehicleLabel(String value) {
+  switch (value) {
+    case 'TENT':
+      return tr('vehicle_types.tent');
+    case 'REF':
+      return tr('vehicle_types.ref');
+    case 'ISOTHERM':
+      return tr('vehicle_types.isotherm');
+    case 'ANY':
+    default:
+      return tr('vehicle_types.any');
   }
+}
 
-  String _loadingLabel(String value) {
-    switch (value) {
-      case 'TOP':
-        return 'Верхняя погрузка';
-      case 'SIDE':
-        return 'Боковая погрузка';
-      case 'BACK':
-        return 'Задняя погрузка';
-      case 'BACK_SIDE_TOP':
-        return 'Любой способ';
-      case 'ANY':
-      default:
-        return 'Любой тип погрузки';
-    }
+String _loadingLabel(String value) {
+  switch (value) {
+    case 'TOP':
+      return tr('loading_types.top');
+    case 'SIDE':
+      return tr('loading_types.side');
+    case 'BACK':
+      return tr('loading_types.back');
+    case 'BACK_SIDE_TOP':
+      return tr('loading_types.any_way');
+    case 'ANY':
+    default:
+      return tr('loading_types.any_type');
   }
+}
 
-  String _formatPrice(double value) {
-    if (value == value.roundToDouble()) {
-      return value.toStringAsFixed(0);
-    }
-    return value.toStringAsFixed(1);
+String _formatPrice(double value) {
+  if (value == value.roundToDouble()) {
+    return value.toStringAsFixed(0);
   }
+  return value.toStringAsFixed(1);
+}
 
-  String _formatNumber(double value) {
-    if (value == value.roundToDouble()) {
-      return value.toStringAsFixed(0);
-    }
-    return value.toStringAsFixed(1);
+String _formatNumber(double value) {
+  if (value == value.roundToDouble()) {
+    return value.toStringAsFixed(0);
   }
+  return value.toStringAsFixed(1);
+}
 
 class _OrderStatusSection extends ConsumerStatefulWidget {
   const _OrderStatusSection({required this.orderId, required this.detail});
@@ -747,10 +742,7 @@ class _OrderStatusSectionState extends ConsumerState<_OrderStatusSection> {
           ...actions.map(
             (config) => Padding(
               padding: EdgeInsets.only(bottom: 8.h),
-              child: _WorkflowButton(
-                config: config,
-                disabled: _isProcessing,
-              ),
+              child: _WorkflowButton(config: config, disabled: _isProcessing),
             ),
           ),
         ],
@@ -810,7 +802,8 @@ class _OrderStatusSectionState extends ConsumerState<_OrderStatusSection> {
       }
       final shouldConfirmDelivery =
           status == 'WAITING_DELIVERY_CONFIRMATION' ||
-          (detail.deliveryConfirmedByDriver && !detail.deliveryConfirmedBySender);
+          (detail.deliveryConfirmedByDriver &&
+              !detail.deliveryConfirmedBySender);
       if (shouldConfirmDelivery) {
         actions.add(
           _WorkflowButtonConfig(
@@ -940,7 +933,7 @@ class _OrderStatusSectionState extends ConsumerState<_OrderStatusSection> {
       (repo) => repo.confirmDelivery(widget.orderId),
       successMessage: 'Доставка подтверждена',
     );
-    
+
     // Show rating sheet if user is sender
     if (mounted) {
       final detail = widget.detail;
@@ -1030,10 +1023,14 @@ class _OrderStatusSectionState extends ConsumerState<_OrderStatusSection> {
     Future<OrderDetail> Function(OrderRepository repo) task, {
     String? successMessage,
   }) async {
-    await _runGenericAction(() async {
-      final repo = ref.read(orderRepositoryProvider);
-      await task(repo);
-    }, successMessage: successMessage ?? tr('order_detail.actions.status_updated'));
+    await _runGenericAction(
+      () async {
+        final repo = ref.read(orderRepositoryProvider);
+        await task(repo);
+      },
+      successMessage:
+          successMessage ?? tr('order_detail.actions.status_updated'),
+    );
   }
 
   Future<void> _runGenericAction(
@@ -1064,21 +1061,20 @@ class _OrderStatusSectionState extends ConsumerState<_OrderStatusSection> {
   Future<bool> _confirmAction({required String title, String? message}) async {
     final result = await showDialog<bool>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(title),
-            content: message != null ? Text(message) : null,
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Отмена'),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Продолжить'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: message != null ? Text(message) : null,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Отмена'),
           ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Продолжить'),
+          ),
+        ],
+      ),
     );
     return result ?? false;
   }
@@ -1095,24 +1091,21 @@ class _WorkflowButton extends StatelessWidget {
     final theme = Theme.of(context);
     final isPrimary = config.style == _WorkflowActionStyle.primary;
     final isDanger = config.style == _WorkflowActionStyle.danger;
-    final backgroundColor =
-        isPrimary
-            ? theme.colorScheme.primary
-            : isDanger
-                ? const Color(0xFFFFEBEE)
-                : Colors.white;
-    final foregroundColor =
-        isPrimary
-            ? Colors.white
-            : isDanger
-                ? const Color(0xFFE53935)
-                : theme.colorScheme.primary;
-    final borderColor =
-        isPrimary
-            ? Colors.transparent
-            : isDanger
-                ? const Color(0xFFE53935)
-                : theme.colorScheme.primary.withValues(alpha: 0.4);
+    final backgroundColor = isPrimary
+        ? theme.colorScheme.primary
+        : isDanger
+        ? const Color(0xFFFFEBEE)
+        : Colors.white;
+    final foregroundColor = isPrimary
+        ? Colors.white
+        : isDanger
+        ? const Color(0xFFE53935)
+        : theme.colorScheme.primary;
+    final borderColor = isPrimary
+        ? Colors.transparent
+        : isDanger
+        ? const Color(0xFFE53935)
+        : theme.colorScheme.primary.withValues(alpha: 0.4);
 
     return Opacity(
       opacity: disabled ? 0.6 : 1,
@@ -1375,9 +1368,8 @@ class _PhotoThumbnail extends StatelessWidget {
                 child: CircularProgressIndicator(strokeWidth: 2),
               );
             },
-            errorBuilder:
-                (_, __, ___) =>
-                    const Center(child: Icon(Icons.broken_image_outlined)),
+            errorBuilder: (_, __, ___) =>
+                const Center(child: Icon(Icons.broken_image_outlined)),
           ),
         ),
       ),

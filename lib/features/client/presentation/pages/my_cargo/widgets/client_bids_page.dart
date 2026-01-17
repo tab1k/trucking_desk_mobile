@@ -21,7 +21,7 @@ class ClientBidsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bidsAsync = ref.watch(orderBidsProvider(orderId));
     return Scaffold(
-      appBar: AppBar(title: const Text('Отклики')),
+      appBar: AppBar(title: Text(tr('my_cargo.bids.title'))),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
@@ -29,7 +29,7 @@ class ClientBidsPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Заказ TD-$orderId',
+                tr('my_cargo.bids.order_number', args: [orderId]),
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
               ),
               SizedBox(height: 4.h),
@@ -43,28 +43,22 @@ class ClientBidsPage extends ConsumerWidget {
               SizedBox(height: 16.h),
               Expanded(
                 child: bidsAsync.when(
-                  data:
-                      (bids) =>
-                          bids.isEmpty
-                              ? const _EmptyBidsState()
-                              : ListView.separated(
-                                itemCount: bids.length,
-                                separatorBuilder:
-                                    (_, __) => SizedBox(height: 12.h),
-                                itemBuilder:
-                                    (_, index) => _BidTile(
-                                      info: bids[index],
-                                      orderId: orderId,
-                                      onUpdated:
-                                          () => ref.invalidate(
-                                            orderBidsProvider(orderId),
-                                          ),
-                                    ),
-                              ),
-                  loading:
-                      () => const Center(child: CircularProgressIndicator()),
-                  error:
-                      (error, _) => _BidsErrorState(message: error.toString()),
+                  data: (bids) => bids.isEmpty
+                      ? const _EmptyBidsState()
+                      : ListView.separated(
+                          itemCount: bids.length,
+                          separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                          itemBuilder: (_, index) => _BidTile(
+                            info: bids[index],
+                            orderId: orderId,
+                            onUpdated: () =>
+                                ref.invalidate(orderBidsProvider(orderId)),
+                          ),
+                        ),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, _) =>
+                      _BidsErrorState(message: error.toString()),
                 ),
               ),
             ],
@@ -87,7 +81,7 @@ class _EmptyBidsState extends StatelessWidget {
           Icon(Icons.inbox_outlined, size: 48.w, color: Colors.grey[400]),
           SizedBox(height: 12.h),
           Text(
-            'Пока нет откликов',
+            tr('my_cargo.bids.empty'),
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -96,7 +90,7 @@ class _EmptyBidsState extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'Как только водители откликнутся, вы увидите их здесь.',
+            tr('my_cargo.bids.empty_subtitle'),
             style: TextStyle(
               fontSize: 13.sp,
               color: Colors.black.withValues(alpha: 0.6),
@@ -186,15 +180,16 @@ class _BidTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                      _BidStatusChip(
-                        label: _bidStatusLabel(info),
-                      ),
+                      _BidStatusChip(label: _bidStatusLabel(info)),
                     ],
                   ),
                   SizedBox(height: 6.h),
                   if (info.amount != null)
                     Text(
-                      'Сумма отклика: ${_formatAmount(info.amount!)}',
+                      tr(
+                        'my_cargo.bids.offer_amount',
+                        args: [_formatAmount(info.amount!)],
+                      ),
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -247,7 +242,7 @@ class _BidTile extends StatelessWidget {
   }
 
   String _formatDate(DateTime? date) {
-    if (date == null) return 'Дата неизвестна';
+    if (date == null) return tr('my_cargo.bids.date_unknown');
     final day = date.day.toString().padLeft(2, '0');
     final month = date.month.toString().padLeft(2, '0');
     final year = date.year.toString();
@@ -259,15 +254,17 @@ class _BidTile extends StatelessWidget {
     final key = () {
       switch (info.status) {
         case 'PENDING':
-          return 'order_detail.bid_status.new';
+          return 'my_cargo.bids.status.new';
         case 'WAITING_DRIVER_DECISION':
-          return 'order_detail.bid_status.waiting_driver_decision';
         case 'CONFIRMED':
-          return 'order_detail.bid_status.confirmed';
+          return 'my_cargo.bids.status.confirmed';
         case 'DECLINED':
-          return 'order_detail.bid_status.declined';
+          return 'my_cargo.bids.status.declined';
+        case 'CANCELLED':
         case 'REJECTED':
-          return 'order_detail.bid_status.rejected';
+          return 'my_cargo.bids.status.cancelled';
+        case 'DRIVER_DECLINED':
+          return 'my_cargo.bids.status.driver_declined';
         default:
           return '';
       }

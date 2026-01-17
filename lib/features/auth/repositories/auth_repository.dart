@@ -4,6 +4,7 @@ import 'package:fura24.kz/core/exceptions/api_exception.dart';
 import 'package:fura24.kz/core/network/dio_provider.dart';
 import 'package:fura24.kz/features/auth/model/auth_response.dart';
 import 'package:fura24.kz/features/auth/model/user_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final dio = ref.watch(dioProvider);
@@ -30,11 +31,7 @@ class AuthRepository {
   }) async {
     return _postAuth(
       endpoint: 'auth/login/',
-      data: {
-        'login': login,
-        'password': password,
-        'role': role,
-      },
+      data: {'login': login, 'password': password, 'role': role},
     );
   }
 
@@ -49,7 +46,7 @@ class AuthRepository {
       final message = _extractErrorMessage(e);
       throw ApiException(message, statusCode: statusCode);
     } catch (_) {
-      throw ApiException('Не удалось отправить код подтверждения');
+      throw ApiException(tr('auth_errors.send_code_failed'));
     }
   }
 
@@ -57,30 +54,29 @@ class AuthRepository {
     required String phoneNumber,
     required String pin,
     required String password,
-    String? passwordConfirm, // Backend might not strict require this if validated on client, but let's pass if needed or just password
+    String?
+    passwordConfirm, // Backend might not strict require this if validated on client, but let's pass if needed or just password
     String role = 'SENDER',
     String? firstName,
     String? lastName,
     String? email,
     String? referralCode,
   }) async {
-     // Prepare data mirroring the backend serializer
-     final data = {
-        'phone_number': phoneNumber,
-        'pin': pin,
-        'password': password,
-        'password_confirm': passwordConfirm ?? password,
-        'role': role,
-        if (firstName != null) 'first_name': firstName,
-        if (lastName != null) 'last_name': lastName,
-        if (email != null && email.isNotEmpty) 'email': email,
-        if (referralCode != null && referralCode.isNotEmpty) 'referral_code': referralCode,
-     };
+    // Prepare data mirroring the backend serializer
+    final data = {
+      'phone_number': phoneNumber,
+      'pin': pin,
+      'password': password,
+      'password_confirm': passwordConfirm ?? password,
+      'role': role,
+      if (firstName != null) 'first_name': firstName,
+      if (lastName != null) 'last_name': lastName,
+      if (email != null && email.isNotEmpty) 'email': email,
+      if (referralCode != null && referralCode.isNotEmpty)
+        'referral_code': referralCode,
+    };
 
-    return _postAuth(
-      endpoint: 'auth/phone/verify/confirm/',
-      data: data,
-    );
+    return _postAuth(endpoint: 'auth/phone/verify/confirm/', data: data);
   }
 
   Future<AuthResponse> register({
@@ -91,12 +87,13 @@ class AuthRepository {
     String role = 'SENDER',
     String? referralCode,
   }) async {
-    // This method might be deprecated if we fully switch to SMS flow, 
+    // This method might be deprecated if we fully switch to SMS flow,
     // but keep it for now or modify it to throw error if used directly.
     return _postAuth(
       endpoint: 'auth/register/',
       data: {
-        'login': login, // Note: Backend expects phone_number usually for users, but existing code used 'login'
+        'login':
+            login, // Note: Backend expects phone_number usually for users, but existing code used 'login'
         'password': password,
         'password_confirm': passwordConfirm,
         'role': role,
@@ -107,23 +104,22 @@ class AuthRepository {
     );
   }
 
-  Future<Map<String, String?>> requestPasswordReset({required String email}) async {
+  Future<Map<String, String?>> requestPasswordReset({
+    required String email,
+  }) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>(
         'auth/password/reset/',
         data: {'email': email},
       );
       final body = response.data ?? {};
-      return {
-        'uid': body['uid'] as String?,
-        'token': body['token'] as String?,
-      };
+      return {'uid': body['uid'] as String?, 'token': body['token'] as String?};
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final message = _extractErrorMessage(e);
       throw ApiException(message, statusCode: statusCode);
     } catch (_) {
-      throw ApiException('Не удалось отправить письмо для сброса пароля');
+      throw ApiException(tr('auth_errors.send_reset_email_failed'));
     }
   }
 
@@ -148,7 +144,7 @@ class AuthRepository {
       final message = _extractErrorMessage(e);
       throw ApiException(message, statusCode: statusCode);
     } catch (_) {
-      throw ApiException('Не удалось сбросить пароль. Попробуйте снова.');
+      throw ApiException(tr('auth_errors.reset_password_failed'));
     }
   }
 
@@ -164,19 +160,27 @@ class AuthRepository {
 
       final body = response.data;
       if (body == null) {
-        throw ApiException('Пустой ответ от сервера', statusCode: response.statusCode);
+        throw ApiException(
+          tr('auth_errors.empty_response'),
+          statusCode: response.statusCode,
+        );
       }
 
       final newAccess = body['access'] as String?;
       final newRefresh = body['refresh'] as String?;
 
       if (newAccess == null || newAccess.isEmpty) {
-        throw ApiException('Сервер не вернул новый токен доступа', statusCode: response.statusCode);
+        throw ApiException(
+          tr('auth_errors.token_refresh_failed'),
+          statusCode: response.statusCode,
+        );
       }
 
       return AuthResponse(
         accessToken: newAccess,
-        refreshToken: newRefresh?.isNotEmpty == true ? newRefresh! : refreshToken,
+        refreshToken: newRefresh?.isNotEmpty == true
+            ? newRefresh!
+            : refreshToken,
         user: user,
       );
     } on DioException catch (e) {
@@ -184,7 +188,7 @@ class AuthRepository {
       final message = _extractErrorMessage(e);
       throw ApiException(message, statusCode: statusCode);
     } catch (e) {
-      throw ApiException('Не удалось обновить сессию. Попробуйте позже.');
+      throw ApiException(tr('auth_errors.session_update_failed'));
     }
   }
 
@@ -200,7 +204,10 @@ class AuthRepository {
 
       final body = response.data;
       if (body == null) {
-        throw ApiException('Пустой ответ от сервера', statusCode: response.statusCode);
+        throw ApiException(
+          tr('auth_errors.empty_response'),
+          statusCode: response.statusCode,
+        );
       }
 
       return AuthResponse.fromJson(body);
@@ -209,22 +216,19 @@ class AuthRepository {
       final message = _extractErrorMessage(e);
       throw ApiException(message, statusCode: statusCode);
     } catch (e) {
-      throw ApiException('Не удалось выполнить запрос. Попробуйте позже.');
+      throw ApiException(tr('auth_errors.request_failed'));
     }
   }
 
   Future<void> deleteAccount({required String password}) async {
     try {
-      await _dio.post(
-        'auth/profile/delete/',
-        data: {'password': password},
-      );
+      await _dio.post('auth/profile/delete/', data: {'password': password});
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final message = _extractErrorMessage(e);
       throw ApiException(message, statusCode: statusCode);
     } catch (_) {
-      throw ApiException('Не удалось удалить аккаунт. Попробуйте снова.');
+      throw ApiException(tr('auth_errors.delete_account_failed'));
     }
   }
 
@@ -255,13 +259,13 @@ class AuthRepository {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return 'Превышено время ожидания ответа сервера';
+        return tr('auth_errors.timeout');
       case DioExceptionType.badResponse:
-        return 'Сервер вернул ошибку';
+        return tr('auth_errors.server_error');
       case DioExceptionType.connectionError:
-        return 'Нет соединения с сервером';
+        return tr('auth_errors.connection_error');
       default:
-        return 'Произошла неизвестная ошибка';
+        return tr('auth_errors.unknown_error');
     }
   }
 }

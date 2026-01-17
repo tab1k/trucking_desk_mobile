@@ -9,7 +9,6 @@ import 'package:fura24.kz/features/locations/presentation/widgets/location_picke
 import 'package:fura24.kz/features/transport/data/vehicle_type_options.dart';
 import 'package:fura24.kz/shared/widgets/app_date_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fura24.kz/features/driver/view/widgets/saved_routes_sheet.dart';
 import 'package:fura24.kz/features/driver/domain/models/saved_route.dart';
 import 'package:fura24.kz/features/driver/providers/saved_routes_provider.dart';
 
@@ -111,11 +110,6 @@ class _FindTransportFiltersPageState
         elevation: 0,
         title: Text(tr('find_transport.filters.title')),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.bookmark_border),
-            tooltip: 'Сохраненные маршруты',
-            onPressed: _showSavedRoutes,
-          ),
           TextButton(onPressed: _reset, child: Text(tr('common.reset'))),
         ],
       ),
@@ -454,20 +448,6 @@ class _FindTransportFiltersPageState
       _selectedDate = null;
       _dateController.clear();
     });
-  }
-
-  Future<void> _showSavedRoutes() async {
-    final route = await showSavedRoutesSheet(
-      context,
-      type: SavedRoute.typeTransport,
-    );
-    if (route != null) {
-      setState(() {
-        _loadingPointController.text = route.departureCityName;
-        _unloadingPointController.text = route.destinationCityName;
-        // Optionally clear other filters or keep them
-      });
-    }
   }
 
   Future<void> _saveRoute() async {

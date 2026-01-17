@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -85,18 +86,23 @@ class _DriverCargoFiltersPageState
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text('Фильтры'),
-        actions: [TextButton(onPressed: _reset, child: const Text('Сбросить'))],
+        title: Text(tr('driver_cargo_filters.title')),
+        actions: [
+          TextButton(
+            onPressed: _reset,
+            child: Text(tr('driver_cargo_filters.reset')),
+          ),
+        ],
       ),
       body: SafeArea(
         child: ListView(
           padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
           children: [
             _LabeledField(
-              label: 'Город погрузки',
+              label: tr('driver_cargo_filters.loading_city'),
               child: _SelectableField(
                 controller: _departureController,
-                hintText: 'Выберите город',
+                hintText: tr('driver_cargo_filters.select_city'),
                 icon: Icons.location_on_outlined,
                 onTap: () => _pickCity(isDeparture: true),
               ),
@@ -104,10 +110,10 @@ class _DriverCargoFiltersPageState
             SizedBox(height: 12.h),
             SizedBox(height: 12.h),
             _LabeledField(
-              label: 'Город разгрузки',
+              label: tr('driver_cargo_filters.unloading_city'),
               child: _SelectableField(
                 controller: _destinationController,
-                hintText: 'Выберите город',
+                hintText: tr('driver_cargo_filters.select_city'),
                 icon: Icons.flag_outlined,
                 onTap: () => _pickCity(isDeparture: false),
               ),
@@ -128,7 +134,7 @@ class _DriverCargoFiltersPageState
                       ),
                       SizedBox(width: 4.w),
                       Text(
-                        'Сохранить маршрут',
+                        tr('driver_cargo_filters.save_route'),
                         style: TextStyle(
                           fontSize: 13.sp,
                           color: const Color(0xFF00B2FF),
@@ -141,20 +147,20 @@ class _DriverCargoFiltersPageState
               ),
             SizedBox(height: 12.h),
             _LabeledField(
-              label: 'Тип транспорта',
+              label: tr('driver_cargo_filters.vehicle_type'),
               child: _SelectableField(
                 controller: _vehicleTypeController,
-                hintText: 'Любой транспорт',
+                hintText: tr('driver_cargo_filters.any_vehicle'),
                 icon: Icons.local_shipping_outlined,
                 onTap: _pickVehicleType,
               ),
             ),
             SizedBox(height: 12.h),
             _LabeledField(
-              label: 'Дата перевозки',
+              label: tr('driver_cargo_filters.transport_date'),
               child: _SelectableField(
                 controller: _dateController,
-                hintText: 'Любая дата',
+                hintText: tr('driver_cargo_filters.any_date'),
                 icon: Icons.calendar_today_outlined,
                 onTap: _pickDate,
                 onClear: _selectedDate != null ? _clearDate : null,
@@ -173,16 +179,16 @@ class _DriverCargoFiltersPageState
               ),
               title: Container(
                 padding: EdgeInsets.symmetric(vertical: 8.h),
-                child: const Text(
-                  'Только с доступным звонком',
-                  style: TextStyle(fontSize: 16),
+                child: Text(
+                  tr('driver_cargo_filters.only_with_call'),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ),
               subtitle: Container(
                 padding: EdgeInsets.only(bottom: 8.h),
-                child: const Text(
-                  'Показывать только заказы, по которым вы сможете позвонить отправителю.',
-                  style: TextStyle(fontSize: 13),
+                child: Text(
+                  tr('driver_cargo_filters.only_with_call_subtitle'),
+                  style: const TextStyle(fontSize: 13),
                 ),
               ),
             ),
@@ -198,7 +204,7 @@ class _DriverCargoFiltersPageState
             style: FilledButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 16.h),
             ),
-            child: const Text('Показать объявления'),
+            child: Text(tr('driver_cargo_filters.show_announcements')),
           ),
         ),
       ),
@@ -210,7 +216,7 @@ class _DriverCargoFiltersPageState
       children: [
         Expanded(
           child: _LabeledField(
-            label: 'Стоимость от',
+            label: tr('driver_cargo_filters.cost_from'),
             child: TextField(
               controller: _minAmountController,
               keyboardType: const TextInputType.numberWithOptions(
@@ -226,7 +232,7 @@ class _DriverCargoFiltersPageState
         SizedBox(width: 12.w),
         Expanded(
           child: _LabeledField(
-            label: 'Стоимость до',
+            label: tr('driver_cargo_filters.cost_to'),
             child: TextField(
               controller: _maxAmountController,
               keyboardType: const TextInputType.numberWithOptions(
@@ -254,13 +260,17 @@ class _DriverCargoFiltersPageState
           .create(departureCityName: dep, destinationCityName: dest);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Маршрут сохранен в закладки')),
+        SnackBar(content: Text(tr('driver_cargo_filters.route_saved'))),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Ошибка сохранения: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            tr('driver_cargo_filters.save_error', args: [e.toString()]),
+          ),
+        ),
+      );
     }
   }
 
@@ -325,7 +335,9 @@ class _DriverCargoFiltersPageState
         child: ClipRRect(
           borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
           child: LocationPickerSheet(
-            title: isDeparture ? 'Город погрузки' : 'Город разгрузки',
+            title: isDeparture
+                ? tr('driver_cargo_filters.loading_city')
+                : tr('driver_cargo_filters.unloading_city'),
           ),
         ),
       ),
@@ -348,7 +360,10 @@ class _DriverCargoFiltersPageState
       title: 'Тип транспорта',
       currentValue: _selectedVehicleType,
       options: [
-        const _BottomSheetOption(label: 'Любой транспорт', value: ''),
+        const _BottomSheetOption(
+          label: 'driver_cargo_filters.any_vehicle',
+          value: '',
+        ),
         ...vehicleTypeOptions.map(
           (option) =>
               _BottomSheetOption(label: option.label, value: option.value),
@@ -377,7 +392,7 @@ class _DriverCargoFiltersPageState
     final initial = _selectedDate ?? now;
     final selected = await showAppDatePicker(
       context,
-      title: 'Дата перевозки',
+      title: tr('driver_cargo_filters.transport_date'),
       initialDate: initial,
       firstDate: now.subtract(const Duration(days: 365)),
       lastDate: now.add(const Duration(days: 365)),

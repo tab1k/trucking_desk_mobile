@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/core/exceptions/api_exception.dart';
 import 'package:fura24.kz/core/network/dio_provider.dart';
@@ -28,7 +29,7 @@ class DriverAnnouncementRepository {
       final data = response.data;
       if (data == null) {
         throw ApiException(
-          'Пустой ответ от сервера',
+          tr('repository.driver_announcement.empty_response'),
           statusCode: response.statusCode,
         );
       }
@@ -50,7 +51,7 @@ class DriverAnnouncementRepository {
       final data = response.data;
       if (data == null) {
         throw ApiException(
-          'Пустой ответ от сервера',
+          tr('repository.driver_announcement.empty_response'),
           statusCode: response.statusCode,
         );
       }
@@ -90,7 +91,7 @@ class DriverAnnouncementRepository {
         return DriverAnnouncement.fromJson(data);
       }
       throw ApiException(
-        'Не удалось создать объявление',
+        tr('repository.driver_announcement.create_error'),
         statusCode: response.statusCode,
       );
     } on DioException catch (exception) {
@@ -115,7 +116,7 @@ class DriverAnnouncementRepository {
         return DriverAnnouncement.fromJson(data);
       }
       throw ApiException(
-        'Не удалось сохранить объявление',
+        tr('repository.driver_announcement.save_error'),
         statusCode: response.statusCode,
       );
     } on DioException catch (exception) {
@@ -135,7 +136,7 @@ class DriverAnnouncementRepository {
         statusCode: exception.response?.statusCode,
       );
     } catch (_) {
-      throw ApiException('Не удалось удалить объявление');
+      throw ApiException(tr('repository.driver_announcement.delete_error'));
     }
   }
 
@@ -190,7 +191,7 @@ class DriverAnnouncementRepository {
       return data;
     }
 
-    return 'Не удалось загрузить объявления';
+    return tr('repository.driver_announcement.load_error');
   }
 
   Future<void> _sendFavoriteRequest(
