@@ -22,8 +22,8 @@ class PartnerRepository {
         'partners/',
         queryParameters: city != null ? {'city': city} : null,
       );
-      final list = response.data as List;
-      return list.map((e) => PartnerModel.fromJson(e)).toList();
+      final items = _extractPartnerItems(response.data);
+      return items.map(PartnerModel.fromJson).toList();
     } on DioException catch (e) {
       _logger.e('Failed to fetch partners', error: e);
       throw ApiException(
@@ -34,6 +34,31 @@ class PartnerRepository {
       _logger.e('Failed to fetch partners', error: e, stackTrace: st);
       throw ApiException(tr('repository.partner.fetch_error'));
     }
+  }
+
+  List<Map<String, dynamic>> _extractPartnerItems(dynamic data) {
+    if (data is List) {
+      return data.whereType<Map<String, dynamic>>().toList();
+    }
+    if (data is Map<String, dynamic>) {
+      // Support common paginated shapes: {results: [...]}, {data: [...]}, etc.
+      final keys = ['results', 'data', 'items', 'partners'];
+      for (final key in keys) {
+        final value = data[key];
+        if (value is List) {
+          return value.whereType<Map<String, dynamic>>().toList();
+        }
+      }
+      // Fallback: first list value in the map
+      for (final entry in data.entries) {
+        if (entry.value is List) {
+          return (entry.value as List)
+              .whereType<Map<String, dynamic>>()
+              .toList();
+        }
+      }
+    }
+    return [];
   }
 
   Future<void> createApplication({

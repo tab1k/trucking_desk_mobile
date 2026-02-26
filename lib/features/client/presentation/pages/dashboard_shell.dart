@@ -11,17 +11,52 @@ import 'package:fura24.kz/features/client/presentation/pages/profile/profile_tab
 import 'package:fura24.kz/features/client/presentation/pages/favorites/favorites_tab.dart';
 import 'package:fura24.kz/features/client/presentation/providers/home_tab_provider.dart';
 
-class MyHomePageView extends ConsumerWidget {
+import 'package:fura24.kz/features/reviews/providers/pending_review_provider.dart';
+import 'package:fura24.kz/features/reviews/view/rating_bottom_sheet.dart';
+
+class MyHomePageView extends ConsumerStatefulWidget {
   const MyHomePageView({super.key, required this.title});
   final String title;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyHomePageView> createState() => _MyHomePageViewState();
+}
+
+class _MyHomePageViewState extends ConsumerState<MyHomePageView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkPendingReview();
+    });
+  }
+
+  Future<void> _checkPendingReview() async {
+    try {
+      final pendingReview = await ref.read(pendingReviewProvider.future);
+      if (pendingReview != null && mounted) {
+        showRatingBottomSheet(
+          context: context,
+          orderId: pendingReview.orderId,
+          driverName: pendingReview.driverName,
+        );
+      }
+    } catch (_) {
+      // Ignore errors silently
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final tabIndex = ref.watch(homeTabIndexProvider);
 
     final overlay = Theme.of(context).brightness == Brightness.dark
-        ? SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent)
-        : SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent);
+        ? SystemUiOverlayStyle.light.copyWith(
+            statusBarColor: Colors.transparent,
+          )
+        : SystemUiOverlayStyle.dark.copyWith(
+            statusBarColor: Colors.transparent,
+          );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlay,
@@ -48,10 +83,7 @@ class MyHomePageView extends ConsumerWidget {
 }
 
 class _CustomBottomNavBar extends StatelessWidget {
-  const _CustomBottomNavBar({
-    required this.currentIndex,
-    required this.onTap,
-  });
+  const _CustomBottomNavBar({required this.currentIndex, required this.onTap});
 
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -59,17 +91,14 @@ class _CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Stack(
       children: [
         Container(
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
             border: Border(
-              top: BorderSide(
-                color: Colors.grey.withOpacity(0.1),
-                width: 1,
-              ),
+              top: BorderSide(color: Colors.grey.withOpacity(0.1), width: 1),
             ),
           ),
           child: SafeArea(
@@ -116,10 +145,7 @@ class _CustomBottomNavBar extends StatelessWidget {
           top: 0,
           left: 0,
           right: 0,
-          child: Container(
-            height: 2.h,
-            color: Colors.grey.withOpacity(0.1),
-          ),
+          child: Container(height: 2.h, color: Colors.grey.withOpacity(0.1)),
         ),
       ],
     );
@@ -144,7 +170,7 @@ class _NavBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -160,7 +186,9 @@ class _NavBarItem extends StatelessWidget {
                 width: 22.r,
                 height: 22.r,
                 colorFilter: ColorFilter.mode(
-                  isActive ? theme.colorScheme.primary : theme.colorScheme.onSurface.withOpacity(0.6),
+                  isActive
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurface.withOpacity(0.6),
                   BlendMode.srcIn,
                 ),
               ),
@@ -168,7 +196,9 @@ class _NavBarItem extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  color: isActive ? theme.colorScheme.primary : theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: isActive
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurface.withOpacity(0.6),
                   fontSize: 12,
                 ),
               ),

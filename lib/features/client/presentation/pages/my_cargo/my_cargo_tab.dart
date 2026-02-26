@@ -49,17 +49,17 @@ class _MyCargoTabState extends ConsumerState<MyCargoTab> {
     final ordersAsync = ref.watch(myOrdersProvider);
     final navigator = Navigator.of(context);
     final canPop = navigator.canPop();
-    final backgroundColor =
-        widget.isDriverView ? Colors.white : const Color(0xFFF8F9FA);
+    final backgroundColor = widget.isDriverView
+        ? Colors.white
+        : const Color(0xFFF8F9FA);
 
     return ClipRRect(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       child: Scaffold(
         backgroundColor: backgroundColor,
-        appBar:
-            widget.isDriverView
-                ? _DriverAppBar(canPop: canPop, navigator: navigator)
-                : SingleAppbar(title: tr('my_cargo.title')),
+        appBar: widget.isDriverView
+            ? _DriverAppBar(canPop: canPop, navigator: navigator)
+            : SingleAppbar(title: tr('my_cargo.title')),
         body: SafeArea(
           top: false,
           child: Column(
@@ -73,8 +73,8 @@ class _MyCargoTabState extends ConsumerState<MyCargoTab> {
               Expanded(
                 child: ordersAsync.when(
                   data: (orders) => _buildCargoList(context, orders),
-                  loading:
-                      () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (error, _) => _buildErrorState(context, error),
                 ),
               ),
@@ -117,14 +117,13 @@ class _MyCargoTabState extends ConsumerState<MyCargoTab> {
                   _currentFilterIndex = index;
                 });
               },
-              color:
-                  widget.isDriverView
-                      ? (_currentFilterIndex == index
-                          ? const Color(0xFF2196F3)
-                          : CupertinoColors.systemGrey5)
-                      : (_currentFilterIndex == index
-                          ? const Color(0xFF64B5F6)
-                          : CupertinoColors.systemGrey5),
+              color: widget.isDriverView
+                  ? (_currentFilterIndex == index
+                        ? const Color(0xFF2196F3)
+                        : CupertinoColors.systemGrey5)
+                  : (_currentFilterIndex == index
+                        ? const Color(0xFF64B5F6)
+                        : CupertinoColors.systemGrey5),
               borderRadius: BorderRadius.circular(20.r),
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
               child: Text(
@@ -132,10 +131,9 @@ class _MyCargoTabState extends ConsumerState<MyCargoTab> {
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
-                  color:
-                      _currentFilterIndex == index
-                          ? Colors.white
-                          : CupertinoColors.systemGrey,
+                  color: _currentFilterIndex == index
+                      ? Colors.white
+                      : CupertinoColors.systemGrey,
                 ),
               ),
             ),
@@ -174,21 +172,42 @@ class _MyCargoTabState extends ConsumerState<MyCargoTab> {
   }
 
   Widget _buildErrorState(BuildContext context, Object error) {
-    final theme = Theme.of(context);
-    final message =
-        error is ApiException ? error.message : tr('my_cargo.error.load');
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.w),
-        child: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.error,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              _mapBackendError(error),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.sp, color: Colors.black54),
+            ),
+            SizedBox(height: 12.h),
+            ElevatedButton(
+              onPressed: () {
+                ref.invalidate(myOrdersProvider);
+              },
+              child: Text(tr('common.retry')),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  String _mapBackendError(Object error) {
+    final e = error.toString();
+    if (e.contains('NetworkException') || e.contains('SocketException')) {
+      return tr('errors.network_connection');
+    }
+    if (e.contains('401') || e.contains('Unauthorized')) {
+      return tr('errors.session_expired');
+    }
+    if (e.contains('500') || e.contains('Server Error')) {
+      return tr('errors.server_error');
+    }
+    return tr('errors.unknown_error');
   }
 
   List<CargoItem> _filterCargoItems(List<CargoItem> items) {
@@ -489,25 +508,24 @@ class _CargoListItemState extends ConsumerState<_CargoListItem> {
               borderRadius: BorderRadius.circular(16.r),
               padding: EdgeInsets.zero,
               child: Center(
-                child:
-                    _isDeleting
-                        ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.2,
-                            color: Colors.white,
-                          ),
-                        )
-                        : SvgPicture.asset(
-                          'assets/svg/trash.svg',
-                          width: 20.w,
-                          height: 20.w,
-                          colorFilter: const ColorFilter.mode(
-                            Colors.white,
-                            BlendMode.srcIn,
-                          ),
+                child: _isDeleting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.2,
+                          color: Colors.white,
                         ),
+                      )
+                    : SvgPicture.asset(
+                        'assets/svg/trash.svg',
+                        width: 20.w,
+                        height: 20.w,
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
               ),
             ),
           ],
@@ -569,7 +587,11 @@ class _CargoListItemState extends ConsumerState<_CargoListItem> {
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
-                      _statusText(context, cargo.status, rawStatus: cargo.rawStatus),
+                        _statusText(
+                          context,
+                          cargo.status,
+                          rawStatus: cargo.rawStatus,
+                        ),
                         style: TextStyle(
                           fontSize: 12.sp,
                           color: _statusColor(cargo.status),
@@ -611,8 +633,8 @@ class _CargoListItemState extends ConsumerState<_CargoListItem> {
                         );
                         final display =
                             dateLabel == 'order_detail.labels.departure_date'
-                                ? cargo.date
-                                : dateLabel;
+                            ? cargo.date
+                            : dateLabel;
                         return Text(
                           display,
                           style: TextStyle(
@@ -707,8 +729,8 @@ class _CargoListItemState extends ConsumerState<_CargoListItem> {
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder:
-                                      (_) => OrderEditPage(orderId: cargo.id),
+                                  builder: (_) =>
+                                      OrderEditPage(orderId: cargo.id),
                                 ),
                               );
                             },
@@ -729,8 +751,8 @@ class _CargoListItemState extends ConsumerState<_CargoListItem> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder:
-                                  (_) => OrderRepeatPage(orderId: cargo.id),
+                              builder: (_) =>
+                                  OrderRepeatPage(orderId: cargo.id),
                             ),
                           );
                         },
@@ -784,26 +806,27 @@ class _CargoListItemState extends ConsumerState<_CargoListItem> {
     CargoStatus status, {
     String rawStatus = '',
   }) {
-    final rawKey =
-        rawStatus.isNotEmpty ? 'order_detail.statuses.${rawStatus.toLowerCase()}' : null;
+    final rawKey = rawStatus.isNotEmpty
+        ? 'order_detail.statuses.${rawStatus.toLowerCase()}'
+        : null;
     if (rawKey != null) {
       final translated = tr(rawKey);
       if (translated != rawKey) return translated;
       final fallback = _statusFallbackLabel(context, rawStatus.toLowerCase());
       if (fallback != null) return fallback;
     }
-      final baseKey = () {
-        switch (status) {
-          case CargoStatus.pending:
-            return 'order_detail.statuses.waiting_bids';
-          case CargoStatus.inTransit:
-            return 'order_detail.statuses.in_progress';
-          case CargoStatus.completed:
-            return 'order_detail.statuses.delivered';
-          case CargoStatus.cancelled:
+    final baseKey = () {
+      switch (status) {
+        case CargoStatus.pending:
+          return 'order_detail.statuses.waiting_bids';
+        case CargoStatus.inTransit:
+          return 'order_detail.statuses.in_progress';
+        case CargoStatus.completed:
+          return 'order_detail.statuses.delivered';
+        case CargoStatus.cancelled:
           return 'order_detail.statuses.cancelled';
-        }
-      }();
+      }
+    }();
     final baseTranslated = tr(baseKey);
     if (baseTranslated != baseKey) return baseTranslated;
     final fallback = _statusFallbackLabel(context, baseKey.split('.').last);
@@ -869,8 +892,8 @@ class _BidResponsesRow extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder:
-                (_) => ClientBidsPage(orderId: orderId, orderTitle: orderTitle),
+            builder: (_) =>
+                ClientBidsPage(orderId: orderId, orderTitle: orderTitle),
           ),
         );
       },
@@ -911,10 +934,9 @@ class _BidResponsesRow extends StatelessWidget {
   }
 
   String _pluralize(int count) {
-    final key =
-        count == 1
-            ? 'order_detail.bid_status.new'
-            : 'order_detail.bid_status.new'; // reuse base key, count shown separately
+    final key = count == 1
+        ? 'order_detail.bid_status.new'
+        : 'order_detail.bid_status.new'; // reuse base key, count shown separately
     return tr(key);
   }
 }
@@ -950,14 +972,14 @@ class _AssignedStatusDots extends StatelessWidget {
         child: Row(
           children: List.generate(_steps.length, (index) {
             final isActive = index <= current;
-            final color =
-                isActive ? const Color(0xFF64B5F6) : Colors.grey[300]!;
-            final label =
-                index == 0
-                    ? 'A'
-                    : index == _steps.length - 1
-                    ? 'B'
-                    : '';
+            final color = isActive
+                ? const Color(0xFF64B5F6)
+                : Colors.grey[300]!;
+            final label = index == 0
+                ? 'A'
+                : index == _steps.length - 1
+                ? 'B'
+                : '';
             final dotSize = label.isNotEmpty ? 14.w : 10.w;
             return Expanded(
               child: Row(
@@ -970,27 +992,24 @@ class _AssignedStatusDots extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     alignment: Alignment.center,
-                    child:
-                        label.isNotEmpty
-                            ? Text(
-                              label,
-                              style: TextStyle(
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.w700,
-                                color:
-                                    isActive ? Colors.white : Colors.grey[600],
-                              ),
-                            )
-                            : null,
+                    child: label.isNotEmpty
+                        ? Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w700,
+                              color: isActive ? Colors.white : Colors.grey[600],
+                            ),
+                          )
+                        : null,
                   ),
                   if (index != _steps.length - 1)
                     Expanded(
                       child: Container(
                         height: 2.h,
-                        color:
-                            isActive
-                                ? const Color(0xFF64B5F6)
-                                : Colors.grey[300],
+                        color: isActive
+                            ? const Color(0xFF64B5F6)
+                            : Colors.grey[300],
                       ),
                     ),
                 ],
@@ -1025,7 +1044,10 @@ class _BidAvatarGroup extends StatelessWidget {
       child: Stack(
         children: [
           for (var i = 0; i < visible.length; i++)
-            Positioned(left: i * 18.w, child: _BidAvatar(driverId: visible[i])),
+            Positioned(
+              left: i * 18.w,
+              child: _BidAvatar(driverId: visible[i]),
+            ),
         ],
       ),
     );
@@ -1268,52 +1290,50 @@ class CargoTrackingPage extends ConsumerWidget {
             ],
           );
         },
-        loading:
-            () => Stack(
-              children: [
-                const Center(child: CircularProgressIndicator()),
-                Positioned(
-                  top: safeTop + 12.h,
-                  left: 16.w,
-                  right: 16.w,
-                  child: _TopOverlay(
-                    cargo: cargo,
-                    statusColor: fallbackStatusColor,
-                    statusText: fallbackStatusText,
-                    onBack: () => Navigator.of(context).pop(),
-                  ),
-                ),
-              ],
+        loading: () => Stack(
+          children: [
+            const Center(child: CircularProgressIndicator()),
+            Positioned(
+              top: safeTop + 12.h,
+              left: 16.w,
+              right: 16.w,
+              child: _TopOverlay(
+                cargo: cargo,
+                statusColor: fallbackStatusColor,
+                statusText: fallbackStatusText,
+                onBack: () => Navigator.of(context).pop(),
+              ),
             ),
-        error:
-            (error, _) => Stack(
-              children: [
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w),
-                    child: Text(
-                      'Не удалось загрузить маршрут заказа',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black.withValues(alpha: 0.6),
-                        fontSize: 14.sp,
-                      ),
-                    ),
+          ],
+        ),
+        error: (error, _) => Stack(
+          children: [
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: Text(
+                  'Не удалось загрузить маршрут заказа',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.6),
+                    fontSize: 14.sp,
                   ),
                 ),
-                Positioned(
-                  top: safeTop + 12.h,
-                  left: 16.w,
-                  right: 16.w,
-                  child: _TopOverlay(
-                    cargo: cargo,
-                    statusColor: fallbackStatusColor,
-                    statusText: fallbackStatusText,
-                    onBack: () => Navigator.of(context).pop(),
-                  ),
-                ),
-              ],
+              ),
             ),
+            Positioned(
+              top: safeTop + 12.h,
+              left: 16.w,
+              right: 16.w,
+              child: _TopOverlay(
+                cargo: cargo,
+                statusColor: fallbackStatusColor,
+                statusText: fallbackStatusText,
+                onBack: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1354,8 +1374,9 @@ class CargoTrackingPage extends ConsumerWidget {
     CargoStatus status, {
     String rawStatus = '',
   }) {
-    final rawKey =
-        rawStatus.isNotEmpty ? 'order_detail.statuses.${rawStatus.toLowerCase()}' : null;
+    final rawKey = rawStatus.isNotEmpty
+        ? 'order_detail.statuses.${rawStatus.toLowerCase()}'
+        : null;
     if (rawKey != null) {
       final translated = tr(rawKey);
       if (translated != rawKey) return translated;
@@ -1630,37 +1651,32 @@ class _RouteTimeline extends StatelessWidget {
   List<_TimelineStepData> _buildSteps(OrderDetail detail) {
     final steps = <_TimelineStepData>[
       _TimelineStepData(
-        title:
-            detail.departurePoint.cityName.isEmpty
-                ? 'Точка отправления'
-                : detail.departurePoint.cityName,
-        subtitle:
-            detail.departureAddressDetail?.trim().isNotEmpty == true
-                ? detail.departureAddressDetail!.trim()
-                : 'Адрес не указан',
+        title: detail.departurePoint.cityName.isEmpty
+            ? 'Точка отправления'
+            : detail.departurePoint.cityName,
+        subtitle: detail.departureAddressDetail?.trim().isNotEmpty == true
+            ? detail.departureAddressDetail!.trim()
+            : 'Адрес не указан',
         timestamp: tracking.startedAt,
         state: _originState(detail),
       ),
       if (detail.lastLocation != null)
         _TimelineStepData(
           title: 'Текущее местоположение',
-          subtitle:
-              detail.lastLocation!.note.isNotEmpty
-                  ? detail.lastLocation!.note
-                  : '${detail.lastLocation!.latitude.toStringAsFixed(3)}, '
-                      '${detail.lastLocation!.longitude.toStringAsFixed(3)}',
+          subtitle: detail.lastLocation!.note.isNotEmpty
+              ? detail.lastLocation!.note
+              : '${detail.lastLocation!.latitude.toStringAsFixed(3)}, '
+                    '${detail.lastLocation!.longitude.toStringAsFixed(3)}',
           timestamp: detail.lastLocation!.reportedAt,
           state: _TimelineState.current,
         ),
       _TimelineStepData(
-        title:
-            detail.destinationPoint.cityName.isEmpty
-                ? 'Точка доставки'
-                : detail.destinationPoint.cityName,
-        subtitle:
-            detail.destinationAddressDetail?.trim().isNotEmpty == true
-                ? detail.destinationAddressDetail!.trim()
-                : 'Адрес не указан',
+        title: detail.destinationPoint.cityName.isEmpty
+            ? 'Точка доставки'
+            : detail.destinationPoint.cityName,
+        subtitle: detail.destinationAddressDetail?.trim().isNotEmpty == true
+            ? detail.destinationAddressDetail!.trim()
+            : 'Адрес не указан',
         timestamp:
             detail.deliveredAt ??
             detail.deliveryConfirmedAt ??
@@ -1777,10 +1793,9 @@ class _TimelineIndicator extends StatelessWidget {
           height: 16.w,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color:
-                state == _TimelineState.pending
-                    ? Colors.white
-                    : color.withValues(alpha: 0.15),
+            color: state == _TimelineState.pending
+                ? Colors.white
+                : color.withValues(alpha: 0.15),
             border: Border.all(color: color, width: 2),
           ),
         ),
@@ -2033,10 +2048,7 @@ class _TrackingData {
   }
 
   LatLng get mapCenter {
-    final points = <LatLng>[
-      ...polyline,
-      if (current != null) current!,
-    ];
+    final points = <LatLng>[...polyline, if (current != null) current!];
     if (points.isEmpty) {
       return const LatLng(48.0196, 66.9237);
     }
@@ -2048,10 +2060,7 @@ class _TrackingData {
   }
 
   double get zoom {
-    final points = <LatLng>[
-      ...polyline,
-      if (current != null) current!,
-    ];
+    final points = <LatLng>[...polyline, if (current != null) current!];
     if (points.length < 2) {
       return current != null ? 11 : 5.5;
     }
@@ -2080,14 +2089,12 @@ class _TrackingData {
       detail.status,
       detail.isDriverSharingLocation,
     );
-    final lastLocation =
-        canShowDriver
-            ? detail.lastLocation ?? detail.currentDriverLocation
-            : null;
-    final current =
-        lastLocation != null
-            ? _latLngFromCoords(lastLocation.latitude, lastLocation.longitude)
-            : null;
+    final lastLocation = canShowDriver
+        ? detail.lastLocation ?? detail.currentDriverLocation
+        : null;
+    final current = lastLocation != null
+        ? _latLngFromCoords(lastLocation.latitude, lastLocation.longitude)
+        : null;
     final totalDistanceKm = _distanceInKm(origin, destination);
     final isDelivered = detail.status == 'DELIVERED';
     double? coveredDistanceKm;
@@ -2097,37 +2104,31 @@ class _TrackingData {
       coveredDistanceKm = totalDistanceKm;
     }
     final startedAt = detail.readyAt ?? detail.acceptedAt ?? detail.createdAt;
-    final lastUpdate =
-        canShowDriver
-            ? lastLocation?.reportedAt ??
-                detail.deliveryConfirmedAt ??
-                detail.pickupConfirmedAt ??
-                startedAt
-            : startedAt;
-    final waypointModels =
-        detail.waypoints.toList()
-          ..sort((a, b) => a.sequence.compareTo(b.sequence));
-    var waypointCoords =
-        waypointModels
-            .map(
-              (w) =>
-                  _latLngFromCoords(w.location.latitude, w.location.longitude),
-            )
-            .whereType<LatLng>()
-            .toList();
+    final lastUpdate = canShowDriver
+        ? lastLocation?.reportedAt ??
+              detail.deliveryConfirmedAt ??
+              detail.pickupConfirmedAt ??
+              startedAt
+        : startedAt;
+    final waypointModels = detail.waypoints.toList()
+      ..sort((a, b) => a.sequence.compareTo(b.sequence));
+    var waypointCoords = waypointModels
+        .map(
+          (w) => _latLngFromCoords(w.location.latitude, w.location.longitude),
+        )
+        .whereType<LatLng>()
+        .toList();
     final fallbackSorted = fallbackWaypoints.toList()
       ..sort((a, b) => a.sequence.compareTo(b.sequence));
-    final fallbackCoords =
-        fallbackSorted
-            .map(
-              (w) =>
-                  _latLngFromCoords(
-                    _parseNum(w.location['latitude']),
-                    _parseNum(w.location['longitude']),
-                  ),
-            )
-            .whereType<LatLng>()
-            .toList();
+    final fallbackCoords = fallbackSorted
+        .map(
+          (w) => _latLngFromCoords(
+            _parseNum(w.location['latitude']),
+            _parseNum(w.location['longitude']),
+          ),
+        )
+        .whereType<LatLng>()
+        .toList();
     if (fallbackCoords.isNotEmpty) {
       final uniqueFallback = _uniquePoints(fallbackCoords);
       final uniqueWaypoints = _uniquePoints(waypointCoords);
@@ -2145,8 +2146,7 @@ class _TrackingData {
         routePath.add(origin);
       }
       routePath.addAll(waypointCoords);
-      if (destination != null &&
-          !_samePoint(routePath.last, destination)) {
+      if (destination != null && !_samePoint(routePath.last, destination)) {
         routePath.add(destination);
       }
     } else {

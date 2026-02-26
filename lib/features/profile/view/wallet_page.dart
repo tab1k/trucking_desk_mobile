@@ -459,7 +459,7 @@ class _TopUpSheet extends StatefulWidget {
 class _TopUpSheetState extends State<_TopUpSheet> {
   final _amountController = TextEditingController();
   double _amount = 0;
-  final double _commissionRate = 0.025; // 2.5%
+  final double _commissionRate = 0.035; // 3.5%
 
   @override
   void initState() {
@@ -591,7 +591,7 @@ class _TopUpSheetState extends State<_TopUpSheet> {
           // Summary
           _SummaryRow(label: 'Сумма пополнения', value: format.format(_amount)),
           SizedBox(height: 12.h),
-          _SummaryRow(label: 'Комиссия (2.5%)', value: format.format(commission)),
+          _SummaryRow(label: 'Комиссия (3.5%)', value: format.format(commission)),
           SizedBox(height: 12.h),
           const Divider(),
           SizedBox(height: 12.h),

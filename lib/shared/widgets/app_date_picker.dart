@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:intl/intl.dart';
 
 Future<DateTime?> showAppDatePicker(
   BuildContext context, {
@@ -171,11 +170,11 @@ Future<T?> _showCalendarSheet<T>(
                     Text(
                       tempStart != null && (tempEnd != null || !pickRange)
                           ? pickRange
-                              ? '${_formatDate(tempStart!, locale)} — ${_formatDate(tempEnd ?? tempStart!, locale)}'
-                              : _formatDate(tempStart!, locale)
+                                ? '${_formatDate(tempStart!, locale)} — ${_formatDate(tempEnd ?? tempStart!, locale)}'
+                                : _formatDate(tempStart!, locale)
                           : pickRange
-                              ? tr('calendar.hint_range')
-                              : tr('calendar.hint_single'),
+                          ? tr('calendar.hint_range')
+                          : tr('calendar.hint_single'),
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 13.sp,
@@ -239,10 +238,9 @@ Future<T?> _showCalendarSheet<T>(
                           }
 
                           return GestureDetector(
-                            onTap:
-                                isDisabled || date == null
-                                    ? null
-                                    : () => onDateSelected(date),
+                            onTap: isDisabled
+                                ? null
+                                : () => onDateSelected(date),
                             child: Container(
                               margin: EdgeInsets.all(3.w),
                               decoration: BoxDecoration(
@@ -253,16 +251,14 @@ Future<T?> _showCalendarSheet<T>(
                               child: Text(
                                 date?.day.toString() ?? '',
                                 style: TextStyle(
-                                  color:
-                                      isDisabled
-                                          ? Colors.grey
-                                          : (selectedStart || selectedEnd)
-                                          ? Colors.white
-                                          : Colors.black,
-                                  fontWeight:
-                                      (selectedStart || selectedEnd)
-                                          ? FontWeight.w700
-                                          : FontWeight.w500,
+                                  color: isDisabled
+                                      ? Colors.grey
+                                      : (selectedStart || selectedEnd)
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontWeight: (selectedStart || selectedEnd)
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
                                 ),
                               ),
                             ),
@@ -284,21 +280,20 @@ Future<T?> _showCalendarSheet<T>(
                         ),
                         const Spacer(),
                         ElevatedButton(
-                          onPressed:
-                              canConfirm
-                                  ? () {
-                                    if (!pickRange) {
-                                      Navigator.of(context).pop(tempStart);
-                                    } else {
-                                      Navigator.of(context).pop(
-                                        DateTimeRange(
-                                          start: tempStart!,
-                                          end: tempEnd ?? tempStart!,
-                                        ),
-                                      );
-                                    }
+                          onPressed: canConfirm
+                              ? () {
+                                  if (!pickRange) {
+                                    Navigator.of(context).pop(tempStart);
+                                  } else {
+                                    Navigator.of(context).pop(
+                                      DateTimeRange(
+                                        start: tempStart!,
+                                        end: tempEnd ?? tempStart!,
+                                      ),
+                                    );
                                   }
-                                  : null,
+                                }
+                              : null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF00B2FF),
                             foregroundColor: Colors.white,

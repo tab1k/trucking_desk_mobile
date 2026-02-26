@@ -205,18 +205,23 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
     _deletePasswordController.clear();
 
     if (success) {
-      Navigator.of(modalContext).pop(); // закрыть sheet
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(tr('profile.delete.success'))));
+      if (modalContext.mounted) {
+        Navigator.of(modalContext).pop(); // закрыть sheet
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(tr('profile.delete.success'))),
+      );
       context.go(AuthRoutes.welcomeScreen);
     } else {
       final error =
           authErrorMessage(ref.read(authControllerProvider)) ??
           tr('profile.delete.error_failed');
-      ScaffoldMessenger.of(
-        modalContext,
-      ).showSnackBar(SnackBar(content: Text(error)));
+      if (modalContext.mounted) {
+        ScaffoldMessenger.of(modalContext).showSnackBar(
+          SnackBar(content: Text(error)),
+        );
+      }
     }
   }
 

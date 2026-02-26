@@ -2,8 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fura24.kz/features/client/domain/models/history_filter.dart';
+import 'package:fura24.kz/features/client/domain/models/history_status.dart';
 import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
-import 'package:fura24.kz/features/driver/providers/driver_assigned_orders_provider.dart';
+import 'package:fura24.kz/features/driver/providers/driver_history_orders_provider.dart';
 
 class DriverHistoryPage extends ConsumerStatefulWidget {
   const DriverHistoryPage({super.key, this.onBackAction});
@@ -17,23 +19,19 @@ class DriverHistoryPage extends ConsumerStatefulWidget {
 class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
   final TextEditingController _searchController = TextEditingController();
 
-  HistoryStatus _selectedStatus = HistoryStatus.all;
-  DateTimeRange? _selectedRange;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final _ = ref.refresh(driverAssignedOrdersProvider);
-    });
+    final filter = ref.read(driverHistoryFilterProvider);
+    _searchController.text = filter.searchQuery;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ordersAsync = ref.watch(driverAssignedOrdersProvider);
+    final filter = ref.watch(driverHistoryFilterProvider);
+    final ordersAsync = ref.watch(driverHistoryOrdersProvider);
     final items = ordersAsync.value ?? const <OrderSummary>[];
-    final filteredItems = _applyFilters(items);
 
     return ClipRRect(
       borderRadius: BorderRadius.only(
@@ -75,9 +73,9 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
             ),
           ),
           actions: [
-            if (_selectedRange != null ||
-                _selectedStatus != HistoryStatus.all ||
-                _searchController.text.trim().isNotEmpty)
+            if (filter.dateRange != null ||
+                filter.status != HistoryStatus.all ||
+                filter.searchQuery.isNotEmpty)
               TextButton(
                 onPressed: _resetFilters,
                 child: Text(tr('history.reset')),
@@ -87,28 +85,36 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
         ),
         body: SafeArea(
           top: false,
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            children: [
-              _buildSearchField(theme),
-              SizedBox(height: 12.h),
-              _buildStatusChips(theme),
-              SizedBox(height: 12.h),
-              _buildDateRangeButton(theme),
-              SizedBox(height: 20.h),
-              if (ordersAsync.isLoading)
-                const Center(child: CircularProgressIndicator())
-              else if (filteredItems.isEmpty)
-                _buildEmptyState(theme)
-              else
-                ...filteredItems.map(
-                  (order) => Padding(
-                    padding: EdgeInsets.only(bottom: 16.h),
-                    child: _HistoryCard(summary: order),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(driverHistoryOrdersProvider);
+            },
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              children: [
+                _buildSearchField(theme),
+                SizedBox(height: 12.h),
+                _buildStatusChips(theme, filter),
+                SizedBox(height: 12.h),
+                _buildDateRangeButton(theme, filter),
+                SizedBox(height: 20.h),
+                if (ordersAsync.isLoading)
+                  const Padding(
+                    padding: EdgeInsets.all(32.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (items.isEmpty)
+                  _buildEmptyState(theme)
+                else
+                  ...items.map(
+                    (order) => Padding(
+                      padding: EdgeInsets.only(bottom: 16.h),
+                      child: _HistoryCard(summary: order),
+                    ),
                   ),
-                ),
-              SizedBox(height: MediaQuery.of(context).padding.bottom + 24.h),
-            ],
+                SizedBox(height: MediaQuery.of(context).padding.bottom + 24.h),
+              ],
+            ),
           ),
         ),
       ),
@@ -118,7 +124,12 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
   Widget _buildSearchField(ThemeData theme) {
     return TextField(
       controller: _searchController,
-      onChanged: (_) => setState(() {}),
+      onSubmitted: (value) {
+        ref.read(driverHistoryFilterProvider.notifier).update((state) {
+          return state.copyWith(searchQuery: value.trim());
+        });
+      },
+      textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         hintText: tr('history.search_hint'),
         prefixIcon: Icon(Icons.search, size: 20, color: Colors.grey[500]),
@@ -129,6 +140,11 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
                 color: Colors.grey[500],
                 onPressed: () {
                   _searchController.clear();
+                  ref.read(driverHistoryFilterProvider.notifier).update((
+                    state,
+                  ) {
+                    return state.copyWith(searchQuery: '');
+                  });
                   setState(() {});
                 },
               ),
@@ -152,18 +168,18 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
     );
   }
 
-  Widget _buildStatusChips(ThemeData theme) {
+  Widget _buildStatusChips(ThemeData theme, HistoryFilter filter) {
     return Wrap(
       spacing: 10.w,
       runSpacing: 10.h,
       children: HistoryStatus.values.map((status) {
-        final isSelected = status == _selectedStatus;
+        final isSelected = status == filter.status;
         return ChoiceChip(
           label: Text(_statusLabel(status)),
           selected: isSelected,
           onSelected: (_) {
-            setState(() {
-              _selectedStatus = status;
+            ref.read(driverHistoryFilterProvider.notifier).update((state) {
+              return state.copyWith(status: status);
             });
           },
           labelStyle: TextStyle(
@@ -186,18 +202,18 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
     );
   }
 
-  Widget _buildDateRangeButton(ThemeData theme) {
-    final label = _selectedRange == null
+  Widget _buildDateRangeButton(ThemeData theme, HistoryFilter filter) {
+    final label = filter.dateRange == null
         ? tr('history.date_range.select')
         : tr(
             'history.date_range.range',
             args: [
-              _formatDate(_selectedRange!.start),
-              _formatDate(_selectedRange!.end),
+              _formatDate(filter.dateRange!.start),
+              _formatDate(filter.dateRange!.end),
             ],
           );
     return OutlinedButton.icon(
-      onPressed: _pickDateRange,
+      onPressed: () => _pickDateRange(filter.dateRange),
       icon: const Icon(Icons.calendar_today_outlined, size: 18),
       label: Text(
         label,
@@ -250,68 +266,27 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
     );
   }
 
-  Future<void> _pickDateRange() async {
+  Future<void> _pickDateRange(DateTimeRange? currentRange) async {
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2022, 1, 1),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      initialDateRange: _selectedRange,
+      initialDateRange: currentRange,
     );
     if (picked != null) {
-      setState(() {
-        _selectedRange = picked;
+      ref.read(driverHistoryFilterProvider.notifier).update((state) {
+        return state.copyWith(dateRange: picked);
       });
     }
   }
 
-  List<OrderSummary> _applyFilters(List<OrderSummary> orders) {
-    final query = _searchController.text.trim().toLowerCase();
-    return orders.where((order) {
-      final matchesStatus =
-          _selectedStatus == HistoryStatus.all ||
-          (_selectedStatus == HistoryStatus.completed &&
-              order.status == CargoStatus.completed) ||
-          (_selectedStatus == HistoryStatus.cancelled &&
-              order.status == CargoStatus.cancelled);
-
-      final matchesDate =
-          _selectedRange == null || _orderMatchesRange(order, _selectedRange!);
-
-      final matchesQuery =
-          query.isEmpty ||
-          order.id.toLowerCase().contains(query) ||
-          order.routeLabel.toLowerCase().contains(query);
-
-      return matchesStatus && matchesDate && matchesQuery;
-    }).toList();
-  }
-
-  bool _orderMatchesRange(OrderSummary order, DateTimeRange range) {
-    final baseDate = order.transportationDate ?? order.createdAt;
-    if (baseDate == null) return false;
-    final start = DateTime(
-      range.start.year,
-      range.start.month,
-      range.start.day,
-    );
-    final end = DateTime(
-      range.end.year,
-      range.end.month,
-      range.end.day,
-      23,
-      59,
-      59,
-    );
-    return !baseDate.isBefore(start) && !baseDate.isAfter(end);
-  }
-
   void _resetFilters() {
-    setState(() {
-      _searchController.clear();
-      _selectedStatus = HistoryStatus.all;
-      _selectedRange = null;
+    _searchController.clear();
+    ref.read(driverHistoryFilterProvider.notifier).update((state) {
+      return const HistoryFilter();
     });
+    setState(() {});
   }
 
   String _statusLabel(HistoryStatus status) {
@@ -335,8 +310,6 @@ class _DriverHistoryPageState extends ConsumerState<DriverHistoryPage> {
     super.dispose();
   }
 }
-
-enum HistoryStatus { all, completed, cancelled }
 
 class _HistoryCard extends StatelessWidget {
   const _HistoryCard({required this.summary});

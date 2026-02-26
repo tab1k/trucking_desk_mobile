@@ -1,3 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:fura24.kz/features/client/domain/models/order_detail.dart';
+import 'package:fura24.kz/features/locations/data/models/location_model.dart';
+
 enum CargoStatus { pending, inTransit, completed, cancelled }
 
 class OrderSummary {
@@ -14,6 +18,9 @@ class OrderSummary {
   final String vehicleTypeLabel;
   final String loadingTypeLabel;
   final String paymentTypeLabel;
+  final String vehicleType;
+  final String loadingType;
+  final String paymentType;
   final String departureCity;
   final String destinationCity;
   final bool isFavoriteForDriver;
@@ -56,6 +63,9 @@ class OrderSummary {
     required this.vehicleTypeLabel,
     required this.loadingTypeLabel,
     required this.paymentTypeLabel,
+    this.vehicleType = 'ANY',
+    this.loadingType = 'ANY',
+    this.paymentType = 'CASH',
     required this.departureCity,
     required this.destinationCity,
     required this.isFavoriteForDriver,
@@ -120,12 +130,15 @@ class OrderSummary {
         ? rawCargoName
         : 'Без названия';
     final description = (json['description'] as String?)?.trim() ?? '';
+    final vehicleType = (json['vehicle_type'] as String?) ?? 'ANY';
     final vehicleTypeLabel = _labelOrDash(
       json['vehicle_type_display'] as String?,
     );
+    final loadingType = (json['loading_type'] as String?) ?? 'ANY';
     final loadingTypeLabel = _labelOrDash(
       json['loading_type_display'] as String?,
     );
+    final paymentType = (json['payment_type'] as String?) ?? 'CASH';
     final paymentTypeLabel = _labelOrDash(
       json['payment_type_display'] as String?,
     );
@@ -192,6 +205,9 @@ class OrderSummary {
       vehicleTypeLabel: vehicleTypeLabel,
       loadingTypeLabel: loadingTypeLabel,
       paymentTypeLabel: paymentTypeLabel,
+      vehicleType: vehicleType,
+      loadingType: loadingType,
+      paymentType: paymentType,
       departureCity: departureCity,
       destinationCity: destinationCity,
       isFavoriteForDriver: isFavoriteForDriver,
@@ -224,6 +240,85 @@ class OrderSummary {
       lastLocation: lastLocation,
       currentDriverLocation: currentDriverLocation,
       waypoints: waypointModels,
+    );
+  }
+
+  factory OrderSummary.fromDetail(OrderDetail detail) {
+    return OrderSummary(
+      id: detail.id,
+      cargoName: detail.cargoName,
+      routeLabel: _buildRouteFromModels(
+        detail.waypoints,
+        detail.departurePoint,
+        detail.destinationPoint,
+      ),
+      weightLabel: _formatWeight(detail.weightTons),
+      volumeLabel: _formatVolume(detail.volumeCubicMeters),
+      priceLabel: _formatCurrency(detail.amount, detail.currency),
+      dateLabel: _formatDate(detail.transportationDate?.toIso8601String()),
+      status: _mapStatus(detail.status),
+      description: detail.description ?? '',
+      vehicleTypeLabel: tr('cargo_types.vehicle.${detail.vehicleType}'),
+      loadingTypeLabel: tr('cargo_types.loading.${detail.loadingType}'),
+      paymentTypeLabel: tr('cargo_types.payment.${detail.paymentType}'),
+      vehicleType: detail.vehicleType,
+      loadingType: detail.loadingType,
+      paymentType: detail.paymentType,
+      departureCity: detail.departurePoint.cityName ?? '',
+      destinationCity: detail.destinationPoint.cityName ?? '',
+      isFavoriteForDriver: false,
+      amountValue: detail.amount,
+      currencyCode: detail.currency,
+      showPhoneToDrivers: detail.showPhoneToDrivers,
+      senderPhoneNumber: '',
+      senderId: detail.senderId,
+      driverId: detail.driverId,
+      canDriverCall: false,
+      isDriverSharingLocation: detail.isDriverSharingLocation,
+      bidsCount: detail.bids.length,
+      hasNewBids: false,
+      bidDriverPreviewIds: [],
+      hasResponded: detail.bids.any((b) => b.driverId == detail.driverId),
+      photoUrls: detail.photoUrls,
+      senderName: '', // Sender name might be missing in detail
+      transportationDate: detail.transportationDate,
+      createdAt: detail.createdAt,
+      rawStatus: detail.status,
+      departureLatitude: detail.departurePoint.latitude,
+      departureLongitude: detail.departurePoint.longitude,
+      destinationLatitude: detail.destinationPoint.latitude,
+      destinationLongitude: detail.destinationPoint.longitude,
+      lastLocation: detail.lastLocation != null
+          ? OrderSummaryLocation(
+              latitude: detail.lastLocation!.latitude,
+              longitude: detail.lastLocation!.longitude,
+              note: detail.lastLocation!.note,
+              reportedAt: detail.lastLocation!.reportedAt,
+            )
+          : null,
+      currentDriverLocation: detail.currentDriverLocation != null
+          ? OrderSummaryLocation(
+              latitude: detail.currentDriverLocation!.latitude,
+              longitude: detail.currentDriverLocation!.longitude,
+              note: detail.currentDriverLocation!.note,
+              reportedAt: detail.currentDriverLocation!.reportedAt,
+            )
+          : null,
+      waypoints: detail.waypoints
+          .map(
+            (w) => OrderWaypointSummary(
+              id: w.id.toString(),
+              sequence: w.sequence,
+              location: {
+                'city_name': w.location.cityName,
+                'latitude': w.location.latitude,
+                'longitude': w.location.longitude,
+              },
+              addressDetail: w.addressDetail,
+            ),
+          )
+          .toList(),
+      senderAvatarUrl: null,
     );
   }
 }
@@ -314,6 +409,26 @@ String _buildRoute(
   final from = _cityName(departure, fallback: emptyLabel);
   final to = _cityName(destination, fallback: emptyLabel);
   return '$from → $to';
+}
+
+String _buildRouteFromModels(
+  List<OrderWaypointModel> waypoints,
+  LocationModel departure,
+  LocationModel destination,
+) {
+  if (waypoints.isNotEmpty) {
+    final cities = waypoints
+        .map((w) => w.location.cityName)
+        .where((c) => c.isNotEmpty)
+        .toList();
+    if (cities.length >= 2) {
+      if (cities.length > 2) {
+        return '${cities.first} → … → ${cities.last}';
+      }
+      return cities.join(' → ');
+    }
+  }
+  return '${departure.cityName} → ${destination.cityName}';
 }
 
 String _cityName(

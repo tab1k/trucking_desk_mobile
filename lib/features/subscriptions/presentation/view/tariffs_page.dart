@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:fura24.kz/features/subscriptions/data/repositories/subscriptions_repository.dart';
 import 'package:fura24.kz/features/subscriptions/data/models/tariff_model.dart';
 import 'package:fura24.kz/features/client/presentation/providers/profile/profile_provider.dart';
+import 'package:intl/intl.dart';
 
 final tariffsFutureProvider = FutureProvider.autoDispose<List<TariffModel>>((
   ref,
@@ -301,6 +302,7 @@ class _TariffCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _getColor(tariff.code);
+    final view = _TariffView.fromModel(tariff);
 
     return Container(
       decoration: BoxDecoration(
@@ -329,15 +331,15 @@ class _TariffCard extends StatelessWidget {
               borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
             ),
             child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    tariff.title,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                      color: color,
-                    ),
+                children: [
+                  Expanded(
+                    child: Text(
+                      tr(view.titleKey),
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                      ),
                   ),
                 ),
                 if (tariff.isActive)
@@ -371,7 +373,12 @@ class _TariffCard extends StatelessWidget {
                 Text(
                   tr(
                     'tariffs.price_month',
-                    args: [NumberFormat('#,##0', 'ru_RU').format(tariff.price)],
+                    args: [
+                      NumberFormat(
+                        '#,##0',
+                        context.locale.toString(),
+                      ).format(tariff.price),
+                    ],
                   ),
                   style: TextStyle(
                     fontSize: 22.sp,
@@ -381,11 +388,13 @@ class _TariffCard extends StatelessWidget {
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  tariff.description,
+                  tr(view.subtitleKey),
                   style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
                 ),
                 SizedBox(height: 16.h),
-                ...tariff.features.map((feature) => _FeatureRow(text: feature)),
+                ...view.featureKeys
+                    .map((key) => _FeatureRow(text: _featureText(context, key)))
+                    .toList(),
                 SizedBox(height: 16.h),
                 SizedBox(
                   width: double.infinity,
@@ -431,6 +440,65 @@ class _TariffCard extends StatelessWidget {
     if (code == 'INTERCITY') return Colors.orange;
     if (code == 'CITY') return Colors.blue;
     return Colors.black;
+  }
+
+  String _featureText(BuildContext context, String key) {
+    if (!key.startsWith('tariffs.')) return key;
+
+    final resolved = tr(key);
+
+    // easy_localization returns String; just fallback if missing
+    if (resolved == key) return key;
+    return resolved;
+  }
+}
+
+class _TariffView {
+  const _TariffView({
+    required this.titleKey,
+    required this.subtitleKey,
+    required this.featureKeys,
+  });
+
+  final String titleKey;
+  final String subtitleKey;
+  final List<String> featureKeys;
+
+  factory _TariffView.fromModel(TariffModel model) {
+    switch (model.code.toUpperCase()) {
+      case 'INTERNATIONAL':
+        return const _TariffView(
+          titleKey: 'tariffs.cards.international.title',
+          subtitleKey: 'tariffs.cards.international.subtitle',
+          featureKeys: [
+            'tariffs.cards.international.features.0',
+            'tariffs.cards.international.features.1',
+          ],
+        );
+      case 'INTERCITY':
+        return const _TariffView(
+          titleKey: 'tariffs.cards.intercity.title',
+          subtitleKey: 'tariffs.cards.intercity.subtitle',
+          featureKeys: [
+            'tariffs.cards.intercity.features.0',
+          ],
+        );
+      case 'CITY':
+        return const _TariffView(
+          titleKey: 'tariffs.cards.city.title',
+          subtitleKey: 'tariffs.cards.city.subtitle',
+          featureKeys: [
+            'tariffs.cards.city.features.0',
+            'tariffs.cards.city.features.1',
+          ],
+        );
+      default:
+        return _TariffView(
+          titleKey: model.title,
+          subtitleKey: model.description,
+          featureKeys: model.features,
+        );
+    }
   }
 }
 

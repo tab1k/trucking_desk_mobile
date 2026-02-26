@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fura24.kz/features/auth/controller/auth_controller.dart';
 import 'package:fura24.kz/features/auth/view/widgets/auth_input_field.dart';
 import 'package:fura24.kz/features/auth/view/widgets/auth_role_toggle.dart';
+import 'package:fura24.kz/features/auth/view/widgets/auth_language_selector.dart';
 import 'package:fura24.kz/router/routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,7 +19,6 @@ class SignInPageView extends ConsumerStatefulWidget {
 }
 
 class _SignInPageViewState extends ConsumerState<SignInPageView> {
-  // ... existing state logic ...
   final _formKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -134,6 +134,8 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
 
   @override
   Widget build(BuildContext context) {
+    // Force rebuild when locale changes
+    context.locale;
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
 
@@ -143,6 +145,7 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: null,
+        centerTitle: true,
         leading: Padding(
           padding: EdgeInsets.only(left: 16.w),
           child: Material(
@@ -156,6 +159,12 @@ class _SignInPageViewState extends ConsumerState<SignInPageView> {
             ),
           ),
         ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 16.w),
+            child: const AuthLanguageSelector(),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

@@ -7,21 +7,16 @@ import 'package:fura24.kz/services/push_notification_service.dart';
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
-  final repository = ref.watch(authRepositoryProvider);
-  final storage = ref.watch(authStorageProvider);
-  return AuthController(
-    repository: repository,
-    storage: storage,
-  );
-});
+      final repository = ref.watch(authRepositoryProvider);
+      final storage = ref.watch(authStorageProvider);
+      return AuthController(repository: repository, storage: storage);
+    });
 
 enum SessionRefreshResult { noSession, refreshed, invalidRefresh, failed }
 
 class AuthController extends StateNotifier<AsyncValue<void>> {
-  AuthController({
-    required this.repository,
-    required this.storage,
-  }) : super(const AsyncData(null));
+  AuthController({required this.repository, required this.storage})
+    : super(const AsyncData(null));
 
   final AuthRepository repository;
   final AuthStorage storage;
@@ -75,7 +70,9 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  Future<Map<String, String?>> requestPasswordReset({required String email}) async {
+  Future<Map<String, String?>> requestPasswordReset({
+    required String email,
+  }) async {
     state = const AsyncLoading();
     try {
       final data = await repository.requestPasswordReset(email: email.trim());
@@ -224,7 +221,10 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
 String? authErrorMessage(AsyncValue<void> state) {
   return state.whenOrNull(
     error: (error, _) {
-      if (error is ApiException) return error.message;
+      if (error is ApiException) {
+        if (error.silent) return null;
+        return error.message;
+      }
       return 'Не удалось выполнить операцию';
     },
   );

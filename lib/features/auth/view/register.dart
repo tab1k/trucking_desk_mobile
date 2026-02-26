@@ -8,6 +8,7 @@ import 'package:fura24.kz/features/auth/controller/auth_controller.dart';
 import 'package:fura24.kz/features/auth/view/widgets/auth_dial_code_selector.dart';
 import 'package:fura24.kz/features/auth/view/widgets/auth_input_field.dart';
 import 'package:fura24.kz/features/auth/view/widgets/auth_role_toggle.dart';
+import 'package:fura24.kz/features/auth/view/widgets/auth_language_selector.dart';
 import 'package:fura24.kz/router/routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -165,17 +166,18 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
                 referralCode: _referralController.text.trim(),
               );
 
-          if (success && mounted) {
-            Navigator.pop(context); // Close sheet
-            final session = await ref
-                .read(authControllerProvider.notifier)
-                .readSession();
-            final role = session?.user.role.toUpperCase() ?? _roleCode;
-            final targetRoute = role == 'DRIVER'
-                ? AppRoutes.driverHome
-                : AppRoutes.home;
-            if (mounted) context.go(targetRoute);
-          }
+          if (!success) return;
+          if (!mounted) return;
+          Navigator.pop(context); // Close sheet
+          final session = await ref
+              .read(authControllerProvider.notifier)
+              .readSession();
+          if (!mounted) return;
+          final role = session?.user.role.toUpperCase() ?? _roleCode;
+          final targetRoute = role == 'DRIVER'
+              ? AppRoutes.driverHome
+              : AppRoutes.home;
+          context.go(targetRoute);
         },
       ),
     );
@@ -183,6 +185,8 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
 
   @override
   Widget build(BuildContext context) {
+    // Force rebuild when locale changes
+    context.locale;
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
 
@@ -192,6 +196,7 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: null,
+        centerTitle: true,
         leading: Padding(
           padding: EdgeInsets.only(left: 16.w),
           child: Material(
@@ -205,6 +210,12 @@ class _SignUpPageViewState extends ConsumerState<SignUpPageView> {
             ),
           ),
         ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 16.w),
+            child: const AuthLanguageSelector(),
+          ),
+        ],
       ),
 
       body: SafeArea(

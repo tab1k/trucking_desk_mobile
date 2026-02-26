@@ -109,6 +109,7 @@ class FavoritesTab extends ConsumerWidget {
       ref.refresh(driverAnnouncementsProvider);
       ref.refresh(favoriteDriverAnnouncementsProvider);
     } catch (error) {
+      if (!context.mounted) return;
       _showFavoriteError(context, error.toString());
     }
   }

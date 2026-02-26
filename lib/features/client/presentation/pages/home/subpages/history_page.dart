@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fura24.kz/features/client/domain/models/history_filter.dart';
+import 'package:fura24.kz/features/client/domain/models/history_status.dart';
 import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
-import 'package:fura24.kz/features/client/presentation/providers/my_orders_provider.dart';
+import 'package:fura24.kz/features/client/presentation/providers/history_orders_provider.dart';
 import 'package:fura24.kz/shared/widgets/app_date_picker.dart';
 
 class HistoryPage extends ConsumerStatefulWidget {
-  const HistoryPage({
-    super.key,
-    this.onBackAction,
-  });
+  const HistoryPage({super.key, this.onBackAction});
 
   final VoidCallback? onBackAction;
 
@@ -21,23 +20,19 @@ class HistoryPage extends ConsumerStatefulWidget {
 class _HistoryPageState extends ConsumerState<HistoryPage> {
   final TextEditingController _searchController = TextEditingController();
 
-  HistoryStatus _selectedStatus = HistoryStatus.all;
-  DateTimeRange? _selectedRange;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final _ = ref.refresh(myOrdersProvider);
-    });
+    final filter = ref.read(historyFilterProvider);
+    _searchController.text = filter.searchQuery;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ordersAsync = ref.watch(myOrdersProvider);
+    final filter = ref.watch(historyFilterProvider);
+    final ordersAsync = ref.watch(historyOrdersProvider);
     final items = ordersAsync.value ?? const <OrderSummary>[];
-    final filteredItems = _applyFilters(items);
 
     return ClipRRect(
       borderRadius: BorderRadius.only(
@@ -62,7 +57,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
                 icon: const Icon(Icons.arrow_back, size: 20),
                 color: Colors.black87,
                 padding: EdgeInsets.zero,
-                onPressed: widget.onBackAction ?? () => Navigator.of(context).pop(),
+                onPressed:
+                    widget.onBackAction ?? () => Navigator.of(context).pop(),
               ),
             ),
           ),
@@ -78,9 +74,9 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
             ),
           ),
           actions: [
-            if (_selectedRange != null ||
-                _selectedStatus != HistoryStatus.all ||
-                _searchController.text.trim().isNotEmpty)
+            if (filter.dateRange != null ||
+                filter.status != HistoryStatus.all ||
+                filter.searchQuery.isNotEmpty)
               TextButton(
                 onPressed: _resetFilters,
                 child: Text(tr('history.reset')),
@@ -90,27 +86,37 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
         ),
         body: SafeArea(
           top: false,
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            children: [
-
-              _buildSearchField(theme),
-              SizedBox(height: 12.h),
-              _buildStatusChips(theme),
-              SizedBox(height: 12.h),
-              _buildDateRangeButton(theme),
-              SizedBox(height: 20.h),
-              if (ordersAsync.isLoading)
-                const Center(child: CircularProgressIndicator())
-              else if (filteredItems.isEmpty)
-                _buildEmptyState(theme)
-              else
-                ...filteredItems.map((order) => Padding(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              // Invalidate ensures a fresh fetch with current filters
+              ref.invalidate(historyOrdersProvider);
+            },
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              children: [
+                _buildSearchField(theme),
+                SizedBox(height: 12.h),
+                _buildStatusChips(theme, filter),
+                SizedBox(height: 12.h),
+                _buildDateRangeButton(theme, filter),
+                SizedBox(height: 20.h),
+                if (ordersAsync.isLoading)
+                  const Padding(
+                    padding: EdgeInsets.all(32.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (items.isEmpty)
+                  _buildEmptyState(theme)
+                else
+                  ...items.map(
+                    (order) => Padding(
                       padding: EdgeInsets.only(bottom: 16.h),
                       child: _HistoryCard(summary: order),
-                    )),
-              SizedBox(height: MediaQuery.of(context).padding.bottom + 24.h),
-            ],
+                    ),
+                  ),
+                SizedBox(height: MediaQuery.of(context).padding.bottom + 24.h),
+              ],
+            ),
           ),
         ),
       ),
@@ -120,7 +126,12 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
   Widget _buildSearchField(ThemeData theme) {
     return TextField(
       controller: _searchController,
-      onChanged: (_) => setState(() {}),
+      onSubmitted: (value) {
+        ref.read(historyFilterProvider.notifier).update((state) {
+          return state.copyWith(searchQuery: value.trim());
+        });
+      },
+      textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         hintText: tr('history.search_hint'),
         prefixIcon: Icon(Icons.search, size: 20, color: Colors.grey[500]),
@@ -131,6 +142,9 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
                 color: Colors.grey[500],
                 onPressed: () {
                   _searchController.clear();
+                  ref.read(historyFilterProvider.notifier).update((state) {
+                    return state.copyWith(searchQuery: '');
+                  });
                   setState(() {});
                 },
               ),
@@ -150,25 +164,22 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
           borderSide: const BorderSide(color: Color(0xFF00B2FF), width: 1.4),
         ),
       ),
-      style: TextStyle(
-        fontSize: 14.sp,
-        color: Colors.black87,
-      ),
+      style: TextStyle(fontSize: 14.sp, color: Colors.black87),
     );
   }
 
-  Widget _buildStatusChips(ThemeData theme) {
+  Widget _buildStatusChips(ThemeData theme, HistoryFilter filter) {
     return Wrap(
       spacing: 10.w,
       runSpacing: 10.h,
       children: HistoryStatus.values.map((status) {
-        final isSelected = status == _selectedStatus;
+        final isSelected = status == filter.status;
         return ChoiceChip(
           label: Text(_statusLabel(status)),
           selected: isSelected,
           onSelected: (_) {
-            setState(() {
-              _selectedStatus = status;
+            ref.read(historyFilterProvider.notifier).update((state) {
+              return state.copyWith(status: status);
             });
           },
           labelStyle: TextStyle(
@@ -191,27 +202,26 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
     );
   }
 
-  Widget _buildDateRangeButton(ThemeData theme) {
-    final label = _selectedRange == null
+  Widget _buildDateRangeButton(ThemeData theme, HistoryFilter filter) {
+    final label = filter.dateRange == null
         ? tr('history.date_range.select')
         : tr(
             'history.date_range.range',
             args: [
-              _formatDate(_selectedRange!.start),
-              _formatDate(_selectedRange!.end),
+              _formatDate(filter.dateRange!.start),
+              _formatDate(filter.dateRange!.end),
             ],
           );
 
     return OutlinedButton.icon(
-      onPressed: _pickDateRange,
+      onPressed: () => _pickDateRange(filter.dateRange),
       icon: const Icon(Icons.calendar_today, size: 18),
-      label: Text(
-        label,
-        style: TextStyle(fontSize: 14.sp),
-      ),
+      label: Text(label, style: TextStyle(fontSize: 14.sp)),
       style: OutlinedButton.styleFrom(
         padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14.r),
+        ),
         side: BorderSide(color: Colors.grey[200]!),
         foregroundColor: theme.colorScheme.primary,
       ),
@@ -255,55 +265,27 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
     );
   }
 
-  Future<void> _pickDateRange() async {
+  Future<void> _pickDateRange(DateTimeRange? currentRange) async {
     final picked = await showAppDateRangePicker(
       context,
-      initialRange: _selectedRange,
+      initialRange: currentRange,
     );
     if (picked != null) {
-      setState(() {
-        _selectedRange = picked;
+      ref.read(historyFilterProvider.notifier).update((state) {
+        return state.copyWith(dateRange: picked);
       });
     }
   }
 
-  List<OrderSummary> _applyFilters(List<OrderSummary> orders) {
-    final query = _searchController.text.trim().toLowerCase();
-    return orders.where((order) {
-      final matchesStatus = _selectedStatus == HistoryStatus.all ||
-          (_selectedStatus == HistoryStatus.completed &&
-              order.status == CargoStatus.completed) ||
-          (_selectedStatus == HistoryStatus.cancelled &&
-              order.status == CargoStatus.cancelled);
-
-      final matchesDate =
-          _selectedRange == null || _orderMatchesRange(order, _selectedRange!);
-
-      final matchesQuery = query.isEmpty ||
-          order.id.toLowerCase().contains(query) ||
-          order.routeLabel.toLowerCase().contains(query);
-
-      return matchesStatus && matchesDate && matchesQuery;
-    }).toList();
-  }
-
-  bool _orderMatchesRange(OrderSummary order, DateTimeRange range) {
-    final baseDate = order.transportationDate ?? order.createdAt;
-    if (baseDate == null) return false;
-    final start = DateTime(range.start.year, range.start.month, range.start.day);
-    final end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59, 59);
-    return !baseDate.isBefore(start) && !baseDate.isAfter(end);
-  }
-
   void _resetFilters() {
-    setState(() {
-      _searchController.clear();
-      _selectedStatus = HistoryStatus.all;
-      _selectedRange = null;
+    _searchController.clear();
+    ref.read(historyFilterProvider.notifier).update((state) {
+      return const HistoryFilter();
     });
+    setState(() {});
   }
 
-String _statusLabel(HistoryStatus status) {
+  String _statusLabel(HistoryStatus status) {
     switch (status) {
       case HistoryStatus.all:
         return tr('history.filters.all');
@@ -316,8 +298,18 @@ String _statusLabel(HistoryStatus status) {
 
   String _formatDate(DateTime date) {
     final months = [
-      'янв', 'фев', 'мар', 'апр', 'май', 'июн',
-      'июл', 'авг', 'сен', 'окт', 'ноя', 'дек',
+      'янв',
+      'фев',
+      'мар',
+      'апр',
+      'май',
+      'июн',
+      'июл',
+      'авг',
+      'сен',
+      'окт',
+      'ноя',
+      'дек',
     ];
     return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
   }
@@ -328,9 +320,6 @@ String _statusLabel(HistoryStatus status) {
     super.dispose();
   }
 }
-
-enum HistoryStatus { all, completed, cancelled }
-
 
 class _HistoryCard extends StatelessWidget {
   const _HistoryCard({required this.summary});
@@ -401,10 +390,7 @@ class _HistoryCard extends StatelessWidget {
             transportDate != null
                 ? 'Отправка: ${_formatDate(transportDate)}'
                 : 'Дата: ${summary.dateLabel}',
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 13.sp, color: Colors.grey[600]),
           ),
           SizedBox(height: 12.h),
           Row(
@@ -446,10 +432,7 @@ class _HistoryCard extends StatelessWidget {
                   SizedBox(height: 4.h),
                   Text(
                     summary.paymentTypeLabel,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[500],
-                    ),
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[500]),
                   ),
                 ],
               ),
@@ -493,10 +476,7 @@ class _HistoryCard extends StatelessWidget {
                 summary.createdAt != null
                     ? 'Создано: ${_formatDateTime(summary.createdAt!)}'
                     : 'Создано: ${summary.dateLabel}',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.grey[500],
-                ),
+                style: TextStyle(fontSize: 12.sp, color: Colors.grey[500]),
               ),
             ],
           ),
@@ -537,14 +517,25 @@ class _HistoryCard extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     final months = [
-      'янв', 'фев', 'мар', 'апр', 'май', 'июн',
-      'июл', 'авг', 'сен', 'окт', 'ноя', 'дек',
+      'янв',
+      'фев',
+      'мар',
+      'апр',
+      'май',
+      'июн',
+      'июл',
+      'авг',
+      'сен',
+      'окт',
+      'ноя',
+      'дек',
     ];
     return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
   }
 
   String _formatDateTime(DateTime date) {
-    final time = '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+    final time =
+        '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
     return '${_formatDate(date)} · $time';
   }
 }

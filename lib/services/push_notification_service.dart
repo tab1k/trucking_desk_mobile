@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -11,7 +10,9 @@ import 'package:fura24.kz/core/config/app_config.dart';
 import 'package:fura24.kz/core/config/firebase_web_options.dart';
 import 'package:fura24.kz/features/auth/repositories/auth_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 /// Service to initialize and handle FCM + local notifications.
 class PushNotificationService {
@@ -206,6 +207,7 @@ class PushNotificationService {
           'token': token,
           'platform': _currentPlatformLabel(),
           'app_version': _appVersion,
+          'device_id': await _getDeviceId(),
         },
       );
 
@@ -352,6 +354,21 @@ class PushNotificationService {
       default:
         return 'ANDROID';
     }
+  }
+  static Future<String?> _getDeviceId() async {
+    final deviceInfo = DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        final androidInfo = await deviceInfo.androidInfo;
+        return androidInfo.id;
+      } else if (Platform.isIOS) {
+        final iosInfo = await deviceInfo.iosInfo;
+        return iosInfo.identifierForVendor;
+      }
+    } catch (_) {
+      debugPrint('[PushNotificationService] Failed to get device ID');
+    }
+    return null;
   }
 }
 

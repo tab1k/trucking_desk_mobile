@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
 import 'package:fura24.kz/features/driver/providers/driver_favorites_provider.dart';
 import 'package:fura24.kz/features/driver/utils/driver_order_actions.dart';
-import 'package:fura24.kz/features/driver/utils/driver_verification_guard.dart';
+import 'package:fura24.kz/features/driver/utils/driver_restrictions_guard.dart';
 import 'package:fura24.kz/features/driver/view/widgets/driver_order_card.dart';
 import 'package:fura24.kz/shared/widgets/single_appbar.dart';
 import 'package:fura24.kz/features/driver/providers/responded_orders_provider.dart';
@@ -96,10 +96,10 @@ class _DriverFavoritesList extends ConsumerWidget {
                   onTap: () => _openOrderDetail(context, order),
                   onRespond: () => _respondToOrder(context, ref, order),
                   onCall: order.canDriverCall
-                      ? () => callOrderSender(context, order)
+                      ? () => callOrderSender(context, ref, order)
                       : null,
                   onWhatsApp: order.canDriverCall
-                      ? () => openOrderWhatsApp(context, order)
+                      ? () => openOrderWhatsApp(context, ref, order)
                       : null,
                   onToggleFavorite: () => onToggleFavorite(order),
                 );
@@ -113,8 +113,13 @@ class _DriverFavoritesList extends ConsumerWidget {
     WidgetRef ref,
     OrderSummary order,
   ) async {
-    final allowed = await ensureDriverVerified(context, ref);
+    final allowed = await ensureDriverActionAllowed(
+      context,
+      ref,
+      orderForTariffCheck: order,
+    );
     if (!allowed) return;
+
     final messenger = ScaffoldMessenger.of(context);
     final responded = await showDriverRespondSheet(context, order);
     if (responded == true) {

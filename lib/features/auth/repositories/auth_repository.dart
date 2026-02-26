@@ -44,7 +44,13 @@ class AuthRepository {
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final message = _extractErrorMessage(e);
-      throw ApiException(message, statusCode: statusCode);
+      final isServerError = statusCode != null && statusCode >= 500;
+      final isHtml = message == 'Server Error (HTML Response)';
+      throw ApiException(
+        message,
+        statusCode: statusCode,
+        silent: isServerError || isHtml,
+      );
     } catch (_) {
       throw ApiException(tr('auth_errors.send_code_failed'));
     }
@@ -117,7 +123,13 @@ class AuthRepository {
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final message = _extractErrorMessage(e);
-      throw ApiException(message, statusCode: statusCode);
+      final isServerError = statusCode != null && statusCode >= 500;
+      final isHtml = message == 'Server Error (HTML Response)';
+      throw ApiException(
+        message,
+        statusCode: statusCode,
+        silent: isServerError || isHtml,
+      );
     } catch (_) {
       throw ApiException(tr('auth_errors.send_reset_email_failed'));
     }
@@ -142,7 +154,13 @@ class AuthRepository {
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final message = _extractErrorMessage(e);
-      throw ApiException(message, statusCode: statusCode);
+      final isServerError = statusCode != null && statusCode >= 500;
+      final isHtml = message == 'Server Error (HTML Response)';
+      throw ApiException(
+        message,
+        statusCode: statusCode,
+        silent: isServerError || isHtml,
+      );
     } catch (_) {
       throw ApiException(tr('auth_errors.reset_password_failed'));
     }
@@ -186,7 +204,13 @@ class AuthRepository {
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final message = _extractErrorMessage(e);
-      throw ApiException(message, statusCode: statusCode);
+      final isServerError = statusCode != null && statusCode >= 500;
+      final isHtml = message == 'Server Error (HTML Response)';
+      throw ApiException(
+        message,
+        statusCode: statusCode,
+        silent: isServerError || isHtml,
+      );
     } catch (e) {
       throw ApiException(tr('auth_errors.session_update_failed'));
     }
@@ -214,7 +238,14 @@ class AuthRepository {
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final message = _extractErrorMessage(e);
-      throw ApiException(message, statusCode: statusCode);
+      // Silent error if server error (>= 500) or HTML response
+      final isServerError = statusCode != null && statusCode >= 500;
+      final isHtml = message == 'Server Error (HTML Response)';
+      throw ApiException(
+        message,
+        statusCode: statusCode,
+        silent: isServerError || isHtml,
+      );
     } catch (e) {
       throw ApiException(tr('auth_errors.request_failed'));
     }
@@ -226,7 +257,13 @@ class AuthRepository {
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final message = _extractErrorMessage(e);
-      throw ApiException(message, statusCode: statusCode);
+      final isServerError = statusCode != null && statusCode >= 500;
+      final isHtml = message == 'Server Error (HTML Response)';
+      throw ApiException(
+        message,
+        statusCode: statusCode,
+        silent: isServerError || isHtml,
+      );
     } catch (_) {
       throw ApiException(tr('auth_errors.delete_account_failed'));
     }
@@ -234,6 +271,12 @@ class AuthRepository {
 
   String _extractErrorMessage(DioException exception) {
     final responseData = exception.response?.data;
+
+    // Check for HTML response (often from Nginx/Load Balancer errors)
+    if (responseData is String &&
+        responseData.trim().toLowerCase().startsWith('<')) {
+      return 'Server Error (HTML Response)';
+    }
 
     if (responseData is Map<String, dynamic>) {
       if (responseData['error'] is String) {

@@ -1,15 +1,17 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/features/client/domain/models/driver_announcement.dart';
 import 'package:fura24.kz/features/notifications/data/notifications_repository.dart';
 import 'package:fura24.kz/features/notifications/domain/app_notification.dart';
 
 final notificationsControllerProvider =
-    StateNotifierProvider<NotificationsController, AsyncValue<List<AppNotification>>>(
-  (ref) {
-    final repository = ref.watch(notificationsRepositoryProvider);
-    return NotificationsController(repository: repository);
-  },
-);
+    StateNotifierProvider<
+      NotificationsController,
+      AsyncValue<List<AppNotification>>
+    >((ref) {
+      final repository = ref.watch(notificationsRepositoryProvider);
+      return NotificationsController(repository: repository);
+    });
 
 class NotificationsController
     extends StateNotifier<AsyncValue<List<AppNotification>>> {
@@ -35,16 +37,21 @@ class NotificationsController
     final current = state.valueOrNull ?? const [];
     final unreadIds = current.where((n) => !n.isRead).map((n) => n.id).toList();
     if (unreadIds.isEmpty) return;
-    final updated = current.map((n) => n.isRead ? n : n.copyWith(isRead: true)).toList();
+    final updated = current
+        .map((n) => n.isRead ? n : n.copyWith(isRead: true))
+        .toList();
     state = AsyncData(updated);
     await repository.markAsRead(unreadIds);
   }
 
-  Future<void> addAnnouncementNotification(DriverAnnouncement announcement) async {
+  Future<void> addAnnouncementNotification(
+    DriverAnnouncement announcement,
+  ) async {
     final notification = AppNotification(
       id: 'local-${DateTime.now().millisecondsSinceEpoch}',
-      title: 'Транспорт опубликован',
-      body: '${announcement.departurePoint.cityName} → '
+      title: tr('notifications_page.driver_announcement_title'),
+      body:
+          '${announcement.departurePoint.cityName} → '
           '${announcement.destinationPoint.cityName} · ${announcement.vehicleTypeDisplay}',
       createdAt: DateTime.now(),
       isRead: false,
@@ -65,9 +72,17 @@ class NotificationsController
 
   Future<void> removeByEntity(String entityId) async {
     final current = state.valueOrNull ?? const [];
-    final updated =
-        current.where((n) => (n.entityId ?? '') != entityId).toList();
+    final updated = current
+        .where((n) => (n.entityId ?? '') != entityId)
+        .toList();
     state = AsyncData(updated);
     await repository.removeByEntity(entityId);
+  }
+
+  Future<void> deleteNotification(String id) async {
+    final current = state.valueOrNull ?? const [];
+    final updated = current.where((n) => n.id != id).toList();
+    state = AsyncData(updated);
+    await repository.deleteNotification(id);
   }
 }

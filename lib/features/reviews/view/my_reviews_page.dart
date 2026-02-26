@@ -38,7 +38,7 @@ class MyReviewsPage extends ConsumerWidget {
         title: Padding(
           padding: EdgeInsets.only(left: 12.w),
           child: Text(
-            tr('profile.my_reviews'),
+            tr('driver_profile.reviews.title'),
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
@@ -62,14 +62,14 @@ class MyReviewsPage extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    tr('common.error'),
+                    tr('driver_profile.reviews.error'),
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14.sp, color: Colors.black54),
                   ),
                   SizedBox(height: 12.h),
                   ElevatedButton(
                     onPressed: () => ref.refresh(myReviewsProvider),
-                    child: Text(tr('common.retry')),
+                    child: Text(tr('driver_profile.reviews.retry')),
                   ),
                 ],
               ),
@@ -99,7 +99,7 @@ class _ReviewsList extends StatelessWidget {
             SizedBox(height: 120.h),
             Center(
               child: Text(
-                'У вас пока нет отзывов',
+                tr('driver_profile.reviews.empty'),
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14.sp, color: Colors.black54),
               ),

@@ -1030,7 +1030,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     );
 
     if (selected != null) {
+      if (!mounted) return;
       await context.setLocale(selected.locale);
+      if (!mounted) return;
       setState(() {});
     }
   }

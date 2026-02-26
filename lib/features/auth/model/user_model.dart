@@ -15,6 +15,7 @@ class UserModel {
     this.avatar,
     this.verificationStatus,
     this.verificationRejectionReason,
+    this.tariffPlan,
   });
 
   final int id;
@@ -32,6 +33,7 @@ class UserModel {
   final DateTime? dateJoined;
   final String? verificationStatus;
   final String? verificationRejectionReason;
+  final String? tariffPlan;
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     double parseBalance(dynamic value) {
@@ -53,12 +55,13 @@ class UserModel {
       isSubscriptionActive: json['is_subscription_active'] as bool? ?? false,
       balance: parseBalance(json['balance']),
       referralCode: json['referral_code'] as String?,
-      dateJoined:
-          json['date_joined'] != null
-              ? DateTime.tryParse(json['date_joined'] as String)
-              : null,
+      dateJoined: json['date_joined'] != null
+          ? DateTime.tryParse(json['date_joined'] as String)
+          : null,
       verificationStatus: json['verification_status'] as String?,
-      verificationRejectionReason: json['verification_rejection_reason'] as String?,
+      verificationRejectionReason:
+          json['verification_rejection_reason'] as String?,
+      tariffPlan: json['tariff_plan'] as String?,
     );
   }
 
@@ -89,6 +92,7 @@ class UserModel {
       'date_joined': dateJoined?.toIso8601String(),
       'verification_status': verificationStatus,
       'verification_rejection_reason': verificationRejectionReason,
+      'tariff_plan': tariffPlan,
     };
   }
 

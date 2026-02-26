@@ -1,8 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:fura24.kz/features/client/data/repositories/order_repository.dart';
+import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
+import 'package:fura24.kz/features/client/presentation/pages/my_cargo/widgets/client_order_detail_sheet.dart';
+import 'package:fura24.kz/features/driver/view/widgets/driver_order_detail_sheet.dart';
 import 'package:fura24.kz/features/notifications/domain/app_notification.dart';
 import 'package:fura24.kz/features/notifications/providers/notifications_provider.dart';
 
@@ -32,12 +37,16 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
     ref.listen<AsyncValue<List<AppNotification>>>(
       notificationsControllerProvider,
       (previous, next) {
-        next.whenOrNull(data: (items) {
-          if (!_markedOnOpen && items.isNotEmpty) {
-            _markedOnOpen = true;
-            ref.read(notificationsControllerProvider.notifier).markAllAsRead();
-          }
-        });
+        next.whenOrNull(
+          data: (items) {
+            if (!_markedOnOpen && items.isNotEmpty) {
+              _markedOnOpen = true;
+              ref
+                  .read(notificationsControllerProvider.notifier)
+                  .markAllAsRead();
+            }
+          },
+        );
       },
     );
 
@@ -71,7 +80,7 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
           title: Padding(
             padding: EdgeInsets.only(left: 12.w),
             child: Text(
-              'Уведомления',
+              tr('notifications_page.title'),
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -103,7 +112,32 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                   separatorBuilder: (_, __) => SizedBox(height: 12.h),
                   itemBuilder: (_, index) {
                     final item = items[index];
-                    return _NotificationCard(item: item);
+                    return Dismissible(
+                      key: ValueKey(item.id),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.only(right: 24.w),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: Icon(
+                          Icons.delete_outline,
+                          color: Colors.white,
+                          size: 24.w,
+                        ),
+                      ),
+                      onDismissed: (_) {
+                        ref
+                            .read(notificationsControllerProvider.notifier)
+                            .deleteNotification(item.id);
+                      },
+                      child: _NotificationCard(
+                        item: item,
+                        onTap: () => _handleNotificationTap(item),
+                      ),
+                    );
                   },
                 );
               },
@@ -122,7 +156,7 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24.w),
                       child: Text(
-                        'Не удалось загрузить уведомления. Потяните вниз, чтобы обновить.',
+                        tr('notifications_page.load_error'),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.red[400],
@@ -139,118 +173,173 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
       ),
     );
   }
+
+  Future<void> _handleNotificationTap(AppNotification item) async {
+    debugPrint(
+      '[Notifications] Tapped item: id=${item.id}, entityId=${item.entityId}, type=${item.type}, role=${item.role}',
+    );
+    final entityId = item.entityId;
+    if (entityId == null || entityId.isEmpty) {
+      debugPrint('[Notifications] Entity ID is empty, ignoring.');
+      return;
+    }
+
+    if (item.type == 'order_status_update' || item.type == 'order_bid') {
+      // Check role to decide destination
+      final isDriver = item.role == 'driver';
+
+      if (isDriver) {
+        try {
+          // Show transparent loader or just wait? Better to show loader.
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => const Center(child: CircularProgressIndicator()),
+          );
+
+          final repo = ref.read(orderRepositoryProvider);
+          final detail = await repo.fetchOrderDetail(entityId);
+          if (!mounted) return;
+          Navigator.of(context).pop(); // Dismiss loader
+
+          // Convert to summary and show sheet
+          final summary = OrderSummary.fromDetail(detail);
+          showDriverOrderDetailSheet(context, summary);
+        } catch (e) {
+          if (!mounted) return;
+          Navigator.of(context).pop(); // Dismiss loader if error
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(tr('notifications_page.order_load_error')),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else {
+        // Client - ID is enough
+        showClientOrderDetailSheet(context, entityId);
+      }
+    }
+  }
 }
 
 class _NotificationCard extends StatelessWidget {
-  const _NotificationCard({required this.item});
+  const _NotificationCard({required this.item, required this.onTap});
 
   final AppNotification item;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final accent = _accentColor(item.type);
     final isUnread = !item.isRead;
+    final localizedTitle = _localizedTitle(context, item);
+    final localizedBody = _localizedBody(context, item);
 
-    return Container(
-      padding: EdgeInsets.all(14.w),
-      decoration: BoxDecoration(
-        color: isUnread ? accent.withOpacity(0.04) : Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: isUnread ? accent.withOpacity(0.2) : Colors.grey[200]!,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16.r),
+      child: Container(
+        padding: EdgeInsets.all(14.w),
+        decoration: BoxDecoration(
+          color: isUnread ? accent.withOpacity(0.04) : Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(
+            color: isUnread ? accent.withOpacity(0.2) : Colors.grey[200]!,
           ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 40.w,
-            height: 40.w,
-            decoration: BoxDecoration(
-              color: Color(0xFF2196F3).withOpacity(0.15),
-              borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
             ),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/svg/notifications.svg',
-                width: 20.w,
-                height: 20.h,
-                color: Colors.black,
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 40.w,
+              height: 40.w,
+              decoration: BoxDecoration(
+                color: Color(0xFF2196F3).withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/svg/notifications.svg',
+                  width: 20.w,
+                  height: 20.h,
+                  color: Colors.black,
+                ),
               ),
             ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item.title.isNotEmpty ? item.title : 'Уведомление',
-                        style: TextStyle(
-                          fontSize: 14.5.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 6.w),
-                    Text(
-                      _formatTime(item.createdAt),
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  item.body,
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.black.withOpacity(0.7),
-                    height: 1.35,
-                  ),
-                ),
-                if (isUnread) ...[
-                  SizedBox(height: 8.h),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Row(
                     children: [
-                      Container(
-                        width: 8.w,
-                        height: 8.w,
-                        decoration: BoxDecoration(
-                          color: accent,
-                          shape: BoxShape.circle,
+                      Expanded(
+                        child: Text(
+                          localizedTitle,
+                          style: TextStyle(
+                            fontSize: 14.5.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                       SizedBox(width: 6.w),
                       Text(
-                        'Не прочитано',
+                        _formatTime(item.createdAt),
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: accent,
-                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[600],
                         ),
                       ),
                     ],
                   ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    localizedBody,
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: Colors.black.withOpacity(0.7),
+                      height: 1.35,
+                    ),
+                  ),
+                  if (isUnread) ...[
+                    SizedBox(height: 8.h),
+                    Row(
+                      children: [
+                        Container(
+                          width: 8.w,
+                          height: 8.w,
+                          decoration: BoxDecoration(
+                            color: accent,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
+                        Text(
+                          tr('notifications_page.unread'),
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: accent,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -278,7 +367,7 @@ class _NotificationsEmpty extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Пока уведомлений нет',
+              tr('notifications_page.empty_title'),
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
@@ -287,7 +376,7 @@ class _NotificationsEmpty extends StatelessWidget {
             ),
             SizedBox(height: 6.h),
             Text(
-              'Мы покажем здесь новые события по заказам и перевозкам.',
+              tr('notifications_page.empty_subtitle'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13.sp,
@@ -315,6 +404,40 @@ Color _accentColor(String? type) {
   }
 }
 
+String _localizedTitle(BuildContext context, AppNotification item) {
+  final type = item.type ?? '';
+  final code = _extractOrderCode(item.body) ??
+      _extractOrderCode(item.title) ??
+      item.entityId;
+  final key = 'notifications_page.types.$type.title';
+  final translated = tr(key, args: [code ?? '']).replaceAll('{0}', code ?? '');
+  if (translated != key) return translated;
+  if (item.title.isNotEmpty) {
+    return item.title.replaceAll('{0}', code ?? '');
+  }
+  return tr('notifications_page.default_title');
+}
+
+String _localizedBody(BuildContext context, AppNotification item) {
+  final type = item.type ?? '';
+  final code = _extractOrderCode(item.body) ??
+      _extractOrderCode(item.title) ??
+      item.entityId;
+  final key = 'notifications_page.types.$type.body';
+  final translated = tr(key, args: [code ?? '']).replaceAll('{0}', code ?? '');
+  if (translated != key) return translated;
+  if (item.body.isNotEmpty) {
+    return item.body.replaceAll('{0}', code ?? '');
+  }
+  return tr('notifications_page.default_body');
+}
+
+String? _extractOrderCode(String text) {
+  final match = RegExp(r'(TD-[0-9]+)').firstMatch(text);
+  if (match != null) return match.group(1);
+  return null;
+}
+
 String _formatTime(DateTime time) {
   final now = DateTime.now();
   final difference = now.difference(time);
@@ -323,7 +446,7 @@ String _formatTime(DateTime time) {
     final minutes = time.minute.toString().padLeft(2, '0');
     return '$hours:$minutes';
   }
-  if (difference.inDays == 1) return 'Вчера';
+  if (difference.inDays == 1) return tr('notifications_page.yesterday');
   final day = time.day.toString().padLeft(2, '0');
   final month = time.month.toString().padLeft(2, '0');
   return '$day.$month';

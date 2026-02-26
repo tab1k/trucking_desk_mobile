@@ -488,37 +488,62 @@ class _DriverProfilePageState extends ConsumerState<DriverProfilePage> {
 
   SliverToBoxAdapter _buildTariffsSection() {
     return SliverToBoxAdapter(
-      child: Container(
-        margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        child: _buildSettingsItem(
-          iconPath: 'assets/svg/ticket.svg',
-          title: tr('driver_profile.balance.tariffs'),
-          link: DriverRoutes.tariffs,
-          onTap: () => context.push(DriverRoutes.tariffs),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'driver_profile.verification.active_status'.tr(),
-                style: TextStyle(
-                  color: Colors.green, // Active color
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: _buildSettingsItem(
+              iconPath: 'assets/svg/ticket.svg',
+              title: tr('driver_profile.balance.tariffs'),
+              link: DriverRoutes.tariffs,
+              onTap: () => context.push(DriverRoutes.tariffs),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'driver_profile.verification.active_status'.tr(),
+                    style: TextStyle(
+                      color: Colors.green, // Active color
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 20.w,
+                    color: CupertinoColors.systemGrey3,
+                  ),
+                ],
               ),
-              SizedBox(width: 8.w),
-              Icon(
+            ),
+          ),
+          // Reviews Island
+          Container(
+            margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: _buildSettingsItem(
+              iconPath:
+                  'assets/svg/comment-dots.svg', // Found this in assets/svg
+              title: tr('driver_profile.reviews.title'),
+              link:
+                  '/my_reviews', // Using raw string or define constant if possible
+              onTap: () => context.push('/my_reviews'),
+              trailing: Icon(
                 Icons.chevron_right,
                 size: 20.w,
                 color: CupertinoColors.systemGrey3,
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

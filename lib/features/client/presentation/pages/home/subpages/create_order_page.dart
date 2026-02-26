@@ -106,10 +106,26 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
 
   bool get _isEditing => widget.editingOrder != null;
   bool get _isRepeating => !_isEditing && widget.prefilledOrder != null;
+  bool get _isFormReady {
+    final weight = double.tryParse(_weightController.text.trim());
+    final amount = double.tryParse(_amountController.text.trim());
+    return _departureLocation != null &&
+        _destinationLocation != null &&
+        _cargoNameController.text.trim().isNotEmpty &&
+        weight != null &&
+        weight > 0 &&
+        amount != null &&
+        amount > 0 &&
+        _selectedVehicleType.isNotEmpty &&
+        _selectedLoadingType.isNotEmpty &&
+        _selectedCurrency.isNotEmpty &&
+        _selectedPaymentType.isNotEmpty;
+  }
 
   @override
   void initState() {
     super.initState();
+    _attachFormListeners();
     if (_isEditing) {
       _populateFromDetail(widget.editingOrder!);
     } else if (_isRepeating) {
@@ -421,7 +437,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
             if (!isFirstStep) SizedBox(width: 12.w),
             Expanded(
               child: ElevatedButton(
-                onPressed: isSubmitting
+                onPressed: (isSubmitting || (isLastStep && !_isFormReady))
                     ? null
                     : () async => _handleNext(isLastStep: isLastStep),
                 style: ElevatedButton.styleFrom(
@@ -475,6 +491,47 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
     setState(() {
       _currentStep -= 1;
     });
+  }
+
+  void _attachFormListeners() {
+    for (final controller in [
+      _cargoNameController,
+      _weightController,
+      _amountController,
+      _notesController,
+      _departureAddressController,
+      _destinationAddressController,
+      _lengthController,
+      _widthController,
+      _heightController,
+      _volumeController,
+      _transportDurationController,
+    ]) {
+      controller.addListener(_onFormFieldChanged);
+    }
+  }
+
+  void _detachFormListeners() {
+    for (final controller in [
+      _cargoNameController,
+      _weightController,
+      _amountController,
+      _notesController,
+      _departureAddressController,
+      _destinationAddressController,
+      _lengthController,
+      _widthController,
+      _heightController,
+      _volumeController,
+      _transportDurationController,
+    ]) {
+      controller.removeListener(_onFormFieldChanged);
+    }
+  }
+
+  void _onFormFieldChanged() {
+    if (!mounted) return;
+    setState(() {});
   }
 
   Widget _buildStepContent(BuildContext context, int step) {
@@ -1542,15 +1599,31 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
     if (_requiresDepartureAddress &&
         _departureAddressController.text.trim().isEmpty) {
       _showError(tr('create_order.require_departure_address'));
+      _jumpToStep(0);
       return;
     }
     if (_requiresDestinationAddress &&
         _destinationAddressController.text.trim().isEmpty) {
       _showError(tr('create_order.require_destination_address'));
+      _jumpToStep(0);
       return;
     }
     if (transportTerm != null && (transportTerm < 1 || transportTerm > 7)) {
       _showError(tr('create_order.errors.transport_term'));
+      return;
+    }
+
+    // Ensure required addresses for urban routes
+    if (_requiresDepartureAddress &&
+        _departureAddressController.text.trim().isEmpty) {
+      _showError(tr('create_order.require_departure_address'));
+      _jumpToStep(0);
+      return;
+    }
+    if (_requiresDestinationAddress &&
+        _destinationAddressController.text.trim().isEmpty) {
+      _showError(tr('create_order.require_destination_address'));
+      _jumpToStep(0);
       return;
     }
 
@@ -1646,6 +1719,11 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
     }
   }
 
+  void _jumpToStep(int step) {
+    if (step < 0 || step >= _formKeys.length) return;
+    setState(() => _currentStep = step);
+  }
+
   double? _parseDouble(String value) {
     if (value.trim().isEmpty) return null;
     return double.tryParse(value.trim());
@@ -1665,6 +1743,7 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
 
   @override
   void dispose() {
+    _detachFormListeners();
     _departurePointController.dispose();
     _departureAddressController.dispose();
     _destinationPointController.dispose();

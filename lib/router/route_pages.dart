@@ -13,6 +13,7 @@ import 'package:fura24.kz/features/driver/view/driver_verification_page.dart';
 import 'package:fura24.kz/features/subscriptions/presentation/view/tariffs_page.dart';
 import 'package:fura24.kz/features/driver/view/business/business_services_page.dart';
 import 'package:fura24.kz/features/driver/view/business/become_partner_page.dart';
+import 'package:fura24.kz/features/reviews/view/my_reviews_page.dart';
 import 'package:fura24.kz/router/routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -79,5 +80,9 @@ final List<GoRoute> appRoutes = [
   GoRoute(
     path: ProfileRoutes.settings,
     builder: (context, state) => const SettingsPage(),
+  ),
+  GoRoute(
+    path: '/my_reviews',
+    builder: (context, state) => const MyReviewsPage(),
   ),
 ];

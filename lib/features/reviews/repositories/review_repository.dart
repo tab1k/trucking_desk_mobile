@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/core/exceptions/api_exception.dart';
 import 'package:fura24.kz/core/network/dio_provider.dart';
 import 'package:fura24.kz/features/reviews/domain/models/review.dart';
+import 'package:fura24.kz/features/reviews/domain/models/pending_review.dart';
 
 final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
   final dio = ref.watch(dioProvider);
@@ -23,7 +24,7 @@ class ReviewRepository {
   }) async {
     try {
       await _dio.post(
-        'reviews/create/',
+        'reviews/api/create/',
         data: {'order_id': orderId, 'rating': rating, 'comment': comment ?? ''},
       );
     } on DioException catch (e) {
@@ -37,7 +38,7 @@ class ReviewRepository {
 
   Future<List<Review>> getMyReviews() async {
     try {
-      final response = await _dio.get('reviews/my/');
+      final response = await _dio.get('reviews/api/my/');
       final data = response.data;
       if (data is List) {
         return data.map((json) => Review.fromJson(json)).toList();
@@ -86,6 +87,22 @@ class ReviewRepository {
         return 'Нет соединения с сервером';
       default:
         return 'Произошла неизвестная ошибка';
+    }
+  }
+
+  Future<PendingReview?> getPendingReview() async {
+    try {
+      final response = await _dio.get('reviews/api/pending/');
+      if (response.statusCode == 204) return null; // No content
+
+      final data = response.data;
+      if (data is Map<String, dynamic> && data.isNotEmpty) {
+        return PendingReview.fromJson(data);
+      }
+      return null;
+    } catch (_) {
+      // Ignore errors, just don't show popup
+      return null;
     }
   }
 }

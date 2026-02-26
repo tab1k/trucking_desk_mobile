@@ -1,1196 +1,1340 @@
 {
   "app_title": "Fura24.kz",
-  "splash": {
-    "subtitle": "Ваши грузоперевозки"
-  },
-  "welcome": {
-    "subtitle": "Ваш логистический партнер",
-    "title": "Добро пожаловать!",
-    "body": "Создавайте объявления, следите за статусами и управляйте перевозками в одном приложении.",
-    "login": "Войти",
-    "register": "Регистрация"
-  },
   "auth": {
-    "welcome_back": "Добро пожаловать\nобратно!",
+    "accept_terms": "Я принимаю условия использования и политику конфиденциальности",
+    "already_have_account": "Уже есть аккаунт? ",
+    "confirm_btn": "Подтвердить",
+    "confirm_terms": "Подтвердите согласие с условиями",
+    "country_not_found": "Ничего не найдено",
+    "country_search_hint": "Страна или код",
+    "create_account": "Создайте аккаунт",
+    "email_required": "Электронная почта *",
+    "enter_correct_number": "Введите корректный номер",
     "enter_details": "Введите свои данные, чтобы продолжить работу в Fura24.",
+    "forgot_password": "Забыли пароль?",
+    "incorrect_email": "Некорректный email",
+    "login_btn": "Войти",
+    "login_hint": "Телефон или email",
+    "login_text": "Войти",
+    "max_10_chars": "Макс. 10 символов",
+    "max_254_chars": "Макс. 254 символа",
+    "min_6_chars": "Минимум 6 символов",
+    "no_account": "Ещё нет аккаунта? ",
+    "password_hint": "Пароль",
+    "password_required": "Пароль *",
+    "passwords_do_not_match": "Пароли не совпадают",
+    "phone_number_required": "Номер телефона *",
+    "referral_code_optional": "Реферальный код (необязательно)",
+    "register_btn": "Зарегистрироваться",
+    "register_link": "Зарегистрироваться",
+    "register_to_start": "Зарегистрируйтесь, чтобы начать пользоваться Fura24.",
+    "repeat_password_required": "Повторите пароль *",
+    "required_field": "Обязательное поле",
     "role_client": "Клиент",
     "role_driver": "Водитель",
-    "login_hint": "Телефон или email",
-    "validation_enter_login": "Введите телефон или email",
-    "validation_correct_phone": "Введите корректный телефон",
-    "validation_correct_login": "Введите корректный телефон или email",
-    "password_hint": "Пароль",
-    "validation_enter_password": "Введите пароль",
-    "forgot_password": "Забыли пароль?",
-    "login_btn": "Войти",
-    "no_account": "Ещё нет аккаунта? ",
-    "register_link": "Зарегистрироваться",
-    "create_account": "Создайте аккаунт",
-    "register_to_start": "Зарегистрируйтесь, чтобы начать пользоваться Fura24.",
-    "phone_number_required": "Номер телефона *",
-    "required_field": "Обязательное поле",
-    "enter_correct_number": "Введите корректный номер",
-    "email_required": "Электронная почта *",
-    "incorrect_email": "Некорректный email",
-    "max_254_chars": "Макс. 254 символа",
-    "password_required": "Пароль *",
-    "min_6_chars": "Минимум 6 символов",
-    "repeat_password_required": "Повторите пароль *",
-    "passwords_do_not_match": "Пароли не совпадают",
-    "referral_code_optional": "Реферальный код (необязательно)",
-    "max_10_chars": "Макс. 10 символов",
-    "accept_terms": "Я принимаю условия использования и политику конфиденциальности",
-    "confirm_terms": "Подтвердите согласие с условиями",
-    "register_btn": "Зарегистрироваться",
-    "already_have_account": "Уже есть аккаунт? ",
-    "login_text": "Войти",
-    "verify_phone_title": "Подтверждение номера",
-    "sms_sent_to": "Мы отправили SMS с кодом на номер\n{}",
-    "confirm_btn": "Подтвердить",
     "select_country_code": "Выбор кода страны",
-    "country_search_hint": "Страна или код",
-    "country_not_found": "Ничего не найдено"
-  },
-  "notifications": {
-    "channel_name": "Fura24 уведомления",
-    "channel_description": "Канал для push-уведомлений Fura24.kz",
-    "default_title": "Fura24.kz",
-    "default_body": "Новое уведомление"
-  },
-  "common": {
-    "retry": "Повторить",
-    "back": "Назад",
-    "next": "Продолжить",
-    "reset": "Сбросить",
-    "cancel": "Отмена",
-    "error": "Ошибка",
-    "select": "Выбрать",
-    "confirm": "Подтвердить",
-    "months_short": {
-      "jan": "янв",
-      "feb": "фев",
-      "mar": "мар",
-      "apr": "апр",
-      "may": "май",
-      "jun": "июн",
-      "jul": "июл",
-      "aug": "авг",
-      "sep": "сен",
-      "oct": "окт",
-      "nov": "ноя",
-      "dec": "дек"
-    }
-  },
-  "wallet": {
-    "title": "Кошелек",
-    "balance": {
-      "available": "Доступно"
-    },
-    "badge": {
-      "unlimited": "Без ограничений",
-      "bonus": "Пополнение бонусами"
-    },
-    "action": {
-      "top_up": "Пополнить",
-      "soon": "Скоро доступно"
-    },
-    "history": {
-      "title": "История",
-      "placeholder": {
-        "title": "История транзакций появится скоро",
-        "subtitle": "Мы подготовим детализацию пополнений и списаний в ближайшем обновлении."
-      }
-    },
-    "error": {
-      "load": "Не удалось загрузить кошелек"
-    }
-  },
-  "settings": {
-    "title": "Настройки",
-    "language": {
-      "title": "Язык"
-    }
-  },
-  "profile": {
-    "title": "Профиль",
-    "unavailable": "Профиль пользователя недоступен",
-    "my_reviews": "Мои отзывы",
-    "user_placeholder": "Пользователь",
-    "contact": {
-      "title": "Контактная информация",
-      "phone": "Телефон",
-      "email": "Email",
-      "empty": "Не указан"
-    },
-    "delete_account": "Удалить аккаунт",
-    "delete": {
-      "title": "Удалить аккаунт",
-      "prompt": "Введите пароль, чтобы удалить аккаунт. Действие необратимо.",
-      "password": "Пароль",
-      "cancel": "Отмена",
-      "confirm": "Удалить",
-      "success": "Аккаунт удален",
-      "error_empty": "Введите пароль",
-      "error_failed": "Не удалось удалить аккаунт"
-    },
-    "role": {
-      "unknown": "Роль не указана",
-      "sender": "Отправитель",
-      "driver": "Водитель"
-    },
-    "error": {
-      "title": "Ошибка загрузки"
-    }
-  },
-  "tariffs": {
-    "title": "Тарифы",
-    "empty": "Нет доступных тарифов",
-    "error_load": "Ошибка загрузки: {}",
-    "active": "Активен",
-    "price_month": "{} / месяц",
-    "btn_connected": "Уже подключен",
-    "btn_connect": "Подключить",
-    "dialog": {
-      "title": "Подключение тарифа",
-      "body_prefix": "Вы собираетесь подключить тариф ",
-      "body_middle": " за ",
-      "success": "Тариф успешно подключен!",
-      "error_default": "Ошибка при подключении"
-    }
-  },
-  "driver_cargo_filters": {
-    "title": "Фильтры",
-    "reset": "Сбросить",
-    "loading_city": "Город погрузки",
-    "unloading_city": "Город разгрузки",
-    "select_city": "Выберите город",
-    "vehicle_type": "Тип транспорта",
-    "any_vehicle": "Любой транспорт",
-    "transport_date": "Дата перевозки",
-    "any_date": "Любая дата",
-    "cost_from": "Стоимость от",
-    "cost_to": "Стоимость до",
-    "only_with_call": "Только с доступным звонком",
-    "only_with_call_subtitle": "Показывать только заказы, по которым вы сможете позвонить отправителю.",
-    "show_announcements": "Показать объявления",
-    "save_route": "Сохранить маршрут",
-    "route_saved": "Маршрут сохранен в закладки",
-    "save_error": "Ошибка сохранения: {}"
-  },
-  "driver_order_detail": {
-    "cargo_params": "Параметры груза",
-    "weight": "Вес",
-    "volume": "Объем",
-    "vehicle_type": "Тип ТС",
-    "loading_type": "Тип погрузки",
-    "cost_and_terms": "Стоимость и сроки",
-    "amount": "Сумма",
-    "payment": "Оплата",
-    "status": "Статус",
-    "departure_date": "Дата отправки",
-    "sender_comment": "Комментарий отправителя",
-    "status_pending": "Ожидание",
-    "status_in_transit": "В пути",
-    "status_completed": "Завершен",
-    "status_cancelled": "Отменен"
-  },
-  "saved_routes": {
-    "title": "Сохраненные маршруты",
-    "empty": "У вас пока нет сохраненных маршрутов",
-    "error_loading": "Ошибка загрузки"
-  },
-  "driver_utils": {
-    "verification_needed_title": "Нужна верификация",
-    "verification_needed_body": "Чтобы откликаться на заявки и публиковать транспорт, подтвердите документы водителя. Это поможет отправителям доверять вам.",
-    "authorize_as_driver": "Авторизуйтесь как водитель, чтобы продолжить",
-    "drivers_only": "Доступно только для водителей",
-    "later": "Позже",
-    "verify": "Пройти",
-    "removed_favorite": "Удалено из избранного",
-    "added_favorite": "Добавлено в избранное",
-    "update_favorite_error": "Не удалось обновить избранное",
-    "contacts_hidden": "Отправитель не раскрыл контакты",
-    "phone_unavailable": "Телефон отправителя недоступен",
-    "dialer_error": "Не удалось открыть звонилку",
-    "call_error": "Не удалось позвонить отправителю",
-    "whatsapp_error": "Не удалось открыть WhatsApp"
-  },
-  "repository": {
-    "profile": {
-      "fetch_empty": "Пустой ответ профиля",
-      "update_empty": "Пустой ответ при обновлении профиля"
-    },
-    "driver_announcement": {
-      "empty_response": "Пустой ответ от сервера",
-      "create_error": "Не удалось создать объявление",
-      "save_error": "Не удалось сохранить объявление",
-      "delete_error": "Не удалось удалить объявление",
-      "load_error": "Не удалось загрузить объявления"
-    },
-    "order": {
-      "photos_minimum": "Нужно приложить минимум 2 фото груза",
-      "create_error": "Не удалось создать заявку. Попробуйте позже.",
-      "save_error": "Не удалось сохранить изменения. Попробуйте позже.",
-      "delete_error": "Не удалось удалить заказ. Попробуйте позже.",
-      "empty_response": "Пустой ответ от сервера",
-      "load_locations_error": "Не удалось загрузить координаты. Попробуйте позже.",
-      "send_locations_error": "Не удалось отправить координаты",
-      "send_bid_error": "Не удалось отправить отклик. Попробуйте позже.",
-      "load_bids_error": "Не удалось загрузить отклики. Попробуйте позже.",
-      "update_error": "Не удалось обновить заказ. Попробуйте позже.",
-      "process_bid_error": "Не удалось обработать отклик. Попробуйте позже."
-    }
-  },
-  "shared": {
-    "no_connection": {
-      "server_error_title": "Сервер временно недоступен",
-      "internet_error_title": "Нет соединения с интернетом",
-      "server_error_body": "Мы уже работаем над устранением проблемы. Пожалуйста, попробуйте позже.",
-      "internet_error_body": "Проверьте настройки сети или подключитесь к Wi-Fi и попробуйте снова."
-    },
-    "common": {
-      "ok": "Понятно",
-      "required_field": "Это поле обязательно"
-    },
-    "address": {
-      "hint_city": "Адрес в городе {}",
-      "hint_default": "Улица, дом"
-    }
+    "sms_sent_to": "Мы отправили SMS с кодом на номер\n{}",
+    "validation_correct_login": "Введите корректный телефон или email",
+    "validation_correct_phone": "Введите корректный телефон",
+    "validation_enter_login": "Введите телефон или email",
+    "validation_enter_password": "Введите пароль",
+    "verify_phone_title": "Подтверждение номера",
+    "welcome_back": "Добро пожаловать\nобратно!"
   },
   "auth_errors": {
+    "connection_error": "Нет соединения с сервером",
+    "delete_account_failed": "Не удалось удалить аккаунт. Попробуйте снова.",
+    "empty_response": "Пустой ответ от сервера",
+    "request_failed": "Не удалось выполнить запрос. Попробуйте позже.",
+    "reset_password_failed": "Не удалось сбросить пароль. Попробуйте снова.",
     "send_code_failed": "Не удалось отправить код подтверждения",
     "send_reset_email_failed": "Не удалось отправить письмо для сброса пароля",
-    "reset_password_failed": "Не удалось сбросить пароль. Попробуйте снова.",
-    "empty_response": "Пустой ответ от сервера",
-    "token_refresh_failed": "Сервер не вернул новый токен доступа",
-    "session_update_failed": "Не удалось обновить сессию. Попробуйте позже.",
-    "request_failed": "Не удалось выполнить запрос. Попробуйте позже.",
-    "delete_account_failed": "Не удалось удалить аккаунт. Попробуйте снова.",
-    "timeout": "Превышено время ожидания ответа сервера",
     "server_error": "Сервер вернул ошибку",
-    "connection_error": "Нет соединения с сервером",
+    "session_update_failed": "Не удалось обновить сессию. Попробуйте позже.",
+    "timeout": "Превышено время ожидания ответа сервера",
+    "token_refresh_failed": "Сервер не вернул новый токен доступа",
     "unknown_error": "Произошла неизвестная ошибка"
   },
-  "profile_edit": {
-    "title": "Редактировать профиль",
-    "first_name": "Имя",
-    "last_name": "Фамилия",
-    "email": "Email",
-    "phone": "Телефон",
-    "edit": "Изменить",
-    "change_photo": "Выбрать фото",
-    "save": "Сохранить",
-    "no_changes": "Изменений нет",
-    "success": "Профиль обновлен",
-    "error": "Не удалось обновить профиль",
-    "first_name_required": "Введите имя",
-    "phone_required": "Введите телефон",
-    "email_invalid": "Некорректный email"
+  "calendar": {
+    "clear": "Очистить",
+    "confirm": "Готово",
+    "hint_range": "Нажмите на даты, чтобы выбрать период.",
+    "hint_single": "Нажмите на дату, чтобы выбрать.",
+    "select_date": "Выберите дату",
+    "select_range": "Выберите период"
   },
-  "profile_tab": {
-    "title": "Профиль",
-    "error": "Не удалось загрузить профиль",
-    "balance_title": "Общий баланс",
-    "top_up": "Пополнить",
-    "transfer": "Перевести",
-    "referral": {
-      "title": "Мой реферальный код",
-      "copy": "Скопировать",
-      "unavailable": "Реферальный код недоступен",
-      "copied": "Код скопирован"
+  "cargo_types": {
+    "loading": {
+      "ANY": "Любая",
+      "BACK": "Задняя",
+      "BACK_SIDE": "Зад + бок",
+      "BACK_SIDE_TOP": "Зад + бок + верх",
+      "BACK_TOP": "Зад + верх",
+      "SIDE": "Боковая",
+      "SIDE_TOP": "Бок + верх",
+      "TOP": "Верхняя"
     },
-    "logout": "Выйти из аккаунта",
-    "logout_title": "Выход из аккаунта",
-    "logout_question": "Вы уверены, что хотите выйти из аккаунта?",
-    "logout_error": "Ошибка при выходе: {0}",
-    "app_version": "Версия приложения",
-    "settings": {
-      "profile": "Профиль",
-      "wallet": "Кошелек",
-      "settings": "Настройки",
-      "help": "Помощь",
-      "terms": "Условия использования",
-      "privacy": "Политика конфиденциальности",
-      "user_agreement": "Пользовательское соглашение"
-    },
-    "support": {
-      "help_body": "Нужна помощь? Напишите нам любым способом ниже.",
-      "terms_body": "Вопросы по условиям — напишите в поддержку.",
-      "privacy_body": "Скоро добавим ссылку на политику конфиденциальности.",
-      "close": "ОК"
-    },
-    "history": "История",
-    "socials_title": "Мы в соцсетях"
-  },
-  "favorites": {
-    "title": "Избранное",
-    "empty": "Вы еще не добавили избранные объявления."
-  },
-  "my_cargo": {
-    "title": "Мои объявления",
-    "filters": {
-      "all": "Все",
-      "active": "Активные",
-      "completed": "Завершенные",
-      "cancelled": "Отмененные",
-      "empty": "Заказы не найдены по выбранному фильтру."
-    },
-    "bids": {
-      "title": "Отклики",
-      "order_number": "Заказ TD-{}",
-      "empty": "Откликов пока нет.",
-      "empty_subtitle": "Как только водители откликнутся, вы увидите их здесь.",
-      "accepted": "Вы приняли отклик",
-      "declined": "Отклик отклонён",
-      "error_process": "Не удалось обработать отклик",
-      "offer": "Предложение",
-      "comment": "Комментарий",
-      "status": {
-        "new": "Новый",
-        "confirmed": "Подтвержден",
-        "declined": "Отклонен",
-        "cancelled": "Отменен",
-        "driver_declined": "Водитель отказался"
-      },
-      "actions": {
-        "decline": "Отклонить",
-        "accept": "Принять",
-        "processing": "Обработка..."
-      },
-      "offer_amount": "Сумма отклика: {}",
-      "date_unknown": "Дата неизвестна"
-    },
-    "edit_title": "Редактировать заказ",
-    "repeat_title": "Повторить заказ",
-    "error": {
-      "load": "Не удалось загрузить заказы",
-      "load_single": "Не удалось загрузить заказ",
-      "load_detail": "Не удалось загрузить детали заказа"
+    "payment": {
+      "CARD": "На карту",
+      "CASH": "Наличными",
+      "NON_CASH": "Безналичный расчет"
     }
   },
-  "payment_types": {
-    "cashless_vat": "Безнал с НДС",
-    "cashless_no_vat": "Безнал без НДС",
-    "cash": "Наличные",
-    "card": "На карту",
-    "prepayment": "Предоплата",
-    "agreement": "По договорённости"
-  },
-  "vehicle_types": {
-    "tent": "Тентованый",
-    "ref": "Рефрижератор",
-    "isotherm": "Изотерм",
-    "any": "Любой транспорт",
-    "covered": "Крытая",
-    "car_carrier": "Автовоз",
-    "aerial_platform": "Автовышка",
-    "car_transporter": "Автотранспортер",
-    "bulk": "Балковоз",
-    "fuel_tanker": "Бензовоз",
-    "bitumen_tanker": "Битумовоз",
-    "flatbed": "Бортовой",
-    "shalanda": "Шаланда",
-    "trailer": "Прицеп",
-    "bus": "Автобус",
-    "semi_trailer": "Полуприцеп",
-    "container_carrier": "Контейнеровоз",
-    "hyundai_porter": "Хендай Портер",
-    "fish_truck": "Рыбовод",
-    "chemical_tank": "Цистерна химическая",
-    "platform": "Платформа",
-    "sewage": "Ассенизатор",
-    "excavator": "Экскаватор",
-    "glass": "Стекловоз",
-    "incubator": "Инкубатор",
-    "roll_transporter": "Рулоновоз",
-    "gazelle_passenger": "Газель пассажирская",
-    "gazelle_flatbed": "Газель бортовая",
-    "cattle_truck": "Скотовоз",
-    "garbage_truck": "Мусоровоз",
-    "mega_truck": "Мега фура",
-    "diplomatic": "Дипломатический груз",
-    "flour_truck": "Муковоз",
-    "open": "Открытая",
-    "concrete_mixer": "Бетоновоз",
-    "gas": "Газовоз",
-    "grain": "Зерновоз",
-    "container_platform": "Конт. площадка",
-    "feed": "Кормовоз",
-    "crane": "Кран",
-    "log_truck": "Лесовоз",
-    "manipulator": "Манипулятор",
-    "minibus": "Микроавтобус",
-    "chip_truck": "Щеповоз",
-    "open_container": "Открытый контейнер",
-    "panel_truck": "Панелевоз",
-    "loader": "Погрузчик",
-    "dump_truck": "Самосвал",
-    "tractor": "Седельный тягач",
-    "trailer_platform": "Трал",
-    "pipe_truck": "Трубовоз",
-    "van": "Цельнометалл",
-    "cement_truck": "Цементовоз",
-    "food_tank": "Цистерна пищевая",
-    "refrigerator": "Рефрижератор"
-  },
-  "loading_types": {
-    "top": "Верхняя погрузка",
-    "side": "Боковая погрузка",
-    "back": "Задняя погрузка",
-    "any_way": "Любой способ",
-    "any_type": "Любой тип погрузки"
-  },
-  "dimensions": {
-    "length": "{} м длина",
-    "width": "{} м ширина",
-    "height": "{} м высота",
-    "not_specified": "Не указаны"
-  },
   "common": {
+    "back": "Назад",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
     "date_agreement": "По договорённости",
-    "not_specified": "Не указано"
+    "error": "Ошибка",
+    "months_short": {
+      "apr": "апр",
+      "aug": "авг",
+      "dec": "дек",
+      "feb": "фев",
+      "jan": "янв",
+      "jul": "июл",
+      "jun": "июн",
+      "mar": "мар",
+      "may": "май",
+      "nov": "ноя",
+      "oct": "окт",
+      "sep": "сен"
+    },
+    "next": "Продолжить",
+    "not_specified": "Не указано",
+    "reset": "Сбросить",
+    "retry": "Повторить",
+    "select": "Выбрать"
   },
   "cost_estimate": {
-    "title": "Расчет стоимости",
-    "loading_point": "Пункт загрузки",
-    "unloading_point": "Пункт разгрузки",
-    "picker_loading": "Выбор пункта загрузки",
-    "picker_unloading": "Выбор пункта разгрузки",
     "button_calculate": "Рассчитать маршрут",
     "button_loading": "Идет расчет…",
-    "prompt": "Нажмите \"Рассчитать маршрут\", чтобы получить расстояние и время",
-    "error_select_points": "Выберите точки загрузки и разгрузки",
-    "error_no_coords": "У выбранных точек нет координат",
-    "error_request_failed": "Не удалось получить маршрут: {0}",
+    "card_subtitle": "Приблизительно оцените стоимость перевозки вашего груза.",
+    "card_title": "Рассчитать примерную стоимость",
+    "distance": "Расстояние: {} км",
+    "distance_short": "Дистанция",
+    "duration": "Время в пути: {}",
+    "duration_short": "Время",
     "error_invalid_consumption": "Введите корректный расход топлива",
     "error_invalid_price": "Введите корректную цену за литр",
-    "distance": "Расстояние: {} км",
-    "duration": "Время в пути: {}",
-    "card_title": "Рассчитать примерную стоимость",
-    "card_subtitle": "Приблизительно оцените стоимость перевозки вашего груза.",
+    "error_no_coords": "У выбранных точек нет координат",
+    "error_request_failed": "Не удалось получить маршрут: {0}",
+    "error_select_points": "Выберите точки загрузки и разгрузки",
+    "formula_hint": "s — км, x — л/100 км, y — цена за литр",
+    "from": "Откуда",
     "fuel_consumption": "Расход топлива (л/100 км)",
     "fuel_consumption_suffix": "л / 100 км",
     "fuel_price": "Цена за литр топлива",
     "fuel_price_suffix": "₸/л",
+    "loading_point": "Пункт загрузки",
+    "picker_loading": "Выбор пункта загрузки",
+    "picker_unloading": "Выбор пункта разгрузки",
+    "prompt": "Нажмите \"Рассчитать маршрут\", чтобы получить расстояние и время",
     "prompt_fuel": "Заполните расход топлива и цену за литр, чтобы увидеть стоимость.",
-    "result_title": "Предварительная оценка",
-    "from": "Откуда",
-    "to": "Куда",
-    "distance_short": "Дистанция",
-    "duration_short": "Время",
     "result_consumption": "Расход",
-    "result_price": "Цена топлива",
     "result_cost": "Примерная стоимость",
     "result_cost_value": "{0} ₸",
-    "formula_hint": "s — км, x — л/100 км, y — цена за литр"
-  },
-  "nav": {
-    "order": "Заказ",
-    "favorites": "Избранное",
-    "cargo": "Объявления",
-    "profile": "Профиль"
-  },
-  "driver_contact": {
-    "title": "Связь с водителем",
-    "call": "Позвонить",
-    "whatsapp": "WhatsApp",
-    "call_error": "Не удалось открыть приложение для звонков",
-    "whatsapp_error": "Не удалось открыть WhatsApp"
+    "result_price": "Цена топлива",
+    "result_title": "Предварительная оценка",
+    "title": "Расчет стоимости",
+    "to": "Куда",
+    "unloading_point": "Пункт разгрузки"
   },
   "create_order": {
-    "step_counter": "Шаг {} из {}",
-    "title": "Добавить груз",
-    "edit_title": "Изменение объявления",
-    "subtitle": "Заполним данные по шагам — так проще ничего не пропустить.",
+    "creating": "Создание…",
+    "currency": {
+      "eur": "Евро (€)",
+      "kgs": "Сомы (c)",
+      "kzt": "₸",
+      "rub": "Рубли (₽)",
+      "usd": "Доллары ($)"
+    },
     "default_error": "Не удалось создать заявку",
-    "location": {
-      "pick_departure": "Выбор пункта загрузки",
-      "pick_destination": "Выбор пункта разгрузки"
+    "edit_title": "Изменение объявления",
+    "errors": {
+      "amount": "Введите сумму заказа.",
+      "cargo_name": "Введите название груза.",
+      "photos": "Добавьте минимум 2 фото груза.",
+      "pick_departure": "Выберите пункт загрузки.",
+      "pick_destination": "Выберите пункт разгрузки.",
+      "transport_term": "Срок перевозки должен быть от 1 до 7 дней.",
+      "weight": "Введите вес груза в тоннах."
     },
-    "steps": {
-      "route": "Маршрут",
-      "transport": "Транспорт",
-      "payment": "Сроки и оплата",
-      "cargo": "Груз и примечание",
-      "route_desc": "Уточните точки погрузки и разгрузки.",
-      "transport_desc": "Расскажите о машине и параметрах перевозки.",
-      "payment_desc": "Выберите дату и условия оплаты.",
-      "cargo_desc": "Проверьте детали и оставьте комментарий."
-    },
-    "route_points": {
-      "title": "Точки маршрута",
-      "optional": "необязательно",
-      "add": "Добавить",
-      "limit": "Максимум",
-      "pick": "Выберите точку маршрута"
+    "errors_extra": {
+      "pick_photos": "Не удалось выбрать фотографии"
     },
     "filters": {
       "loading": {
         "any": "Любой тип погрузки",
         "back": "Задняя",
-        "top": "Верхняя",
+        "back_side_top": "Зад + бок + верх",
         "side": "Боковая",
-        "back_side_top": "Зад + бок + верх"
+        "top": "Верхняя"
       }
     },
-    "creating": "Создание…",
-    "publish": "Создать",
-    "errors": {
-      "pick_departure": "Выберите пункт загрузки.",
-      "pick_destination": "Выберите пункт разгрузки.",
-      "weight": "Введите вес груза в тоннах.",
-      "amount": "Введите сумму заказа.",
-      "cargo_name": "Введите название груза.",
-      "photos": "Добавьте минимум 2 фото груза.",
-      "transport_term": "Срок перевозки должен быть от 1 до 7 дней."
-    },
-    "same_city_note": "Пункты находятся в одном городе и выбраны из справочника без точного указания на карте, поэтому добавьте адреса загрузки и разгрузки, чтобы водителю точно знать, где забрать и куда везти груз.",
-    "require_departure_address": "Укажите адрес загрузки по городу.",
-    "require_destination_address": "Укажите адрес разгрузки по городу.",
     "form": {
-      "route": {
-        "departure_point": "Пункт загрузки",
-        "destination_point": "Пункт разгрузки",
-        "departure_address": "Адрес загрузки в городе",
-        "destination_address": "Адрес разгрузки в городе",
-        "waypoint_address": "Адрес в промежуточной точке",
-        "catalog_hint": "Города выбраны из каталога. Чтобы водителю было легче, укажите точный адрес."
-      },
-      "transport": {
-        "vehicle_type": "Тип транспорта",
-        "loading_type": "Тип погрузки",
-        "weight": "Вес (тонны)",
-        "volume": "Объём (м³)",
-        "length": "Длина (м)",
-        "width": "Ширина (м)",
-        "height": "Высота (м)"
-      },
-      "payment": {
-        "transport_date": "Дата перевозки",
-        "transport_term": "Срок перевозки, дней (1–7)",
-        "payment_type": "Вид оплаты"
-      },
+      "add_photo": "Добавить",
       "cargo": {
+        "additional": "Дополнительно",
+        "amount": "Сумма",
+        "contact_visibility_subtitle": "Если выключить, водители увидят только кнопку отклика. Номер для звонков скрыт.",
+        "contact_visibility_title": "Показывать номер водителям",
+        "currency": "Валюта",
         "details_title": "Детали груза",
         "name": "Название груза",
-        "amount": "Сумма",
-        "currency": "Валюта",
-        "photos": "Фото груза",
-        "photos_hint": "Необязательно. Поддерживается JPG, PNG, HEIC.",
-        "additional": "Дополнительно",
         "note": "Примечание",
-        "contact_visibility_title": "Показывать номер водителям",
-        "contact_visibility_subtitle": "Если выключить, водители увидят только кнопку отклика. Номер для звонков скрыт."
+        "photos": "Фото груза",
+        "photos_hint": "Необязательно. Поддерживается JPG, PNG, HEIC."
+      },
+      "payment": {
+        "payment_type": "Вид оплаты",
+        "transport_date": "Дата перевозки",
+        "transport_term": "Срок перевозки, дней (1–7)"
+      },
+      "route": {
+        "catalog_hint": "Города выбраны из каталога. Чтобы водителю было легче, укажите точный адрес.",
+        "departure_address": "Адрес загрузки в городе",
+        "departure_point": "Пункт загрузки",
+        "destination_address": "Адрес разгрузки в городе",
+        "destination_point": "Пункт разгрузки",
+        "waypoint_address": "Адрес в промежуточной точке"
       },
       "summary": {
-        "title": "Краткий итог",
-        "route": "Маршрут",
-        "transport": "Транспорт",
         "cargo": "Груз",
+        "note": "Примечание",
         "payment": "Оплата",
-        "note": "Примечание"
+        "route": "Маршрут",
+        "title": "Краткий итог",
+        "transport": "Транспорт"
+      },
+      "transport": {
+        "height": "Высота (м)",
+        "length": "Длина (м)",
+        "loading_type": "Тип погрузки",
+        "vehicle_type": "Тип транспорта",
+        "volume": "Объём (м³)",
+        "weight": "Вес (тонны)",
+        "width": "Ширина (м)"
       },
       "validation": {
-        "select_city": "Выберите город",
-        "required": "Обязательное поле"
-      },
-      "add_photo": "Добавить"
+        "required": "Обязательное поле",
+        "select_city": "Выберите город"
+      }
+    },
+    "location": {
+      "pick_departure": "Выбор пункта загрузки",
+      "pick_destination": "Выбор пункта разгрузки"
     },
     "payment_type": {
+      "card": "На карту",
       "cash": "Наличными",
-      "non_cash": "Безналичный расчёт",
-      "card": "На карту"
+      "non_cash": "Безналичный расчёт"
     },
-    "currency": {
-      "kzt": "₸",
-      "usd": "Доллары ($)",
-      "eur": "Евро (€)",
-      "rub": "Рубли (₽)",
-      "kgs": "Сомы (c)"
+    "publish": "Создать",
+    "require_departure_address": "Укажите адрес загрузки по городу.",
+    "require_destination_address": "Укажите адрес разгрузки по городу.",
+    "route_points": {
+      "add": "Добавить",
+      "limit": "Максимум",
+      "optional": "необязательно",
+      "pick": "Выберите точку маршрута",
+      "title": "Точки маршрута"
     },
+    "same_city_note": "Пункты находятся в одном городе и выбраны из справочника без точного указания на карте, поэтому добавьте адреса загрузки и разгрузки, чтобы водителю точно знать, где забрать и куда везти груз.",
+    "step_counter": "Шаг {} из {}",
+    "steps": {
+      "cargo": "Груз и примечание",
+      "cargo_desc": "Проверьте детали и оставьте комментарий.",
+      "payment": "Сроки и оплата",
+      "payment_desc": "Выберите дату и условия оплаты.",
+      "route": "Маршрут",
+      "route_desc": "Уточните точки погрузки и разгрузки.",
+      "transport": "Транспорт",
+      "transport_desc": "Расскажите о машине и параметрах перевозки."
+    },
+    "subtitle": "Заполним данные по шагам — так проще ничего не пропустить.",
     "success": {
       "created": "Объявление создано",
       "updated": "Изменения сохранены"
     },
-    "errors_extra": {
-      "pick_photos": "Не удалось выбрать фотографии"
-    }
+    "title": "Добавить груз"
   },
-  "vehicle_type": {
-    "any": "Любой транспорт",
-    "tent": "Тент",
-    "refrigerator": "Рефрижератор",
-    "isotherm": "Изотерм",
-    "covered": "Крытая",
-    "car_carrier": "Автовоз",
-    "aerial_platform": "Автовышка",
-    "car_transporter": "Автотранспортер",
-    "bulk": "Балковоз",
-    "fuel_tanker": "Бензовоз",
-    "bitumen_tanker": "Битумовоз",
-    "flatbed": "Бортовой",
-    "shalanda": "Шаланда",
-    "trailer": "Прицеп",
-    "bus": "Автобус",
-    "semi_trailer": "Полуприцеп",
-    "container_carrier": "Контейнеровоз",
-    "hyundai_porter": "Хендай Портер",
-    "fish_truck": "Рыбовоз",
-    "chemical_tank": "Цистерна химическая",
-    "platform": "Платформа",
-    "sewage": "Ассенизатор",
-    "excavator": "Экскаватор",
-    "glass": "Стекловоз",
-    "incubator": "Инкубатор",
-    "roll_transporter": "Рулоновоз",
-    "gazelle_passenger": "Газель пассажирская",
-    "gazelle_flatbed": "Газель бортовая",
-    "cattle_truck": "Скотовоз",
-    "garbage_truck": "Мусоровоз",
-    "mega_truck": "Мега фура",
-    "diplomatic": "Дипломатический груз",
-    "flour_truck": "Муковоз",
-    "open": "Открытая",
-    "concrete_mixer": "Бетоновоз",
-    "gas": "Газовоз",
-    "grain": "Зерновоз",
-    "container_platform": "Контейнерная площадка",
-    "feed": "Кормовоз",
-    "crane": "Кран",
-    "log_truck": "Лесовоз",
-    "manipulator": "Манипулятор",
-    "minibus": "Микроавтобус",
-    "chip_truck": "Щеповоз",
-    "open_container": "Открытый контейнер",
-    "panel_truck": "Панелевоз",
-    "loader": "Погрузчик",
-    "dump_truck": "Самосвал",
-    "tractor": "Седельный тягач",
-    "trailer_platform": "Трал",
-    "pipe_truck": "Трубовоз",
-    "van": "Цельнометаллический",
-    "cement_truck": "Цементовоз",
-    "food_tank": "Цистерна пищевая"
+  "dimensions": {
+    "height": "{} м высота",
+    "length": "{} м длина",
+    "not_specified": "Не указаны",
+    "width": "{} м ширина"
   },
-  "home": {
-    "location": {
-      "error": {
-        "services_off": "Службы геолокации отключены. Включите GPS и попробуйте снова.",
-        "denied": "Доступ к геолокации отклонён. Разрешите приложению использовать GPS.",
-        "denied_forever": "Доступ к геолокации заблокирован. Разрешите его в настройках устройства.",
-        "no_signal": "Не удалось получить текущее местоположение. Проверьте GPS и попробуйте снова.",
-        "timeout": "Время ожидания истекло. Проверьте GPS и попробуйте снова.",
-        "unknown": "Не удалось определить местоположение."
-      }
-    },
-    "actions": {
-      "title": "Ваши действия",
-      "subtitle": "Выберите подходящую опцию, чтобы продолжить работу.",
-      "create_order_title": "Добавить груз",
-      "create_order_subtitle": "Отправьте грузы по маршруту",
-      "find_transport_title": "Найти транспорт",
-      "find_transport_subtitle": "Выберите машину по маршруту",
-      "my_cargo_title": "Мои объявления",
-      "history_title": "История"
-    },
-    "active_orders": {
-      "empty": "Активных заказов в данный момент нет",
-      "title": "Активные грузы"
-    },
-    "route": {
-      "start": "Старт",
-      "finish": "Финиш"
-    }
-  },
-  "find_transport_filters": {
-    "pick_city": "Выберите город",
-    "request_date": "Дата подачи заявки"
-  },
-  "find_transport": {
-    "title": "Найти транспорт",
-    "filters_applied": "Применены фильтры поиска",
-    "filters": {
-      "title": "Фильтры",
-      "departure": "Пункт отправления",
-      "destination": "Пункт назначения",
-      "vehicle": "Тип транспорта",
-      "vehicle_any": "Любой транспорт",
-      "loading_title": "Способ погрузки",
-      "loading": {
-        "any": "Любой способ погрузки",
-        "back": "Задняя",
-        "top": "Верхняя",
-        "side": "Боковая",
-        "back_side_top": "Зад + бок + верх"
-      },
-      "weight_from": "Вес от, т",
-      "weight_to": "Вес до, т",
-      "volume_from": "Объём от, м³",
-      "volume_to": "Объём до, м³",
-      "date": "Дата заявки",
-      "apply": "Применить"
-    },
-    "available": "Доступный транспорт",
-    "search_hint": "Поиск по городу, водителю или комментарию",
-    "empty": "Транспорт по заданным фильтрам не найден. Попробуйте сбросить фильтры или изменить запрос.",
-    "card": {
-      "price_on_request": "По запросу",
-      "driver_placeholder": "Водитель",
-      "created_at": "Создано: {}",
-      "per_trip": "за рейс",
-      "contact": "Связаться",
-      "capacity_unit": "т",
-      "volume_unit": "м³"
-    },
-    "detail": {
-      "created_at": "Создано: {}",
-      "route_title": "Маршрут",
-      "transport_title": "Транспорт",
-      "cargo_title": "Груз",
-      "status_title": "Статус",
-      "show_listing": "Показывать объявление",
-      "yes": "Да",
-      "no": "Нет",
-      "vehicle": "Тип транспорта",
-      "loading": "Способ погрузки",
-      "capacity": "Грузоподъемность",
-      "volume": "Объем",
-      "comment": "Комментарий"
-    }
-  },
-  "history": {
-    "title": "История заказов",
-    "search_hint": "Поиск по номеру, маршруту или компании",
+  "driver_cargo_filters": {
+    "any_date": "Любая дата",
+    "any_vehicle": "Любой транспорт",
+    "cost_from": "Стоимость от",
+    "cost_to": "Стоимость до",
+    "loading_city": "Город погрузки",
+    "only_with_call": "Только с доступным звонком",
+    "only_with_call_subtitle": "Показывать только заказы, по которым вы сможете позвонить отправителю.",
     "reset": "Сбросить",
-    "filters": {
-      "all": "Все",
-      "in_progress": "В процессе",
-      "completed": "Завершены",
-      "cancelled": "Отменены"
-    },
-    "date_range": {
-      "select": "Выбрать период",
-      "range": "{0} — {1}"
-    },
-    "empty": {
-      "title": "Здесь будет история ваших заказов",
-      "subtitle": "Попробуйте изменить фильтры или создать новый заказ, чтобы он появился в списке."
-    },
-    "status": {
-      "completed": "Завершен",
-      "cancelled": "Отменен"
-    },
-    "created_at": "Создан {0}"
+    "route_saved": "Маршрут сохранен в закладки",
+    "save_error": "Ошибка сохранения: {}",
+    "save_route": "Сохранить маршрут",
+    "select_city": "Выберите город",
+    "show_announcements": "Показать объявления",
+    "title": "Фильтры",
+    "transport_date": "Дата перевозки",
+    "unloading_city": "Город разгрузки",
+    "vehicle_type": "Тип транспорта"
   },
-  "calendar": {
-    "select_date": "Выберите дату",
-    "select_range": "Выберите период",
-    "hint_single": "Нажмите на дату, чтобы выбрать.",
-    "hint_range": "Нажмите на даты, чтобы выбрать период.",
-    "clear": "Очистить",
-    "confirm": "Готово"
+  "driver_contact": {
+    "call": "Позвонить",
+    "call_error": "Не удалось открыть приложение для звонков",
+    "title": "Связь с водителем",
+    "whatsapp": "WhatsApp",
+    "whatsapp_error": "Не удалось открыть WhatsApp"
   },
-  "order_detail": {
-    "photos": "Фото груза",
-    "labels": {
-      "departure_date": "Дата отправки: {}",
-      "departure_date_title": "Дата отправки",
-      "status": "Статус: {0}",
-      "delivery_term": "Срок доставки",
-      "weight": "Вес",
-      "volume": "Объём",
-      "dimensions": "Габариты",
-      "budget": "Бюджет",
-      "payment_type": "Тип оплаты",
-      "contacts_open": "Открыты водителям",
-      "contacts_hidden": "Скрыты"
-    },
-    "sections": {
-      "listing": "Объявление",
-      "route": "Маршрут",
-      "full_route": "Полный маршрут",
-      "loading": "Погрузка",
-      "unloading": "Разгрузка",
-      "cargo_params": "Параметры груза",
-      "cost": "Стоимость",
-      "contacts": "Контакты",
-      "comment": "Комментарий"
-    },
-    "status": {
-      "title": "Статус рейса",
-      "current": "Текущий статус",
-      "reason_prefix": "Причина: {0}"
-    },
-    "statuses": {
-      "waiting_driver_confirmation": "Ожидает подтверждения водителя",
-      "accepted": "Водитель назначен",
-      "ready_for_pickup": "Водитель на месте",
-      "waiting_pickup_confirmation": "Ожидает передачи",
-      "in_progress": "В пути",
-      "waiting_delivery_confirmation": "Ожидает подтверждения доставки",
-      "delivered": "Доставлен",
-      "cancelled": "Отменён",
-      "waiting_bids": "Ожидает откликов",
-      "waiting_driver_decision": "Ждём решения водителя",
-      "pending": "Ожидание"
-    },
-    "bid_status": {
-      "waiting_driver_decision": "Ждёт подтверждения водителя",
-      "confirmed": "Подтверждён",
-      "declined": "Водитель отказался",
-      "rejected": "Отклонён отправителем",
-      "new": "Отклики"
-    },
-    "actions": {
-      "confirm_delivery": "Подтвердить доставку",
-      "confirm_pickup": "Подтвердить передачу",
-      "confirm_participation": "Подтвердить участие",
-      "decline_order": "Отказаться от заказа",
-      "picked_up": "Забрал груз",
-      "track": "Отследить",
-      "edit": "Изменить",
-      "repeat": "Повторить",
-      "delivered": "Доставил груз",
-      "ready_pickup": "На месте погрузки",
-      "send_location": "Отправить местоположение",
-      "release_driver": "Отказаться от заказа",
-      "cancel_title": "Отменить заказ",
-      "cancel_message": "Заказ перейдёт в статус «Отменён».",
-      "cancel_success": "Заказ отменён",
-      "change_driver_title": "Сменить водителя",
-      "change_driver_message": "Текущий водитель будет уведомлён.",
-      "driver_released": "Водитель снят",
-      "status_updated": "Статус обновлён"
-    }
-  },
-  "driver_profile": {
-    "title": "Профиль",
-    "error_load": "Не удалось загрузить профиль",
-    "retry": "Повторить",
-    "stub": "Скоро будет доступно",
-    "balance": {
-      "title": "Общий баланс",
-      "top_up": "Пополнить",
-      "transfer": "Перевести",
-      "history": "История",
-      "tariffs": "Тарифы",
-      "business": "Бизнес-услуги",
-      "partner": "Стать партнером"
-    },
-    "referral": {
-      "title": "Мой реферальный код",
-      "copy": "Скопировать",
-      "unavailable": "Реферальный код недоступен",
-      "copied": "Код скопирован"
-    },
-    "settings": {
-      "profile": "Профиль",
-      "wallet": "Кошелек",
-      "settings": "Настройки",
-      "help": "Помощь",
-      "terms": "Условия использования",
-      "user_agreement": "Пользовательское соглашение",
-      "privacy": "Политика конфиденциальности"
-    },
-    "support": {
-      "help_body": "Нужна помощь? Напишите нам любым способом ниже.",
-      "terms_body": "Вопросы по условиям — напишите в поддержку.",
-      "close": "Закрыть"
-    },
-    "business_page": {
-      "header_subtitle": "ПАРТНЕРЫ РЯДОМ",
-      "title": "Бизнес-услуги",
-      "subtitle": "Выберите город, чтобы увидеть партнеров рядом.",
-      "city_label": "Выберите город",
-      "empty_title": "Нет партнеров",
-      "empty_subtitle": "В выбранном городе пока нет партнеров.",
-      "become_partner_header": "Стать партнером"
-    },
-    "partner_page": {
-      "header_subtitle": "ПАРТНЕРСКАЯ ЗАЯВКА",
-      "title": "Стать партнером",
-      "subtitle": "Оставьте заявку, и мы свяжемся, чтобы обсудить формат сотрудничества.",
-      "fields": {
-        "company_name": "Название компании",
-        "company_name_hint": "Введите название",
-        "activity": "Деятельность компании",
-        "logo": "Загрузите логотип/фото компании",
-        "logo_hint": "Выберите файл",
-        "description": "Описание компании",
-        "description_hint": "Введите описание",
-        "countries": "Страны в которой работаете",
-        "city": "Город",
-        "city_hint": "Астана",
-        "phone": "Введите номер телефона",
-        "email": "Введите ваш Email",
-        "terms_agree": "Я принимаю условия и политику конфиденциальности"
-      },
-      "submit": "Отправить заявку",
-      "success": "Заявка отправлена на модерацию. Мы свяжемся с вами после проверки."
-    },
-    "logout": {
-      "title": "Выход из аккаунта",
-      "confirm": "Вы уверены, что хотите выйти из аккаунта?",
-      "cancel": "Отмена",
-      "submit": "Выйти",
-      "button": "Выйти из аккаунта",
-      "error": "Ошибка при выходе"
-    },
-    "app_version": "Версия приложения",
-    "verification": {
-      "status": {
-        "approved": "Верификация пройдена",
-        "in_review": "Документы на проверке",
-        "rejected": "Верификация отклонена",
-        "required": "Требуется верификация"
-      },
-      "message": {
-        "in_review": "Мы проверяем ваши документы. Это обычно занимает немного времени.",
-        "rejected_default": "Проверьте корректность документов и попробуйте снова.",
-        "required": "Загрузите фото прав, техпаспорта и удостоверения личности."
-      },
-      "active_status": "Активен"
-    }
-  },
-  "driver_tabs": {
-    "home": "Главная",
-    "favorites": "Избранное",
-    "profile": "Профиль",
-    "transport": "Транспорт"
+  "driver_expenses": {
+    "calculate": "Рассчитать",
+    "consumption": "Расход (л/100км)",
+    "disclaimer": "ⓘ Расчет приблизительный и зависит от реального маршрута.",
+    "error_coords": "Не удалось определить координаты городов",
+    "error_invalid_input": "Введите корректный расход и цену",
+    "error_select_cities": "Выберите города отправления и назначения",
+    "from": "Откуда",
+    "fuel_cost": "Стоимость топлива",
+    "hint_consumption": "Например: 12",
+    "hint_price": "Например: 250",
+    "price": "Цена топлива (₸/л)",
+    "result_consumption": "Расход:",
+    "result_distance": "Расстояние:",
+    "result_fuel": "Топливо:",
+    "select_city": "Выберите город",
+    "stub": "Раздел учёта расходов будет доступен в ближайшем обновлении.",
+    "subtitle": "Рассчитайте затраты на топливо для маршрута",
+    "title": "Калькулятор расходов",
+    "to": "Куда"
   },
   "driver_favorites": {
-    "title": "Избранное",
-    "error": "Не удалось загрузить избранные заказы. Потяните, чтобы обновить.",
     "empty": "Здесь появятся избранные заказы. Добавляйте понравившиеся на экране «Найти груз».",
-    "responded": "Отклик отправлен отправителю"
+    "error": "Не удалось загрузить избранные заказы. Потяните, чтобы обновить.",
+    "responded": "Отклик отправлен отправителю",
+    "title": "Избранное"
+  },
+  "driver_find": {
+    "empty": "Подходящих грузов пока нет. Попробуйте позже.",
+    "empty_search": "Объявления не найдены. Измените поиск или фильтры.",
+    "error": "Не удалось загрузить объявления. Попробуйте снова.",
+    "retry_filters": "Попробовать снова",
+    "search_hint": "Поиск по маршруту или грузу",
+    "title": "Найти груз"
   },
   "driver_home": {
     "actions": {
-      "title": "Рабочие действия",
-      "subtitle": "Следите за рейсом и отмечайте ключевые события.",
-      "find_cargo": "Найти груз",
-      "loading_status": "Статус груза",
+      "ads_subtitle": "Объявления на перевозку",
+      "companion": "Просмотреть попутки",
+      "create_ad": "Добавить груз",
       "current_orders": "Текущие заказы",
       "expenses": "Калькулятор",
-      "transport": "Мой транспорт",
-      "create_ad": "Добавить груз",
       "fill_form": "Заполнить форму",
+      "find_cargo": "Найти груз",
       "find_transport": "Найти транспорт",
-      "companion": "Просмотреть попутки",
+      "history": "История",
+      "loading_status": "Статус груза",
       "my_ads": "Мои объявления",
-      "ads_subtitle": "Объявления на перевозку",
-      "history": "История"
-    }
-  },
-  "driver_transport": {
-    "title": "Мой транспорт",
-    "error_load": "Не удалось загрузить объявления",
-    "edit": "Изменить",
-    "created_at": "Создано {0}",
-    "deleted": "Объявление удалено",
-    "delete_title": "Удалить транспорт?",
-    "delete_message": "Транспорт будет удалён без возможности восстановления.",
-    "cancel": "Отмена",
-    "delete": "Удалить",
-    "status_active": "Активно",
-    "status_hidden": "Скрыто",
-    "empty": "У вас пока нет объявлений.",
-    "retry": "Попробовать снова",
-    "create": {
-      "title_new": "Создать транспорт",
-      "title_edit": "Редактировать транспорт",
-      "subtitle_new": "Заполните данные, чтобы опубликовать транспорт.",
-      "subtitle_edit": "Обновите данные транспорта и сохраните изменения.",
-      "step_of": "Шаг {} из {}",
-      "step_titles": {
-        "route": "Маршрут",
-        "vehicle": "Транспорт",
-        "params": "Параметры"
-      },
-      "step_desc": {
-        "route": "Укажите точки отправления, промежуточных остановок и доставки.",
-        "vehicle": "Выберите тип транспорта и способ погрузки.",
-        "params": "Заполните грузоподъемность, объем и при необходимости комментарий."
-      },
-      "from": "Откуда",
-      "to": "Куда",
-      "departure_point": "Пункт отправления",
-      "destination_point": "Пункт доставки",
-      "waypoint_title": "Промежуточная точка",
-      "vehicle_type": "Тип транспорта",
-      "loading_type": "Тип погрузки",
-      "select_type": "Выбрать",
-      "route_error": "Укажите маршрут перевозки",
-      "route_required": "Укажите маршрут перевозки",
-      "weight": "Грузоподъемность (т)",
-      "volume": "Объем (м³)",
-      "comment": "Комментарий",
-      "comment_hint": "Добавьте пожелания по грузу или маршруту (необязательно).",
-      "waypoints": {
-        "title": "Точки маршрута",
-        "subtitle": "необязательно • до 3 точек",
-        "add": "Добавить",
-        "limit": "Максимум"
-      },
-      "nav": {
-        "back": "Назад",
-        "next": "Далее",
-        "save": "Сохранить",
-        "publish": "Опубликовать"
-      },
-      "success": {
-        "updated": "Объявление обновлено",
-        "published": "Объявление опубликовано"
-      },
-      "validation": {
-        "number": "Введите число",
-        "positive": "Введите значение больше 0"
-      },
-      "loading": {
-        "any": "Любой тип",
-        "back": "Задняя погрузка",
-        "top": "Верхняя погрузка",
-        "side": "Боковая погрузка",
-        "back_side_top": "Любая сторона"
-      },
-      "vehicle_types": {
-        "any": "Любой транспорт"
-      }
-    }
-  },
-  "driver_expenses": {
-    "title": "Калькулятор расходов",
-    "subtitle": "Рассчитайте затраты на топливо для маршрута",
-    "stub": "Раздел учёта расходов будет доступен в ближайшем обновлении.",
-    "from": "Откуда",
-    "to": "Куда",
-    "select_city": "Выберите город",
-    "consumption": "Расход (л/100км)",
-    "price": "Цена топлива (₸/л)",
-    "calculate": "Рассчитать",
-    "fuel_cost": "Стоимость топлива",
-    "disclaimer": "ⓘ Расчет приблизительный и зависит от реального маршрута.",
-    "hint_consumption": "Например: 12",
-    "hint_price": "Например: 250",
-    "result_distance": "Расстояние:",
-    "result_consumption": "Расход:",
-    "result_fuel": "Топливо:",
-    "error_select_cities": "Выберите города отправления и назначения",
-    "error_invalid_input": "Введите корректный расход и цену",
-    "error_coords": "Не удалось определить координаты городов"
-  },
-  "driver_loading": {
-    "title": "Статус груза",
-    "error": "Не удалось загрузить статусы. Потяните вниз, чтобы обновить.",
-    "open": "Открыть",
-    "date": "Дата",
-    "price_on_request": "По запросу",
-    "payment_per_trip": "за рейс",
-    "status": {
-      "waiting_you": "Ожидает вас",
-      "need_answer": "Нужно ответить",
-      "to_pickup": "Еду на погрузку",
-      "accepted": "Подтверждено",
-      "wait_pickup": "Подтвердите погрузку",
-      "in_progress": "В пути",
-      "wait_delivery": "Подтверждение доставки",
-      "active": "Активно"
-    },
-    "notes": {
-      "waiting_you": "Подтвердите участие, чтобы закрепить заказ за собой.",
-      "need_answer": "Примите или отклоните заказ, откройте детали для уточнения условий.",
-      "to_pickup": "Проверьте адрес и время погрузки. Отметьте прибытие, когда будете на месте.",
-      "accepted": "Заказ подтверждён. Следите за уведомлениями по погрузке.",
-      "wait_pickup": "Подтвердите факт погрузки, чтобы начать рейс.",
-      "in_progress": "Следуйте маршруту и отметьте доставку по прибытии.",
-      "wait_delivery": "Подтвердите доставку, чтобы завершить рейс.",
-      "active": "Статус обновится после ваших действий по заказу."
-    },
-    "empty": {
-      "title": "Нет активных статусов",
-      "subtitle": "Когда заказчик примет ваш отклик, здесь появится карточка статуса."
+      "subtitle": "Следите за рейсом и отмечайте ключевые события.",
+      "title": "Рабочие действия",
+      "transport": "Мой транспорт"
     }
   },
   "driver_home_map": {
-    "marker": {
-      "pickup": "Погрузка",
-      "delivery": "Доставка"
-    },
     "error": {
-      "services_off": "Службы геолокации отключены. Включите GPS и попробуйте снова.",
       "denied": "Доступ к геолокации отклонён. Разрешите приложению использовать GPS.",
       "denied_forever": "Доступ к геолокации заблокирован. Разрешите его в настройках устройства.",
       "no_signal": "Не удалось получить текущее местоположение.",
+      "services_off": "Службы геолокации отключены. Включите GPS и попробуйте снова.",
       "unknown": "Не удалось определить местоположение."
     },
+    "marker": {
+      "delivery": "Доставка",
+      "pickup": "Погрузка"
+    },
     "status": {
-      "waiting_driver_confirmation": "Ожидает подтверждения водителя",
-      "ready_for_pickup": "Водитель на месте",
-      "waiting_pickup_confirmation": "Ожидает подтверждения передачи",
-      "waiting_delivery_confirmation": "Ожидает подтверждения доставки",
-      "pending": "Ожидание",
-      "in_transit": "В пути",
+      "cancelled": "Отменен",
       "completed": "Завершен",
-      "cancelled": "Отменен"
+      "in_transit": "В пути",
+      "pending": "Ожидание",
+      "ready_for_pickup": "Водитель на месте",
+      "waiting_delivery_confirmation": "Ожидает подтверждения доставки",
+      "waiting_driver_confirmation": "Ожидает подтверждения водителя",
+      "waiting_pickup_confirmation": "Ожидает подтверждения передачи"
     }
+  },
+  "driver_loading": {
+    "date": "Дата",
+    "empty": {
+      "subtitle": "Когда заказчик примет ваш отклик, здесь появится карточка статуса.",
+      "title": "Нет активных статусов"
+    },
+    "error": "Не удалось загрузить статусы. Потяните вниз, чтобы обновить.",
+    "notes": {
+      "accepted": "Заказ подтверждён. Следите за уведомлениями по погрузке.",
+      "active": "Статус обновится после ваших действий по заказу.",
+      "in_progress": "Следуйте маршруту и отметьте доставку по прибытии.",
+      "need_answer": "Примите или отклоните заказ, откройте детали для уточнения условий.",
+      "to_pickup": "Проверьте адрес и время погрузки. Отметьте прибытие, когда будете на месте.",
+      "wait_delivery": "Подтвердите доставку, чтобы завершить рейс.",
+      "wait_pickup": "Подтвердите факт погрузки, чтобы начать рейс.",
+      "waiting_you": "Подтвердите участие, чтобы закрепить заказ за собой."
+    },
+    "open": "Открыть",
+    "payment_per_trip": "за рейс",
+    "price_on_request": "По запросу",
+    "status": {
+      "accepted": "Подтверждено",
+      "active": "Активно",
+      "in_progress": "В пути",
+      "need_answer": "Нужно ответить",
+      "to_pickup": "Еду на погрузку",
+      "wait_delivery": "Подтверждение доставки",
+      "wait_pickup": "Подтвердите погрузку",
+      "waiting_you": "Ожидает вас"
+    },
+    "title": "Статус груза"
+  },
+  "driver_order_detail": {
+    "amount": "Сумма",
+    "cargo_params": "Параметры груза",
+    "cost_and_terms": "Стоимость и сроки",
+    "departure_date": "Дата отправки",
+    "loading_type": "Тип погрузки",
+    "payment": "Оплата",
+    "sender_comment": "Комментарий отправителя",
+    "status": "Статус",
+    "status_cancelled": "Отменен",
+    "status_completed": "Завершен",
+    "status_in_transit": "В пути",
+    "status_pending": "Ожидание",
+    "vehicle_type": "Тип ТС",
+    "volume": "Объем",
+    "weight": "Вес"
   },
   "driver_orders": {
     "card": {
       "departure": "Отправка",
       "favorite": "В избранное",
-      "unfavorite": "Убрать из избранного",
       "respond": "Откликнуться",
-      "responded": "Вы откликнулись"
+      "responded": "Вы откликнулись",
+      "unfavorite": "Убрать из избранного"
+    },
+    "status": {
+      "cancelled": "Отменен",
+      "completed": "Завершен",
+      "in_transit": "В пути",
+      "pending": "Ожидание"
     }
   },
-  "driver_find": {
-    "title": "Найти груз",
-    "error": "Не удалось загрузить объявления. Попробуйте снова.",
-    "search_hint": "Поиск по маршруту или грузу",
-    "empty": "Подходящих грузов пока нет. Попробуйте позже.",
-    "empty_search": "Объявления не найдены. Измените поиск или фильтры.",
-    "retry_filters": "Попробовать снова"
+  "driver_profile": {
+    "app_version": "Версия приложения",
+    "balance": {
+      "business": "Бизнес-услуги",
+      "history": "История",
+      "partner": "Стать партнером",
+      "tariffs": "Тарифы",
+      "title": "Общий баланс",
+      "top_up": "Пополнить",
+      "transfer": "Перевести"
+    },
+    "reviews": {
+      "title": "Отзывы",
+      "empty": "У вас пока нет отзывов от клиентов.",
+      "error": "Не удалось загрузить отзывы",
+      "retry": "Обновить",
+      "no_comment": "Без комментария",
+      "more": "+ ещё {}"
+    },
+    "business_page": {
+      "become_partner_header": "Стать партнером",
+      "city_label": "Выберите город",
+      "empty_subtitle": "В выбранном городе пока нет партнеров.",
+      "empty_title": "Нет партнеров",
+      "header_subtitle": "ПАРТНЕРЫ РЯДОМ",
+      "subtitle": "Выберите город, чтобы увидеть партнеров рядом.",
+      "title": "Бизнес-услуги",
+      "error_title": "Не удалось загрузить партнеров"
+    },
+    "error_load": "Не удалось загрузить профиль",
+    "logout": {
+      "button": "Выйти из аккаунта",
+      "cancel": "Отмена",
+      "confirm": "Вы уверены, что хотите выйти из аккаунта?",
+      "error": "Ошибка при выходе",
+      "submit": "Выйти",
+      "title": "Выход из аккаунта"
+    },
+    "partner_page": {
+      "fields": {
+        "activity": "Деятельность компании",
+        "city": "Город",
+        "city_hint": "Астана",
+        "company_name": "Название компании",
+        "company_name_hint": "Введите название",
+        "countries": "Страны в которой работаете",
+        "description": "Описание компании",
+        "description_hint": "Введите описание",
+        "email": "Введите ваш Email",
+        "logo": "Загрузите логотип/фото компании",
+        "logo_hint": "Выберите файл",
+        "phone": "Введите номер телефона",
+        "terms_agree": "Я принимаю условия и политику конфиденциальности"
+      },
+      "header_subtitle": "ПАРТНЕРСКАЯ ЗАЯВКА",
+      "submit": "Отправить заявку",
+      "subtitle": "Оставьте заявку, и мы свяжемся, чтобы обсудить формат сотрудничества.",
+      "success": "Заявка отправлена на модерацию. Мы свяжемся с вами после проверки.",
+      "title": "Стать партнером"
+    },
+    "referral": {
+      "copied": "Код скопирован",
+      "copy": "Скопировать",
+      "title": "Мой реферальный код",
+      "unavailable": "Реферальный код недоступен"
+    },
+    "retry": "Повторить",
+    "settings": {
+      "help": "Помощь",
+      "privacy": "Политика конфиденциальности",
+      "profile": "Профиль",
+      "settings": "Настройки",
+      "terms": "Условия использования",
+      "user_agreement": "Пользовательское соглашение",
+      "wallet": "Кошелек"
+    },
+    "stub": "Скоро будет доступно",
+    "support": {
+      "close": "Закрыть",
+      "help_body": "Нужна помощь? Напишите нам любым способом ниже.",
+      "terms_body": "Вопросы по условиям — напишите в поддержку."
+    },
+    "title": "Профиль",
+    "verification": {
+      "active_status": "Активен",
+      "message": {
+        "in_review": "Мы проверяем ваши документы. Это обычно занимает немного времени.",
+        "rejected_default": "Проверьте корректность документов и попробуйте снова.",
+        "required": "Загрузите фото прав, техпаспорта и удостоверения личности."
+      },
+      "status": {
+        "approved": "Верификация пройдена",
+        "in_review": "Документы на проверке",
+        "rejected": "Верификация отклонена",
+        "required": "Требуется верификация"
+      }
+    }
   },
-  "locations": {
-    "search_hint": "Поиск города",
-    "pick_on_map": "Указать на карте",
-    "search_subtitle": "Найдите город или отметьте точку на карте"
+  "driver_tabs": {
+    "favorites": "Избранное",
+    "home": "Главная",
+    "profile": "Профиль",
+    "transport": "Транспорт"
+  },
+  "driver_transport": {
+    "cancel": "Отмена",
+    "create": {
+      "comment": "Комментарий",
+      "comment_hint": "Добавьте пожелания по грузу или маршруту (необязательно).",
+      "departure_point": "Пункт отправления",
+      "destination_point": "Пункт доставки",
+      "from": "Откуда",
+      "loading": {
+        "any": "Любой тип",
+        "back": "Задняя погрузка",
+        "back_side_top": "Любая сторона",
+        "side": "Боковая погрузка",
+        "top": "Верхняя погрузка"
+      },
+      "loading_type": "Тип погрузки",
+      "nav": {
+        "back": "Назад",
+        "next": "Далее",
+        "publish": "Опубликовать",
+        "save": "Сохранить"
+      },
+      "route_error": "Укажите маршрут перевозки",
+      "route_required": "Укажите маршрут перевозки",
+      "select_type": "Выбрать",
+      "step_desc": {
+        "params": "Заполните грузоподъемность, объем и при необходимости комментарий.",
+        "route": "Укажите точки отправления, промежуточных остановок и доставки.",
+        "vehicle": "Выберите тип транспорта и способ погрузки."
+      },
+      "step_of": "Шаг {} из {}",
+      "step_titles": {
+        "params": "Параметры",
+        "route": "Маршрут",
+        "vehicle": "Транспорт"
+      },
+      "subtitle_edit": "Обновите данные транспорта и сохраните изменения.",
+      "subtitle_new": "Заполните данные, чтобы опубликовать транспорт.",
+      "success": {
+        "published": "Объявление опубликовано",
+        "updated": "Объявление обновлено"
+      },
+      "title_edit": "Редактировать транспорт",
+      "title_new": "Создать транспорт",
+      "to": "Куда",
+      "validation": {
+        "number": "Введите число",
+        "positive": "Введите значение больше 0"
+      },
+      "vehicle_type": "Тип транспорта",
+      "vehicle_types": {
+        "any": "Любой транспорт"
+      },
+      "volume": "Объем (м³)",
+      "waypoint_title": "Промежуточная точка",
+      "waypoints": {
+        "add": "Добавить",
+        "limit": "Максимум",
+        "subtitle": "необязательно • до 3 точек",
+        "title": "Точки маршрута"
+      },
+      "weight": "Грузоподъемность (т)"
+    },
+    "created_at": "Создано {0}",
+    "delete": "Удалить",
+    "delete_message": "Транспорт будет удалён без возможности восстановления.",
+    "delete_title": "Удалить транспорт?",
+    "deleted": "Объявление удалено",
+    "edit": "Изменить",
+    "empty": "У вас пока нет объявлений.",
+    "error_load": "Не удалось загрузить объявления",
+    "retry": "Попробовать снова",
+    "status_active": "Активно",
+    "status_hidden": "Скрыто",
+    "title": "Мой транспорт"
+  },
+  "driver_utils": {
+    "added_favorite": "Добавлено в избранное",
+    "authorize_as_driver": "Авторизуйтесь как водитель, чтобы продолжить",
+    "call_error": "Не удалось позвонить отправителю",
+    "contacts_hidden": "Отправитель не раскрыл контакты",
+    "dialer_error": "Не удалось открыть звонилку",
+    "drivers_only": "Доступно только для водителей",
+    "later": "Позже",
+    "phone_unavailable": "Телефон отправителя недоступен",
+    "removed_favorite": "Удалено из избранного",
+    "subscription_required": "Оформите подписку, чтобы откликаться на заявки",
+    "tariff_error_city_only": "Ваш тариф «Город» — заявка не может быть между разными городами",
+    "tariff_error_local_forbidden": "Ваш тариф не покрывает заявки внутри одного города",
+    "update_favorite_error": "Не удалось обновить избранное",
+    "verification_needed_body": "Чтобы откликаться на заявки и публиковать транспорт, подтвердите документы водителя. Это поможет отправителям доверять вам.",
+    "verification_needed_title": "Нужна верификация",
+    "verify": "Пройти",
+    "whatsapp_error": "Не удалось открыть WhatsApp"
   },
   "driver_verification": {
-    "title": "Верификация водителя",
-    "subtitle": "Заполните данные и загрузите фото документов",
-    "personal_data": "Личные данные",
     "contacts": "Контакты",
     "docs_data": "Данные документов",
-    "files_data": "Файлы документов",
+    "errors": {
+      "invalid_email": "Некорректный email",
+      "invalid_phone": "Некорректный телефон",
+      "required": "Обязательное поле",
+      "upload_all": "Загрузите все обязательные файлы"
+    },
     "fields": {
-      "first_name": "Имя",
-      "last_name": "Фамилия",
-      "middle_name": "Отчество",
       "email": "Email",
-      "phone": "Телефон",
+      "first_name": "Имя",
+      "id_number": "Номер удостоверения личности",
+      "last_name": "Фамилия",
       "license_number": "Номер прав",
-      "vp_number": "Номер техпаспорта",
-      "id_number": "Номер удостоверения личности"
+      "middle_name": "Отчество",
+      "phone": "Телефон",
+      "vp_number": "Номер техпаспорта"
     },
     "files": {
-      "license_front": "Права (лицевая)",
-      "license_back": "Права (оборотная)",
-      "vp_front": "Техпаспорт (лицевая)",
-      "vp_back": "Техпаспорт (оборотная)",
-      "id_front": "Удостоверение личности (разворот)",
       "id_back": "Удостоверение личности (оборотная)",
-      "upload": "Загрузить",
+      "id_front": "Удостоверение личности (разворот)",
+      "license_back": "Права (оборотная)",
+      "license_front": "Права (лицевая)",
+      "placeholder": "JPEG/PNG, до 10 МБ",
       "replace": "Заменить",
-      "placeholder": "JPEG/PNG, до 10 МБ"
+      "upload": "Загрузить",
+      "vp_back": "Техпаспорт (оборотная)",
+      "vp_front": "Техпаспорт (лицевая)"
     },
-    "errors": {
-      "upload_all": "Загрузите все обязательные файлы",
-      "required": "Обязательное поле",
-      "invalid_email": "Некорректный email",
-      "invalid_phone": "Некорректный телефон"
+    "files_data": "Файлы документов",
+    "personal_data": "Личные данные",
+    "sent_message": "Мы проверим ваши данные и сообщим, когда верификация будет завершена.",
+    "sent_title": "Заявка отправлена",
+    "submit_btn": "Отправить на проверку",
+    "subtitle": "Заполните данные и загрузите фото документов",
+    "success": "Заявка отправлена на проверку",
+    "title": "Верификация водителя"
+  },
+  "favorites": {
+    "empty": "Вы еще не добавили избранные объявления.",
+    "title": "Избранное"
+  },
+  "find_transport": {
+    "available": "Доступный транспорт",
+    "card": {
+      "capacity_unit": "т",
+      "contact": "Связаться",
+      "created_at": "Создано: {}",
+      "driver_placeholder": "Водитель",
+      "per_trip": "за рейс",
+      "price_on_request": "По запросу",
+      "volume_unit": "м³"
     },
-    "success": "Отправлено на проверку",
-    "submit_btn": "Отправить на проверку"
+    "detail": {
+      "capacity": "Грузоподъемность",
+      "cargo_title": "Груз",
+      "comment": "Комментарий",
+      "created_at": "Создано: {}",
+      "loading": "Способ погрузки",
+      "no": "Нет",
+      "route_title": "Маршрут",
+      "show_listing": "Показывать объявление",
+      "status_title": "Статус",
+      "transport_title": "Транспорт",
+      "vehicle": "Тип транспорта",
+      "volume": "Объем",
+      "yes": "Да"
+    },
+    "empty": "Транспорт по заданным фильтрам не найден. Попробуйте сбросить фильтры или изменить запрос.",
+    "filters": {
+      "apply": "Применить",
+      "date": "Дата заявки",
+      "departure": "Пункт отправления",
+      "destination": "Пункт назначения",
+      "loading": {
+        "any": "Любой способ погрузки",
+        "back": "Задняя",
+        "back_side_top": "Зад + бок + верх",
+        "side": "Боковая",
+        "top": "Верхняя"
+      },
+      "loading_title": "Способ погрузки",
+      "title": "Фильтры",
+      "vehicle": "Тип транспорта",
+      "vehicle_any": "Любой транспорт",
+      "volume_from": "Объём от, м³",
+      "volume_to": "Объём до, м³",
+      "weight_from": "Вес от, т",
+      "weight_to": "Вес до, т"
+    },
+    "filters_applied": "Применены фильтры поиска",
+    "search_hint": "Поиск по городу, водителю или комментарию",
+    "title": "Найти транспорт"
+  },
+  "find_transport_filters": {
+    "pick_city": "Выберите город",
+    "request_date": "Дата подачи заявки"
+  },
+  "history": {
+    "created_at": "Создан {0}",
+    "date_range": {
+      "range": "{} — {}",
+      "select": "Выбрать период"
+    },
+    "empty": {
+      "subtitle": "Попробуйте изменить фильтры или создать новый заказ, чтобы он появился в списке.",
+      "title": "Здесь будет история ваших заказов"
+    },
+    "filters": {
+      "all": "Все",
+      "cancelled": "Отменены",
+      "completed": "Завершены",
+      "in_progress": "В процессе"
+    },
+    "reset": "Сбросить",
+    "search_hint": "Поиск по номеру, маршруту или компании",
+    "status": {
+      "cancelled": "Отменен",
+      "completed": "Завершен"
+    },
+    "title": "История заказов"
+  },
+  "home": {
+    "actions": {
+      "create_order_subtitle": "Отправьте грузы по маршруту",
+      "create_order_title": "Добавить груз",
+      "find_transport_subtitle": "Выберите машину по маршруту",
+      "find_transport_title": "Найти транспорт",
+      "history_title": "История",
+      "my_cargo_title": "Мои объявления",
+      "subtitle": "Выберите подходящую опцию, чтобы продолжить работу.",
+      "title": "Ваши действия"
+    },
+    "active_orders": {
+      "empty": "Активных заказов в данный момент нет",
+      "title": "Активные грузы"
+    },
+    "location": {
+      "error": {
+        "denied": "Доступ к геолокации отклонён. Разрешите приложению использовать GPS.",
+        "denied_forever": "Доступ к геолокации заблокирован. Разрешите его в настройках устройства.",
+        "no_signal": "Не удалось получить текущее местоположение. Проверьте GPS и попробуйте снова.",
+        "services_off": "Службы геолокации отключены. Включите GPS и попробуйте снова.",
+        "timeout": "Время ожидания истекло. Проверьте GPS и попробуйте снова.",
+        "unknown": "Не удалось определить местоположение."
+      }
+    },
+    "route": {
+      "finish": "Финиш",
+      "start": "Старт"
+    }
+  },
+  "loading_types": {
+    "any_type": "Любой тип погрузки",
+    "any_way": "Любой способ",
+    "back": "Задняя погрузка",
+    "side": "Боковая погрузка",
+    "top": "Верхняя погрузка"
+  },
+  "locations": {
+    "pick_on_map": "Указать на карте",
+    "search_hint": "Поиск города",
+    "search_subtitle": "Найдите город или отметьте точку на карте"
+  },
+  "my_cargo": {
+    "bids": {
+      "accepted": "Вы приняли отклик",
+      "actions": {
+        "accept": "Принять",
+        "decline": "Отклонить",
+        "processing": "Обработка..."
+      },
+      "comment": "Комментарий",
+      "date_unknown": "Дата неизвестна",
+      "declined": "Отклик отклонён",
+      "empty": "Откликов пока нет.",
+      "empty_subtitle": "Как только водители откликнутся, вы увидите их здесь.",
+      "error_process": "Не удалось обработать отклик",
+      "offer": "Предложение",
+      "offer_amount": "Сумма отклика: {}",
+      "order_number": "Заказ TD-{}",
+      "status": {
+        "cancelled": "Отменен",
+        "confirmed": "Подтвержден",
+        "declined": "Отклонен",
+        "driver_declined": "Водитель отказался",
+        "new": "Новый"
+      },
+      "title": "Отклики"
+    },
+    "edit_title": "Редактировать заказ",
+    "error": {
+      "load": "Не удалось загрузить заказы",
+      "load_detail": "Не удалось загрузить детали заказа",
+      "load_single": "Не удалось загрузить заказ"
+    },
+    "filters": {
+      "active": "Активные",
+      "all": "Все",
+      "cancelled": "Отмененные",
+      "completed": "Завершенные",
+      "empty": "Заказы не найдены по выбранному фильтру."
+    },
+    "repeat_title": "Повторить заказ",
+    "title": "Мои объявления"
+  },
+  "nav": {
+    "cargo": "Объявления",
+    "favorites": "Избранное",
+    "order": "Заказ",
+    "profile": "Профиль"
+  },
+  "notifications": {
+    "channel_description": "Канал для push-уведомлений Fura24.kz",
+    "channel_name": "Fura24 уведомления",
+    "default_body": "Новое уведомление",
+    "default_title": "Fura24.kz"
+  },
+  "notifications_page": {
+    "default_body": "Новое уведомление",
+    "default_title": "Уведомление",
+    "driver_announcement_title": "Транспорт опубликован",
+    "empty_subtitle": "Мы покажем здесь новые события по заказам и перевозкам.",
+    "empty_title": "Пока уведомлений нет",
+    "load_error": "Не удалось загрузить уведомления. Потяните вниз, чтобы обновить.",
+    "order_load_error": "Не удалось загрузить заказ",
+    "title": "Уведомления",
+    "types": {
+      "driver_accepted": {
+        "body": "Заказ {0} принят водителем.",
+        "title": "Водитель принял заказ"
+      },
+      "driver_announcement_created": {
+        "body": "Ваше объявление опубликовано. Мы уведомим об откликах.",
+        "title": "Транспорт опубликован"
+      },
+      "driver_arrived": {
+        "body": "Водитель прибыл на точку загрузки по заказу {0}.",
+        "title": "Водитель на месте"
+      },
+      "driver_picked_up": {
+        "body": "Водитель забрал груз по заказу {0}. Подтвердите передачу.",
+        "title": "Водитель забрал груз"
+      },
+      "new_order": {
+        "body": "Создан заказ {0}.",
+        "title": "Новый заказ"
+      },
+      "order_accepted": {
+        "body": "Заказ {0} принят.",
+        "title": "Заказ принят"
+      },
+      "order_bid": {
+        "body": "Новый отклик на заказ {0}.",
+        "title": "Новый отклик"
+      },
+      "order_completed": {
+        "body": "Клиент подтвердил доставку заказа {0}.",
+        "title": "Заказ завершен"
+      },
+      "order_created": {
+        "body": "Заказ {0} создан и ожидает откликов.",
+        "title": "Заявка создана"
+      },
+      "order_delivered": {
+        "body": "Водитель отметил доставку груза {0}. Подтвердите получение.",
+        "title": "Груз доставлен"
+      },
+      "order_status": {
+        "body": "Статус заказа {0} обновлён.",
+        "title": "Статус заказа обновлён"
+      }
+    },
+    "unknown_type": "Неизвестный тип уведомления",
+    "unread": "Не прочитано",
+    "yesterday": "Вчера"
+  },
+  "order_detail": {
+    "actions": {
+      "cancel_message": "Заказ перейдёт в статус «Отменён».",
+      "cancel_success": "Заказ отменён",
+      "cancel_title": "Отменить заказ",
+      "change_driver_message": "Текущий водитель будет уведомлён.",
+      "change_driver_title": "Сменить водителя",
+      "confirm_delivery": "Подтвердить доставку",
+      "confirm_participation": "Подтвердить участие",
+      "confirm_pickup": "Подтвердить передачу",
+      "decline_order": "Отказаться от заказа",
+      "delivered": "Доставил груз",
+      "driver_released": "Водитель снят",
+      "edit": "Изменить",
+      "picked_up": "Забрал груз",
+      "ready_pickup": "На месте погрузки",
+      "release_driver": "Отказаться от заказа",
+      "repeat": "Повторить",
+      "send_location": "Отправить местоположение",
+      "status_updated": "Статус обновлён",
+      "track": "Отследить"
+    },
+    "bid_status": {
+      "confirmed": "Подтверждён",
+      "declined": "Водитель отказался",
+      "new": "Отклики",
+      "rejected": "Отклонён отправителем",
+      "waiting_driver_decision": "Ждёт подтверждения водителя"
+    },
+    "driver_utils": {
+      "added_favorite": "Добавлено в избранное",
+      "authorize_as_driver": "Пожалуйста, авторизуйтесь как водитель",
+      "call_error": "Ошибка вызова",
+      "contacts_hidden": "Контакты скрыты",
+      "dialer_error": "Не удалось открыть звонилку",
+      "drivers_only": "Это действие доступно только водителям",
+      "later": "Позже",
+      "phone_unavailable": "Номер телефона скрыт или недоступен",
+      "removed_favorite": "Удалено из избранного",
+      "subscription_required": "Для этого действия требуется активная подписка.",
+      "tariff_error_city_only": "Ваш тариф «Городской» позволяет работать только внутри одного города.",
+      "tariff_error_intercity_needed": "Для этого заказа нужен тариф «Междугородний» или «Международный».",
+      "tariff_error_local_forbidden": "Ваш тариф не позволяет брать заказы внутри одного города.",
+      "update_favorite_error": "Ошибка обновления избранного",
+      "verification_needed_body": "Чтобы выполнять действия (откликаться, смотреть контакты), нужно подтвердить профиль.",
+      "verification_needed_title": "Требуется верификация",
+      "verify": "Пройти",
+      "whatsapp_error": "Не удалось открыть WhatsApp"
+    },
+    "labels": {
+      "budget": "Бюджет",
+      "contacts_hidden": "Скрыты",
+      "contacts_open": "Открыты водителям",
+      "delivery_term": "Срок доставки",
+      "departure_date": "Дата отправки: {}",
+      "departure_date_title": "Дата отправки",
+      "dimensions": "Габариты",
+      "payment_type": "Тип оплаты",
+      "status": "Статус: {0}",
+      "volume": "Объём",
+      "weight": "Вес"
+    },
+    "photos": "Фото груза",
+    "sections": {
+      "cargo_params": "Параметры груза",
+      "comment": "Комментарий",
+      "contacts": "Контакты",
+      "cost": "Стоимость",
+      "full_route": "Полный маршрут",
+      "listing": "Объявление",
+      "loading": "Погрузка",
+      "route": "Маршрут",
+      "unloading": "Разгрузка"
+    },
+    "status": {
+      "current": "Текущий статус",
+      "reason_prefix": "Причина: {0}",
+      "title": "Статус рейса"
+    },
+    "statuses": {
+      "accepted": "Водитель назначен",
+      "cancelled": "Отменён",
+      "delivered": "Доставлен",
+      "in_progress": "В пути",
+      "pending": "Ожидание",
+      "ready_for_pickup": "Водитель на месте",
+      "waiting_bids": "Ожидает откликов",
+      "waiting_delivery_confirmation": "Ожидает подтверждения доставки",
+      "waiting_driver_confirmation": "Ожидает подтверждения водителя",
+      "waiting_driver_decision": "Ждём решения водителя",
+      "waiting_pickup_confirmation": "Ожидает передачи"
+    }
+  },
+  "payment_types": {
+    "agreement": "По договорённости",
+    "card": "На карту",
+    "cash": "Наличные",
+    "cashless_no_vat": "Безнал без НДС",
+    "cashless_vat": "Безнал с НДС",
+    "prepayment": "Предоплата"
+  },
+  "profile": {
+    "contact": {
+      "email": "Email",
+      "empty": "Не указан",
+      "phone": "Телефон",
+      "title": "Контактная информация"
+    },
+    "delete": {
+      "cancel": "Отмена",
+      "confirm": "Удалить",
+      "error_empty": "Введите пароль",
+      "error_failed": "Не удалось удалить аккаунт",
+      "password": "Пароль",
+      "prompt": "Введите пароль, чтобы удалить аккаунт. Действие необратимо.",
+      "success": "Аккаунт удален",
+      "title": "Удалить аккаунт"
+    },
+    "delete_account": "Удалить аккаунт",
+    "error": {
+      "title": "Ошибка загрузки"
+    },
+    "my_reviews": "Мои отзывы",
+    "role": {
+      "driver": "Водитель",
+      "sender": "Отправитель",
+      "unknown": "Роль не указана"
+    },
+    "title": "Профиль",
+    "unavailable": "Профиль пользователя недоступен",
+    "user_placeholder": "Пользователь"
+  },
+  "profile_edit": {
+    "change_photo": "Выбрать фото",
+    "edit": "Изменить",
+    "email": "Email",
+    "email_invalid": "Некорректный email",
+    "error": "Не удалось обновить профиль",
+    "first_name": "Имя",
+    "first_name_required": "Введите имя",
+    "last_name": "Фамилия",
+    "no_changes": "Изменений нет",
+    "phone": "Телефон",
+    "phone_required": "Введите телефон",
+    "save": "Сохранить",
+    "success": "Профиль обновлен",
+    "title": "Редактировать профиль"
+  },
+  "profile_tab": {
+    "app_version": "Версия приложения",
+    "balance_title": "Общий баланс",
+    "error": "Не удалось загрузить профиль",
+    "history": "История",
+    "logout": "Выйти из аккаунта",
+    "logout_error": "Ошибка при выходе: {0}",
+    "logout_question": "Вы уверены, что хотите выйти из аккаунта?",
+    "logout_title": "Выход из аккаунта",
+    "referral": {
+      "copied": "Код скопирован",
+      "copy": "Скопировать",
+      "title": "Мой реферальный код",
+      "unavailable": "Реферальный код недоступен"
+    },
+    "settings": {
+      "help": "Помощь",
+      "privacy": "Политика конфиденциальности",
+      "profile": "Профиль",
+      "settings": "Настройки",
+      "terms": "Условия использования",
+      "user_agreement": "Пользовательское соглашение",
+      "wallet": "Кошелек"
+    },
+    "socials_title": "Мы в соцсетях",
+    "support": {
+      "close": "ОК",
+      "help_body": "Нужна помощь? Напишите нам любым способом ниже.",
+      "privacy_body": "Скоро добавим ссылку на политику конфиденциальности.",
+      "terms_body": "Вопросы по условиям — напишите в поддержку."
+    },
+    "title": "Профиль",
+    "top_up": "Пополнить",
+    "transfer": "Перевести"
+  },
+  "repository": {
+    "driver_announcement": {
+      "create_error": "Не удалось создать объявление",
+      "delete_error": "Не удалось удалить объявление",
+      "empty_response": "Пустой ответ от сервера",
+      "load_error": "Не удалось загрузить объявления",
+      "save_error": "Не удалось сохранить объявление"
+    },
+    "order": {
+      "create_error": "Не удалось создать заявку. Попробуйте позже.",
+      "delete_error": "Не удалось удалить заказ. Попробуйте позже.",
+      "empty_response": "Пустой ответ от сервера",
+      "load_bids_error": "Не удалось загрузить отклики. Попробуйте позже.",
+      "load_locations_error": "Не удалось загрузить координаты. Попробуйте позже.",
+      "photos_minimum": "Нужно приложить минимум 2 фото груза",
+      "process_bid_error": "Не удалось обработать отклик. Попробуйте позже.",
+      "save_error": "Не удалось сохранить изменения. Попробуйте позже.",
+      "send_bid_error": "Не удалось отправить отклик. Попробуйте позже.",
+      "send_locations_error": "Не удалось отправить координаты",
+      "update_error": "Не удалось обновить заказ. Попробуйте позже."
+    },
+    "partner": {
+      "fetch_error": "Не удалось загрузить список партнеров. Повторите попытку позже.",
+      "create_error": "Не удалось отправить заявку партнера. Попробуйте ещё раз.",
+      "network_error": "Ошибка сети. Проверьте подключение и попробуйте снова."
+    },
+    "profile": {
+      "fetch_empty": "Пустой ответ профиля",
+      "update_empty": "Пустой ответ при обновлении профиля"
+    }
+  },
+  "saved_routes": {
+    "empty": "У вас пока нет сохраненных маршрутов",
+    "error_loading": "Ошибка загрузки",
+    "title": "Сохраненные маршруты"
+  },
+  "settings": {
+    "language": {
+      "title": "Язык"
+    },
+    "title": "Настройки"
+  },
+  "shared": {
+    "address": {
+      "hint_city": "Адрес в городе {}",
+      "hint_default": "Улица, дом"
+    },
+    "common": {
+      "ok": "Понятно",
+      "required_field": "Это поле обязательно"
+    },
+    "no_connection": {
+      "internet_error_body": "Проверьте настройки сети или подключитесь к Wi-Fi и попробуйте снова.",
+      "internet_error_title": "Нет соединения с интернетом",
+      "server_error_body": "Мы уже работаем над устранением проблемы. Пожалуйста, попробуйте позже.",
+      "server_error_title": "Сервер временно недоступен"
+    }
+  },
+  "splash": {
+    "subtitle": "Ваши грузоперевозки"
+  },
+  "tariffs": {
+    "active": "Активен",
+    "btn_connect": "Подключить",
+    "btn_connected": "Уже подключен",
+    "cards": {
+      "city": {
+        "features": {
+          "0": "Только внутри города",
+          "1": "Локальные заказы"
+        },
+        "subtitle": "Перевозки внутри одного города",
+        "title": "Городской"
+      },
+      "intercity": {
+        "features": {
+          "0": "Междугородние рейсы (РК)"
+        },
+        "subtitle": "Перевозки между городами Казахстана",
+        "title": "Междугородний"
+      },
+      "international": {
+        "features": {
+          "0": "Международные рейсы",
+          "1": "Междугородние рейсы (РК)"
+        },
+        "subtitle": "Перевозки за пределы РК и по всей стране",
+        "title": "Международный"
+      }
+    },
+    "dialog": {
+      "body_middle": " за ",
+      "body_prefix": "Вы собираетесь подключить тариф ",
+      "error_default": "Ошибка при подключении",
+      "success": "Тариф успешно подключен!",
+      "title": "Подключение тарифа"
+    },
+    "empty": "Нет доступных тарифов",
+    "error_load": "Ошибка загрузки: {}",
+    "price_month": "{} ₸ / месяц",
+    "title": "Тарифы"
+  },
+  "vehicle_type": {
+    "aerial_platform": "Автовышка",
+    "any": "Любой транспорт",
+    "bitumen_tanker": "Битумовоз",
+    "bulk": "Балковоз",
+    "bus": "Автобус",
+    "car_carrier": "Автовоз",
+    "car_transporter": "Автотранспортер",
+    "cattle_truck": "Скотовоз",
+    "cement_truck": "Цементовоз",
+    "chemical_tank": "Цистерна химическая",
+    "chip_truck": "Щеповоз",
+    "concrete_mixer": "Бетоновоз",
+    "container_carrier": "Контейнеровоз",
+    "container_platform": "Контейнерная площадка",
+    "covered": "Крытая",
+    "crane": "Кран",
+    "diplomatic": "Дипломатический груз",
+    "dump_truck": "Самосвал",
+    "excavator": "Экскаватор",
+    "feed": "Кормовоз",
+    "fish_truck": "Рыбовоз",
+    "flatbed": "Бортовой",
+    "flour_truck": "Муковоз",
+    "food_tank": "Цистерна пищевая",
+    "fuel_tanker": "Бензовоз",
+    "garbage_truck": "Мусоровоз",
+    "gas": "Газовоз",
+    "gazelle_flatbed": "Газель бортовая",
+    "gazelle_passenger": "Газель пассажирская",
+    "glass": "Стекловоз",
+    "grain": "Зерновоз",
+    "hyundai_porter": "Хендай Портер",
+    "incubator": "Инкубатор",
+    "isotherm": "Изотерм",
+    "loader": "Погрузчик",
+    "log_truck": "Лесовоз",
+    "manipulator": "Манипулятор",
+    "mega_truck": "Мега фура",
+    "minibus": "Микроавтобус",
+    "open": "Открытая",
+    "open_container": "Открытый контейнер",
+    "panel_truck": "Панелевоз",
+    "pipe_truck": "Трубовоз",
+    "platform": "Платформа",
+    "refrigerator": "Рефрижератор",
+    "roll_transporter": "Рулоновоз",
+    "semi_trailer": "Полуприцеп",
+    "sewage": "Ассенизатор",
+    "shalanda": "Шаланда",
+    "tent": "Тент",
+    "tractor": "Седельный тягач",
+    "trailer": "Прицеп",
+    "trailer_platform": "Трал",
+    "van": "Цельнометаллический"
+  },
+  "vehicle_types": {
+    "aerial_platform": "Автовышка",
+    "any": "Любой транспорт",
+    "bitumen_tanker": "Битумовоз",
+    "bulk": "Балковоз",
+    "bus": "Автобус",
+    "car_carrier": "Автовоз",
+    "car_transporter": "Автотранспортер",
+    "cattle_truck": "Скотовоз",
+    "cement_truck": "Цементовоз",
+    "chemical_tank": "Цистерна химическая",
+    "chip_truck": "Щеповоз",
+    "concrete_mixer": "Бетоновоз",
+    "container_carrier": "Контейнеровоз",
+    "container_platform": "Конт. площадка",
+    "covered": "Крытая",
+    "crane": "Кран",
+    "diplomatic": "Дипломатический груз",
+    "dump_truck": "Самосвал",
+    "excavator": "Экскаватор",
+    "feed": "Кормовоз",
+    "fish_truck": "Рыбовод",
+    "flatbed": "Бортовой",
+    "flour_truck": "Муковоз",
+    "food_tank": "Цистерна пищевая",
+    "fuel_tanker": "Бензовоз",
+    "garbage_truck": "Мусоровоз",
+    "gas": "Газовоз",
+    "gazelle_flatbed": "Газель бортовая",
+    "gazelle_passenger": "Газель пассажирская",
+    "glass": "Стекловоз",
+    "grain": "Зерновоз",
+    "hyundai_porter": "Хендай Портер",
+    "incubator": "Инкубатор",
+    "isotherm": "Изотерм",
+    "loader": "Погрузчик",
+    "log_truck": "Лесовоз",
+    "manipulator": "Манипулятор",
+    "mega_truck": "Мега фура",
+    "minibus": "Микроавтобус",
+    "open": "Открытая",
+    "open_container": "Открытый контейнер",
+    "panel_truck": "Панелевоз",
+    "pipe_truck": "Трубовоз",
+    "platform": "Платформа",
+    "ref": "Рефрижератор",
+    "refrigerator": "Рефрижератор",
+    "roll_transporter": "Рулоновоз",
+    "semi_trailer": "Полуприцеп",
+    "sewage": "Ассенизатор",
+    "shalanda": "Шаланда",
+    "tent": "Тентованый",
+    "tractor": "Седельный тягач",
+    "trailer": "Прицеп",
+    "trailer_platform": "Трал",
+    "van": "Цельнометалл"
+  },
+  "wallet": {
+    "action": {
+      "soon": "Скоро доступно",
+      "top_up": "Пополнить"
+    },
+    "badge": {
+      "bonus": "Пополнение бонусами",
+      "unlimited": "Без ограничений"
+    },
+    "balance": {
+      "available": "Доступно"
+    },
+    "error": {
+      "load": "Не удалось загрузить кошелек"
+    },
+    "history": {
+      "placeholder": {
+        "subtitle": "Мы подготовим детализацию пополнений и списаний в ближайшем обновлении.",
+        "title": "История транзакций появится скоро"
+      },
+      "title": "История"
+    },
+    "title": "Кошелек"
+  },
+  "welcome": {
+    "body": "Создавайте объявления, следите за статусами и управляйте перевозками в одном приложении.",
+    "login": "Войти",
+    "register": "Регистрация",
+    "subtitle": "Ваш логистический партнер",
+    "title": "Добро пожаловать!"
   }
 }

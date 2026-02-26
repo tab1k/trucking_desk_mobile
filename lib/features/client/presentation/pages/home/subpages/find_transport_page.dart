@@ -91,27 +91,32 @@ class _FindTransportPageState extends ConsumerState<FindTransportPage> {
         ),
         body: SafeArea(
           top: false,
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            children: [
-              _buildSearchRow(hasFilters),
-              if (hasFilters) ...[
-                SizedBox(height: 10.h),
-                _buildFiltersBadge(filters),
-              ],
-              SizedBox(height: 20.h),
-              Text(
-                tr('find_transport.available'),
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+          child: RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(driverAnnouncementsProvider);
+            },
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              children: [
+                _buildSearchRow(hasFilters),
+                if (hasFilters) ...[
+                  SizedBox(height: 10.h),
+                  _buildFiltersBadge(filters),
+                ],
+                SizedBox(height: 20.h),
+                Text(
+                  tr('find_transport.available'),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              SizedBox(height: 12.h),
-              ..._buildAnnouncementWidgets(theme, announcementsAsync),
-              SizedBox(height: _bottomSpacing(context)),
-            ],
+                SizedBox(height: 12.h),
+                ..._buildAnnouncementWidgets(theme, announcementsAsync),
+                SizedBox(height: _bottomSpacing(context)),
+              ],
+            ),
           ),
         ),
       ),
@@ -239,6 +244,7 @@ class _FindTransportPageState extends ConsumerState<FindTransportPage> {
                 offer: offer,
                 onContact: () => showDriverContactSheet(context, offer),
                 onFavoriteToggle: () => _toggleFavorite(offer),
+                showFavoriteButton: false,
               ),
             ),
           );

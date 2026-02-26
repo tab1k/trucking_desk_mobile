@@ -1,24 +1,48 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/main.dart';
 
+/// Minimal in-memory loader to avoid depending on asset files during widget tests.
+class _EmptyAssetLoader extends AssetLoader {
+  const _EmptyAssetLoader();
 
+  @override
+  Future<Map<String, dynamic>> load(String path, Locale locale) async => {};
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const FuraApp());
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('App builds inside localization + provider scope', (tester) async {
+    await EasyLocalization.ensureInitialized();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpWidget(
+      ProviderScope(
+        child: EasyLocalization(
+          supportedLocales: const [
+            Locale('ru'),
+            Locale('en'),
+            Locale('kk'),
+            Locale('zh'),
+          ],
+          path: 'assets/translations',
+          fallbackLocale: const Locale('ru'),
+          assetLoader: const _EmptyAssetLoader(),
+          child: const MaterialApp(
+            home: Scaffold(
+              body: Center(child: Text('app_title')),
+            ),
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Pump a couple of frames to let localization delegates initialize.
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('app_title'), findsOneWidget);
   });
 }

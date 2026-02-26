@@ -12,7 +12,7 @@ import 'package:fura24.kz/features/client/data/repositories/driver_announcement_
 import 'package:fura24.kz/features/driver/view/driver_create_announcement_page.dart';
 import 'package:fura24.kz/features/driver/providers/driver_announcements_provider.dart';
 import 'package:fura24.kz/features/driver/view/widgets/driver_announcement_detail_sheet.dart';
-import 'package:fura24.kz/features/driver/utils/driver_verification_guard.dart';
+import 'package:fura24.kz/features/driver/utils/driver_restrictions_guard.dart';
 import 'package:fura24.kz/features/notifications/providers/notifications_provider.dart';
 import 'package:fura24.kz/shared/widgets/single_appbar.dart';
 
@@ -20,7 +20,8 @@ class DriverTransportPage extends ConsumerStatefulWidget {
   const DriverTransportPage({super.key});
 
   @override
-  ConsumerState<DriverTransportPage> createState() => _DriverTransportPageState();
+  ConsumerState<DriverTransportPage> createState() =>
+      _DriverTransportPageState();
 }
 
 class _DriverTransportPageState extends ConsumerState<DriverTransportPage> {
@@ -51,10 +52,9 @@ class _DriverTransportPageState extends ConsumerState<DriverTransportPage> {
             ),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, _) {
-              final message =
-                  error is ApiException
-                      ? error.message
-                      : tr('driver_transport.error_load');
+              final message = error is ApiException
+                  ? error.message
+                  : tr('driver_transport.error_load');
               return _DriverAnnouncementError(
                 message: message,
                 onRetry: () => ref.invalidate(driverMyAnnouncementsProvider),
@@ -67,7 +67,7 @@ class _DriverTransportPageState extends ConsumerState<DriverTransportPage> {
         padding: EdgeInsets.only(bottom: 10.h),
         child: FloatingActionButton(
           onPressed: () async {
-            final allowed = await ensureDriverVerified(context, ref);
+            final allowed = await ensureDriverActionAllowed(context, ref);
             if (!allowed) return;
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -99,30 +99,22 @@ class _DriverAnnouncementList extends StatelessWidget {
     final bottomInset = MediaQuery.of(context).padding.bottom;
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child:
-          announcements.isEmpty
-              ? ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(vertical: 80.h),
-                children: const [
-                  _DriverAnnouncementEmptyState(),
-                ],
-              )
-              : ListView.separated(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.only(
-                  top: 4.h,
-                  bottom: bottomInset + 72.h,
-                ),
-                itemBuilder: (context, index) {
-                  final announcement = announcements[index];
-                  return _DriverAnnouncementListItem(
-                    announcement: announcement,
-                  );
-                },
-                separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                itemCount: announcements.length,
-              ),
+      child: announcements.isEmpty
+          ? ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(vertical: 80.h),
+              children: const [_DriverAnnouncementEmptyState()],
+            )
+          : ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.only(top: 4.h, bottom: bottomInset + 72.h),
+              itemBuilder: (context, index) {
+                final announcement = announcements[index];
+                return _DriverAnnouncementListItem(announcement: announcement);
+              },
+              separatorBuilder: (_, __) => SizedBox(height: 8.h),
+              itemCount: announcements.length,
+            ),
     );
   }
 }
@@ -161,34 +153,31 @@ class _DriverAnnouncementListItemState
               borderRadius: BorderRadius.circular(16.r),
               padding: EdgeInsets.zero,
               child: Center(
-                child:
-                    _isDeleting
-                        ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.2,
-                            color: Colors.white,
-                          ),
-                        )
-                        : SvgPicture.asset(
-                          'assets/svg/trash.svg',
-                          width: 20.w,
-                          height: 20.w,
-                          colorFilter: const ColorFilter.mode(
-                            Colors.white,
-                            BlendMode.srcIn,
-                          ),
+                child: _isDeleting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.2,
+                          color: Colors.white,
                         ),
+                      )
+                    : SvgPicture.asset(
+                        'assets/svg/trash.svg',
+                        width: 20.w,
+                        height: 20.w,
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
               ),
             ),
           ],
         ),
         child: GestureDetector(
-          onTap: () => showDriverAnnouncementDetailSheet(
-            context,
-            widget.announcement,
-          ),
+          onTap: () =>
+              showDriverAnnouncementDetailSheet(context, widget.announcement),
           behavior: HitTestBehavior.opaque,
           child: DriverAnnouncementCard(
             offer: offer,
@@ -243,6 +232,7 @@ class _DriverAnnouncementListItemState
       if (!mounted) return;
       ref.invalidate(driverMyAnnouncementsProvider);
       await notifications.removeByEntity(widget.announcement.id);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(tr('driver_transport.deleted'))),
       );
@@ -367,7 +357,9 @@ class _DriverAnnouncementStatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        isActive ? tr('driver_transport.status_active') : tr('driver_transport.status_hidden'),
+        isActive
+            ? tr('driver_transport.status_active')
+            : tr('driver_transport.status_hidden'),
         style: TextStyle(
           color: color,
           fontSize: 12.sp,
@@ -388,10 +380,7 @@ class _DriverAnnouncementEmptyState extends StatelessWidget {
         Text(
           tr('driver_transport.empty'),
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: Colors.black54,
-          ),
+          style: TextStyle(fontSize: 14.sp, color: Colors.black54),
         ),
       ],
     );

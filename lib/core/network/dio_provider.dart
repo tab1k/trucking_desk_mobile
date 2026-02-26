@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fura24.kz/core/config/app_config.dart';
 import 'package:fura24.kz/core/error/global_error_provider.dart';
 import 'package:fura24.kz/core/network/global_error_interceptor.dart';
+import 'package:fura24.kz/core/network/token_refresh_interceptor.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final baseUrl = AppConfig.apiBaseUrl.trim();
@@ -32,6 +33,9 @@ final dioProvider = Provider<Dio>((ref) {
   // Add Global Error Interceptor
   final errorNotifier = ref.read(globalErrorProvider.notifier);
   dio.interceptors.add(GlobalErrorInterceptor(errorNotifier));
+
+  // Add Auth Refresh Interceptor (must be last to wrap errors)
+  dio.interceptors.add(TokenRefreshInterceptor(ref: ref, dio: dio));
 
   return dio;
 });

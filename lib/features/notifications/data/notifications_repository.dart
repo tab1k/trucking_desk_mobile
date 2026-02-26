@@ -7,7 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fura24.kz/core/network/dio_provider.dart';
 import 'package:fura24.kz/features/notifications/domain/app_notification.dart';
 
-final notificationsRepositoryProvider = Provider<NotificationsRepository>((ref) {
+final notificationsRepositoryProvider = Provider<NotificationsRepository>((
+  ref,
+) {
   final dio = ref.watch(dioProvider);
   return NotificationsRepository(dio: dio);
 });
@@ -35,22 +37,25 @@ class NotificationsRepository {
   Future<void> markAsRead(List<String> ids) async {
     if (ids.isEmpty) return;
     try {
-      await _dio.post<dynamic>(
-        'notifications/mark-read/',
-        data: {'ids': ids},
-      );
+      await _dio.post<dynamic>('notifications/mark-read/', data: {'ids': ids});
     } catch (_) {
       // ignore network errors, fallback to local mark
     }
     await _markLocalAsRead(ids);
   }
 
+  Future<void> deleteNotification(String id) async {
+    try {
+      await _dio.delete<dynamic>('notifications/$id/');
+    } catch (_) {
+      // ignore network errors
+    }
+    await _removeLocal(id);
+  }
+
   Future<void> addNotification(AppNotification notification) async {
     try {
-      await _dio.post<dynamic>(
-        'notifications/',
-        data: notification.toJson(),
-      );
+      await _dio.post<dynamic>('notifications/', data: notification.toJson());
     } catch (_) {
       // ignore network errors, still cache locally
     }
@@ -62,21 +67,28 @@ class NotificationsRepository {
   Future<void> removeByEntity(String entityId) async {
     if (entityId.isEmpty) return;
     final current = await _readLocal();
-    final filtered =
-        current.where((n) => (n.entityId ?? '') != entityId).toList();
+    final filtered = current
+        .where((n) => (n.entityId ?? '') != entityId)
+        .toList();
     await _saveLocal(filtered);
   }
 
   List<AppNotification> _parseList(dynamic data) {
     if (data is List) {
-      return data.whereType<Map<String, dynamic>>().map(AppNotification.fromJson).toList();
+      return data
+          .whereType<Map<String, dynamic>>()
+          .map(AppNotification.fromJson)
+          .toList();
     }
     if (data is Map<String, dynamic>) {
       final keys = ['results', 'data', 'items', 'notifications'];
       for (final key in keys) {
         final value = data[key];
         if (value is List) {
-          return value.whereType<Map<String, dynamic>>().map(AppNotification.fromJson).toList();
+          return value
+              .whereType<Map<String, dynamic>>()
+              .map(AppNotification.fromJson)
+              .toList();
         }
       }
     }
@@ -111,9 +123,7 @@ class NotificationsRepository {
     final current = await _readLocal();
     if (current.isEmpty) return;
     final updated = current
-        .map(
-          (n) => ids.contains(n.id) ? n.copyWith(isRead: true) : n,
-        )
+        .map((n) => ids.contains(n.id) ? n.copyWith(isRead: true) : n)
         .toList();
     await _saveLocal(updated);
   }
@@ -129,5 +139,11 @@ class NotificationsRepository {
     final merged = map.values.toList();
     merged.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return merged;
+  }
+
+  Future<void> _removeLocal(String id) async {
+    final current = await _readLocal();
+    final updated = current.where((n) => n.id != id).toList();
+    await _saveLocal(updated);
   }
 }

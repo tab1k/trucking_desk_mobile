@@ -25,16 +25,16 @@ class GlobalErrorInterceptor extends Interceptor {
         err.type == DioExceptionType.sendTimeout ||
         err.type == DioExceptionType.receiveTimeout ||
         err.type == DioExceptionType.connectionError ||
-        (err.error != null && err.error.toString().contains('SocketException'));
+        err.type == DioExceptionType.unknown ||
+        (err.error != null &&
+            (err.error.toString().contains('SocketException') ||
+                err.error.toString().contains('HandshakeException') ||
+                err.error.toString().contains('CERTIFICATE_VERIFY_FAILED')));
   }
 
   bool _isServerError(DioException err) {
-    if (err.type == DioExceptionType.badResponse) {
-      final statusCode = err.response?.statusCode;
-      if (statusCode != null && statusCode >= 500) {
-        return true;
-      }
-    }
-    return false;
+    if (err.type != DioExceptionType.badResponse) return false;
+    final statusCode = err.response?.statusCode;
+    return statusCode != null && statusCode >= 500;
   }
 }

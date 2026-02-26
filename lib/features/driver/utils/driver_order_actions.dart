@@ -7,6 +7,7 @@ import 'package:fura24.kz/core/exceptions/api_exception.dart';
 import 'package:fura24.kz/features/client/data/repositories/order_repository.dart';
 import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
 import 'package:fura24.kz/features/driver/providers/driver_favorites_provider.dart';
+import 'package:fura24.kz/features/driver/utils/driver_restrictions_guard.dart';
 
 Future<void> toggleDriverOrderFavorite(
   BuildContext context,
@@ -37,7 +38,14 @@ Future<void> toggleDriverOrderFavorite(
   }
 }
 
-Future<void> callOrderSender(BuildContext context, OrderSummary order) async {
+Future<void> callOrderSender(
+  BuildContext context,
+  WidgetRef ref,
+  OrderSummary order,
+) async {
+  final allowed = await ensureDriverActionAllowed(context, ref);
+  if (!allowed) return;
+
   if (!order.canDriverCall) {
     ScaffoldMessenger.of(
       context,
@@ -67,7 +75,14 @@ Future<void> callOrderSender(BuildContext context, OrderSummary order) async {
   }
 }
 
-Future<void> openOrderWhatsApp(BuildContext context, OrderSummary order) async {
+Future<void> openOrderWhatsApp(
+  BuildContext context,
+  WidgetRef ref,
+  OrderSummary order,
+) async {
+  final allowed = await ensureDriverActionAllowed(context, ref);
+  if (!allowed) return;
+
   if (!order.canDriverCall) {
     ScaffoldMessenger.of(
       context,

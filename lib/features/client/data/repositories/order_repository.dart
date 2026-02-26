@@ -22,10 +22,6 @@ class OrderRepository {
   final Dio _dio;
 
   Future<void> createOrder(CreateOrderRequest request) async {
-    if (request.photos.length < 2) {
-      throw ApiException(tr('repository.order.photos_minimum'));
-    }
-
     final formData = await _buildFormData(request);
 
     try {
@@ -212,9 +208,14 @@ class OrderRepository {
     }
   }
 
-  Future<List<OrderSummary>> fetchOrders() async {
+  Future<List<OrderSummary>> fetchOrders({
+    Map<String, dynamic>? filters,
+  }) async {
     try {
-      final response = await _dio.get<dynamic>('cargo/requests/');
+      final response = await _dio.get<dynamic>(
+        'cargo/requests/',
+        queryParameters: filters,
+      );
       final data = response.data;
 
       if (data == null) {

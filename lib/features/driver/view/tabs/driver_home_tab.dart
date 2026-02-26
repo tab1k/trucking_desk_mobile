@@ -12,6 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
 import 'package:fura24.kz/features/client/presentation/pages/home/widgets/location_error_banner.dart';
 import 'package:fura24.kz/features/driver/view/widgets/driver_home_bottom_sheet.dart';
+import 'package:fura24.kz/features/driver/view/widgets/weather_widget.dart';
 import 'package:fura24.kz/features/client/presentation/pages/home/widgets/user_location_marker.dart';
 import 'package:fura24.kz/features/client/state/tracked_cargo_notifier.dart';
 import 'package:fura24.kz/features/driver/providers/driver_assigned_orders_provider.dart';
@@ -534,6 +535,18 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
               ),
             ),
 
+          if (!isFullSheet && !isCollapsedSheet)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              top: MediaQuery.of(context).padding.top + 16.h,
+              left: 16.w,
+              child: WeatherWidget(
+                latitude: _currentLocation?.latitude,
+                longitude: _currentLocation?.longitude,
+              ),
+            ),
+
           if (isCollapsedSheet) ...[
             Positioned(
               bottom: 120.h,
@@ -900,7 +913,9 @@ class _DriverHomeTabState extends ConsumerState<DriverHomeTab> {
     );
 
     if (selected != null) {
+      if (!mounted) return;
       await context.setLocale(selected.locale);
+      if (!mounted) return;
       setState(() {});
     }
   }

@@ -154,11 +154,11 @@ class DriverOrderCard extends StatelessWidget {
                 ),
                 _DriverInfoChip(
                   icon: Icons.inventory_2_outlined,
-                  label: order.loadingTypeLabel,
+                  label: tr('cargo_types.loading.${order.loadingType}'),
                 ),
                 _DriverInfoChip(
                   icon: Icons.payments_outlined,
-                  label: order.paymentTypeLabel,
+                  label: tr('cargo_types.payment.${order.paymentType}'),
                 ),
               ],
             ),
@@ -316,13 +316,13 @@ class DriverOrderCard extends StatelessWidget {
   String _statusLabel(CargoStatus status) {
     switch (status) {
       case CargoStatus.pending:
-        return 'Ожидание';
+        return tr('driver_orders.status.pending');
       case CargoStatus.inTransit:
-        return 'В пути';
+        return tr('driver_orders.status.in_transit');
       case CargoStatus.completed:
-        return 'Завершен';
+        return tr('driver_orders.status.completed');
       case CargoStatus.cancelled:
-        return 'Отменен';
+        return tr('driver_orders.status.cancelled');
     }
   }
 }

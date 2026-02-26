@@ -1,1054 +1,1289 @@
 {
   "app_title": "Fura24.kz",
-  "common": {
-    "retry": "Retry",
-    "back": "Back",
-    "next": "Next",
-    "reset": "Reset",
-    "cancel": "Cancel",
-    "error": "Error",
-    "months_short": {
-      "jan": "Jan",
-      "feb": "Feb",
-      "mar": "Mar",
-      "apr": "Apr",
-      "may": "May",
-      "jun": "Jun",
-      "jul": "Jul",
-      "aug": "Aug",
-      "sep": "Sep",
-      "oct": "Oct",
-      "nov": "Nov",
-      "dec": "Dec"
-    }
-  },
-  "wallet": {
-    "title": "Wallet",
-    "balance": {
-      "available": "Available"
-    },
-    "badge": {
-      "unlimited": "No limits",
-      "bonus": "Bonus top-up"
-    },
-    "action": {
-      "top_up": "Top up",
-      "soon": "Coming soon"
-    },
-    "history": {
-      "title": "History",
-      "placeholder": {
-        "title": "Transaction history coming soon",
-        "subtitle": "We’ll add top-up and withdrawal details in the next update."
-      }
-    },
-    "error": {
-      "load": "Failed to load wallet"
-    }
-  },
-  "settings": {
-    "title": "Settings",
-    "language": {
-      "title": "Language"
-    }
-  },
-  "profile": {
-    "title": "Profile",
-    "unavailable": "User profile unavailable",
-    "my_reviews": "My Reviews",
-    "user_placeholder": "User",
-    "contact": {
-      "title": "Contact information",
-      "phone": "Phone",
-      "email": "Email",
-      "empty": "Not specified"
-    },
-    "delete_account": "Delete account",
-    "delete": {
-      "title": "Delete account",
-      "prompt": "Enter your password to delete the account. This action cannot be undone.",
-      "password": "Password",
-      "cancel": "Cancel",
-      "confirm": "Delete",
-      "success": "Account deleted",
-      "error_empty": "Enter your password",
-      "error_failed": "Failed to delete account"
-    },
-    "role": {
-      "unknown": "Role not set",
-      "sender": "Sender",
-      "driver": "Driver"
-    },
-    "error": {
-      "title": "Loading error"
-    }
-  },
-  "profile_edit": {
-    "title": "Edit profile",
-    "first_name": "First name",
-    "last_name": "Last name",
-    "email": "Email",
-    "phone": "Phone",
-    "edit": "Edit",
-    "change_photo": "Choose photo",
-    "save": "Save",
-    "no_changes": "Nothing to update",
-    "success": "Profile updated",
-    "error": "Failed to update profile",
-    "first_name_required": "Enter your first name",
-    "phone_required": "Enter a phone number",
-    "email_invalid": "Invalid email"
-  },
-  "profile_tab": {
-    "title": "Profile",
-    "error": "Failed to load profile",
-    "balance_title": "Total balance",
-    "top_up": "Top up",
-    "transfer": "Transfer",
-    "referral": {
-      "title": "My referral code",
-      "copy": "Copy",
-      "unavailable": "Referral code unavailable",
-      "copied": "Code copied"
-    },
-    "logout": "Sign out",
-    "logout_title": "Sign out",
-    "logout_question": "Are you sure you want to sign out?",
-    "logout_error": "Sign-out error: {0}",
-    "app_version": "App version",
-    "settings": {
-      "profile": "Profile",
-      "wallet": "Wallet",
-      "settings": "Settings",
-      "help": "Help",
-      "terms": "Terms of use",
-      "privacy": "Privacy policy",
-      "user_agreement": "User agreement"
-    },
-    "support": {
-      "help_body": "Need help? Reach us via the contacts below.",
-      "terms_body": "Questions about terms? Contact our support team.",
-      "privacy_body": "We'll add the privacy policy link soon.",
-      "close": "Got it"
-    },
-    "delete": {
-      "title": "Delete account",
-      "prompt": "Enter your password to delete your account. This action is irreversible.",
-      "password": "Password",
-      "cancel": "Cancel",
-      "confirm": "Delete",
-      "success": "Account deleted",
-      "error_empty": "Enter password",
-      "error_failed": "Failed to delete account"
-    },
-    "history": "History",
-    "socials_title": "We are on social media"
-  },
-  "favorites": {
-    "title": "Favorites",
-    "empty": "You haven't added any favorites yet."
+  "auth": {
+    "accept_terms": "I accept the Terms of Use and Privacy Policy",
+    "already_have_account": "Already have an account? ",
+    "confirm_btn": "Confirm",
+    "confirm_terms": "Please confirm you agree to the terms",
+    "country_not_found": "Nothing found",
+    "country_search_hint": "Country or code",
+    "create_account": "Create account",
+    "email_required": "Email *",
+    "enter_correct_number": "Enter a valid number",
+    "enter_details": "Enter your details to continue with Fura24.",
+    "forgot_password": "Forgot password?",
+    "incorrect_email": "Invalid email",
+    "login_btn": "Log In",
+    "login_hint": "Phone or email",
+    "login_text": "Log In",
+    "max_10_chars": "Max 10 chars",
+    "max_254_chars": "Max 254 chars",
+    "min_6_chars": "Minimum 6 characters",
+    "no_account": "Don't have an account? ",
+    "password_hint": "Password",
+    "password_required": "Password *",
+    "passwords_do_not_match": "Passwords do not match",
+    "phone_number_required": "Phone number *",
+    "referral_code_optional": "Referral code (optional)",
+    "register_btn": "Register",
+    "register_link": "Register",
+    "register_to_start": "Register to start using Fura24.",
+    "repeat_password_required": "Repeat password *",
+    "required_field": "Required field",
+    "role_client": "Client",
+    "role_driver": "Driver",
+    "select_country_code": "Select Country Code",
+    "sms_sent_to": "We sent an SMS with a code to\n{}",
+    "validation_correct_login": "Enter a valid phone or email",
+    "validation_correct_phone": "Enter a valid phone number",
+    "validation_enter_login": "Enter phone or email",
+    "validation_enter_password": "Enter password",
+    "verify_phone_title": "Confirm Phone Number",
+    "welcome_back": "Welcome\nBack!"
   },
   "auth_errors": {
+    "connection_error": "No connection to server",
+    "delete_account_failed": "Failed to delete account. Please try again.",
+    "empty_response": "Empty response from server",
+    "request_failed": "Failed to complete request. Please try again later.",
+    "reset_password_failed": "Failed to reset password. Please try again.",
     "send_code_failed": "Failed to send verification code",
     "send_reset_email_failed": "Failed to send password reset email",
-    "reset_password_failed": "Failed to reset password. Please try again.",
-    "empty_response": "Empty response from server",
-    "token_refresh_failed": "Server did not return a new access token",
-    "session_update_failed": "Failed to update session. Please try again later.",
-    "request_failed": "Failed to complete request. Please try again later.",
-    "delete_account_failed": "Failed to delete account. Please try again.",
-    "timeout": "Server connection timeout",
     "server_error": "Server returned an error",
-    "connection_error": "No connection to server",
+    "session_update_failed": "Failed to update session. Please try again later.",
+    "timeout": "Server connection timeout",
+    "token_refresh_failed": "Server did not return a new access token",
     "unknown_error": "An unknown error occurred"
   },
-  "tariffs": {
-    "title": "Tariffs",
-    "empty": "No tariffs available",
-    "error_load": "Loading error: {}",
-    "active": "Active",
-    "price_month": "{} / month",
-    "btn_connected": "Connected",
-    "btn_connect": "Connect",
-    "dialog": {
-      "title": "Connect Tariff",
-      "body_prefix": "You are about to connect tariff ",
-      "body_middle": " for ",
-      "success": "Tariff connected successfully!",
-      "error_default": "Connection error"
+  "calendar": {
+    "clear": "Clear",
+    "confirm": "Done",
+    "hint_range": "Tap two dates to set a period.",
+    "hint_single": "Tap a date to select.",
+    "select_date": "Select date",
+    "select_range": "Select period"
+  },
+  "cargo_types": {
+    "loading": {
+      "ANY": "Any",
+      "BACK": "Rear",
+      "BACK_SIDE": "Rear + Side",
+      "BACK_SIDE_TOP": "Rear + Side + Top",
+      "BACK_TOP": "Rear + Top",
+      "SIDE": "Side",
+      "SIDE_TOP": "Side + Top",
+      "TOP": "Top"
+    },
+    "payment": {
+      "CARD": "To Card",
+      "CASH": "Cash",
+      "NON_CASH": "Cashless"
     }
-  },
-  "driver_cargo_filters": {
-    "title": "Filters",
-    "reset": "Reset",
-    "loading_city": "Loading city",
-    "unloading_city": "Unloading city",
-    "select_city": "Select city",
-    "vehicle_type": "Vehicle type",
-    "any_vehicle": "Any vehicle",
-    "transport_date": "Transport date",
-    "any_date": "Any date",
-    "cost_from": "Cost from",
-    "cost_to": "Cost to",
-    "only_with_call": "Only with available call",
-    "only_with_call_subtitle": "Show only orders where you can call the sender.",
-    "show_announcements": "Show announcements",
-    "save_route": "Save route",
-    "route_saved": "Route saved to bookmarks",
-    "save_error": "Save error: {}"
-  },
-  "driver_order_detail": {
-    "cargo_params": "Cargo parameters",
-    "weight": "Weight",
-    "volume": "Volume",
-    "vehicle_type": "Vehicle type",
-    "loading_type": "Loading type",
-    "cost_and_terms": "Cost and terms",
-    "amount": "Amount",
-    "payment": "Payment",
-    "status": "Status",
-    "departure_date": "Departure date",
-    "sender_comment": "Sender comment",
-    "status_pending": "Pending",
-    "status_in_transit": "In transit",
-    "status_completed": "Completed",
-    "status_cancelled": "Cancelled"
-  },
-  "saved_routes": {
-    "title": "Saved routes",
-    "empty": "You don't have any saved routes yet",
-    "error_loading": "Loading error"
-  },
-  "driver_utils": {
-    "verification_needed_title": "Verification needed",
-    "verification_needed_body": "To respond to requests and publish transport, verify driver documents. This helps senders trust you.",
-    "authorize_as_driver": "Log in as a driver to continue",
-    "drivers_only": "Available only for drivers",
-    "later": "Later",
-    "verify": "Verify",
-    "removed_favorite": "Removed from favorites",
-    "added_favorite": "Added to favorites",
-    "update_favorite_error": "Failed to update favorites",
-    "contacts_hidden": "Sender has hidden contacts",
-    "phone_unavailable": "Sender phone unavailable",
-    "dialer_error": "Failed to open dialer",
-    "call_error": "Failed to call sender",
-    "whatsapp_error": "Failed to open WhatsApp"
-  },
-  "repository": {
-    "profile": {
-      "fetch_empty": "Empty profile response",
-      "update_empty": "Empty response when updating profile"
-    },
-    "driver_announcement": {
-      "empty_response": "Empty response from server",
-      "create_error": "Failed to create announcement",
-      "save_error": "Failed to save announcement",
-      "delete_error": "Failed to delete announcement",
-      "load_error": "Failed to load announcements"
-    },
-    "order": {
-      "photos_minimum": "At least 2 photos of the cargo are required",
-      "create_error": "Failed to create order. Please try again later.",
-      "save_error": "Failed to save changes. Please try again later.",
-      "delete_error": "Failed to delete order. Please try again later.",
-      "empty_response": "Empty response from server",
-      "load_locations_error": "Failed to load coordinates. Please try again later.",
-      "send_locations_error": "Failed to send coordinates",
-      "send_bid_error": "Failed to send bid. Please try again later.",
-      "load_bids_error": "Failed to load bids. Please try again later.",
-      "update_error": "Failed to update order. Please try again later.",
-      "process_bid_error": "Failed to process bid. Please try again later."
-    }
-  },
-  "shared": {
-    "no_connection": {
-      "server_error_title": "Server temporarily unavailable",
-      "internet_error_title": "No internet connection",
-      "server_error_body": "We are working on fixing the issue. Please try again later.",
-      "internet_error_body": "Check your network settings or connect to Wi-Fi and try again."
-    },
-    "common": {
-      "ok": "Got it",
-      "required_field": "This field is required"
-    },
-    "address": {
-      "hint_city": "Address in {}",
-      "hint_default": "Street, house"
-    }
-  },
-  "my_cargo": {
-    "title": "My listings",
-    "filters": {
-      "all": "All",
-      "active": "Active",
-      "completed": "Completed",
-      "cancelled": "Cancelled",
-      "empty": "No orders found for the selected filter."
-    },
-    "bids": {
-      "title": "Bids",
-      "empty": "No bids yet.",
-      "accepted": "You accepted a bid",
-      "declined": "Bid declined",
-      "order_number": "Order TD-{}",
-      "empty_subtitle": "As soon as drivers respond, you will see them here.",
-      "error_process": "Failed to process bid",
-      "offer": "Offer",
-      "comment": "Comment",
-      "status": {
-        "new": "New",
-        "confirmed": "Confirmed",
-        "declined": "Declined",
-        "cancelled": "Cancelled",
-        "driver_declined": "Driver declined"
-      },
-      "actions": {
-        "decline": "Decline",
-        "accept": "Accept",
-        "processing": "Processing..."
-      },
-      "offer_amount": "Bid amount: {}",
-      "date_unknown": "Date unknown"
-    },
-    "edit_title": "Edit order",
-    "repeat_title": "Repeat order",
-    "error": {
-      "load": "Failed to load orders",
-      "load_single": "Failed to load order",
-      "load_detail": "Failed to load order details"
-    }
-  },
-  "payment_types": {
-    "cashless_vat": "Bank transfer (VAT)",
-    "cashless_no_vat": "Bank transfer (No VAT)",
-    "cash": "Cash",
-    "card": "To card",
-    "prepayment": "Prepayment",
-    "agreement": "Negotiable"
-  },
-  "vehicle_types": {
-    "tent": "Tent",
-    "ref": "Refrigerator",
-    "isotherm": "Isotherm",
-    "any": "Any vehicle",
-    "covered": "Covered",
-    "car_carrier": "Car carrier",
-    "aerial_platform": "Aerial platform",
-    "car_transporter": "Car transporter",
-    "bulk": "Bulk carrier",
-    "fuel_tanker": "Fuel tanker",
-    "bitumen_tanker": "Bitumen tanker",
-    "flatbed": "Flatbed",
-    "shalanda": "Shalanda",
-    "trailer": "Trailer",
-    "bus": "Bus",
-    "semi_trailer": "Semi-trailer",
-    "container_carrier": "Container carrier",
-    "hyundai_porter": "Hyundai Porter",
-    "fish_truck": "Fish truck",
-    "chemical_tank": "Chemical tank",
-    "platform": "Platform",
-    "sewage": "Sewage truck",
-    "excavator": "Excavator",
-    "glass": "Glass carrier",
-    "incubator": "Incubator",
-    "roll_transporter": "Roll transporter",
-    "gazelle_passenger": "Gazelle passenger",
-    "gazelle_flatbed": "Gazelle flatbed",
-    "cattle_truck": "Cattle truck",
-    "garbage_truck": "Garbage truck",
-    "mega_truck": "Mega truck",
-    "diplomatic": "Diplomatic cargo",
-    "flour_truck": "Flour truck",
-    "open": "Open",
-    "concrete_mixer": "Concrete mixer",
-    "gas": "Gas tanker",
-    "grain": "Grain carrier",
-    "container_platform": "Container platform",
-    "feed": "Feed carrier",
-    "crane": "Crane",
-    "log_truck": "Log truck",
-    "manipulator": "Manipulator",
-    "minibus": "Minibus",
-    "chip_truck": "Chip truck",
-    "open_container": "Open container",
-    "panel_truck": "Panel truck",
-    "loader": "Loader",
-    "dump_truck": "Dump truck",
-    "tractor": "Tractor unit",
-    "trailer_platform": "Lowboy trailer",
-    "pipe_truck": "Pipe truck",
-    "van": "All-metal van",
-    "cement_truck": "Cement truck",
-    "food_tank": "Food tank",
-    "refrigerator": "Refrigerator"
-  },
-  "loading_types": {
-    "top": "Top loading",
-    "side": "Side loading",
-    "back": "Back loading",
-    "any_way": "Any way",
-    "any_type": "Any loading type"
-  },
-  "dimensions": {
-    "length": "{} m length",
-    "width": "{} m width",
-    "height": "{} m height",
-    "not_specified": "Not specified"
   },
   "common": {
+    "back": "Back",
+    "cancel": "Cancel",
     "date_agreement": "Negotiable",
-    "not_specified": "Not specified"
+    "error": "Error",
+    "months_short": {
+      "apr": "Apr",
+      "aug": "Aug",
+      "dec": "Dec",
+      "feb": "Feb",
+      "jan": "Jan",
+      "jul": "Jul",
+      "jun": "Jun",
+      "mar": "Mar",
+      "may": "May",
+      "nov": "Nov",
+      "oct": "Oct",
+      "sep": "Sep"
+    },
+    "next": "Next",
+    "not_specified": "Not specified",
+    "reset": "Reset",
+    "retry": "Retry"
   },
   "cost_estimate": {
-    "title": "Cost estimate",
-    "loading_point": "Pickup point",
-    "unloading_point": "Dropoff point",
-    "picker_loading": "Select pickup point",
-    "picker_unloading": "Select dropoff point",
     "button_calculate": "Calculate route",
     "button_loading": "Calculating…",
-    "prompt": "Tap \"Calculate route\" to get distance and time",
-    "error_select_points": "Select pickup and dropoff points",
-    "error_no_coords": "Selected points have no coordinates",
-    "error_request_failed": "Failed to get route: {0}",
+    "card_subtitle": "Roughly estimate the shipping cost for your cargo.",
+    "card_title": "Estimate cost",
+    "distance": "Distance: {} km",
+    "distance_short": "Distance",
+    "duration": "Duration: {}",
+    "duration_short": "Time",
     "error_invalid_consumption": "Enter a valid fuel consumption value",
     "error_invalid_price": "Enter a valid fuel price per liter",
-    "distance": "Distance: {} km",
-    "duration": "Duration: {}",
-    "card_title": "Estimate cost",
-    "card_subtitle": "Roughly estimate the shipping cost for your cargo.",
+    "error_no_coords": "Selected points have no coordinates",
+    "error_request_failed": "Failed to get route: {0}",
+    "error_select_points": "Select pickup and dropoff points",
+    "formula_hint": "s — km, x — L/100 km, y — price per liter",
+    "from": "From",
     "fuel_consumption": "Fuel consumption (L/100 km)",
     "fuel_consumption_suffix": "L / 100 km",
     "fuel_price": "Fuel price per liter",
     "fuel_price_suffix": "₸/L",
+    "loading_point": "Pickup point",
+    "picker_loading": "Select pickup point",
+    "picker_unloading": "Select dropoff point",
+    "prompt": "Tap \"Calculate route\" to get distance and time",
     "prompt_fuel": "Add fuel consumption and price per liter to see the estimate.",
-    "result_title": "Preliminary estimate",
-    "from": "From",
-    "to": "To",
-    "distance_short": "Distance",
-    "duration_short": "Time",
     "result_consumption": "Consumption",
-    "result_price": "Fuel price",
     "result_cost": "Estimated cost",
     "result_cost_value": "{0} ₸",
-    "formula_hint": "s — km, x — L/100 km, y — price per liter"
-  },
-  "nav": {
-    "order": "Order",
-    "favorites": "Favorites",
-    "cargo": "Listings",
-    "profile": "Profile"
-  },
-  "driver_contact": {
-    "title": "Contact driver",
-    "call": "Call",
-    "whatsapp": "WhatsApp",
-    "call_error": "Unable to open the phone app",
-    "whatsapp_error": "Unable to open WhatsApp"
+    "result_price": "Fuel price",
+    "result_title": "Preliminary estimate",
+    "title": "Cost estimate",
+    "to": "To",
+    "unloading_point": "Dropoff point"
   },
   "create_order": {
-    "step_counter": "Step {} of {}",
-    "title": "Add Cargo",
-    "edit_title": "Edit listing",
-    "subtitle": "We'll fill it step by step so nothing is missed.",
+    "creating": "Publishing…",
+    "currency": {
+      "eur": "Euro (€)",
+      "kgs": "Som (c)",
+      "kzt": "Tenge (₸)",
+      "rub": "Ruble (₽)",
+      "usd": "US Dollar ($)"
+    },
     "default_error": "Failed to create order",
+    "edit_title": "Edit listing",
+    "errors": {
+      "amount": "Enter the order amount.",
+      "cargo_name": "Enter cargo name.",
+      "photos": "Add at least 2 cargo photos.",
+      "pick_departure": "Select pickup point.",
+      "pick_destination": "Select dropoff point.",
+      "transport_term": "Transport duration must be 1–7 days.",
+      "weight": "Enter cargo weight in tons."
+    },
+    "errors_extra": {
+      "pick_photos": "Failed to select photos"
+    },
+    "filters": {
+      "loading": {
+        "any": "Any loading type",
+        "back": "Rear",
+        "back_side_top": "Rear + side + top",
+        "side": "Side",
+        "top": "Top"
+      }
+    },
+    "form": {
+      "add_photo": "Add",
+      "cargo": {
+        "additional": "Additional",
+        "amount": "Amount",
+        "contact_visibility_subtitle": "If off, drivers will only see the respond button. Phone number stays hidden.",
+        "contact_visibility_title": "Show phone number to drivers",
+        "currency": "Currency",
+        "details_title": "Cargo details",
+        "name": "Cargo name",
+        "note": "Note",
+        "photos": "Cargo photos",
+        "photos_hint": "Optional. JPG, PNG, HEIC supported."
+      },
+      "payment": {
+        "payment_type": "Payment method",
+        "transport_date": "Transport date",
+        "transport_term": "Transport duration, days (1–7)"
+      },
+      "route": {
+        "catalog_hint": "Cities are from the directory. Add the exact address to help the driver.",
+        "departure_address": "Pickup address in the city",
+        "departure_point": "Pickup city",
+        "destination_address": "Dropoff address in the city",
+        "destination_point": "Dropoff city",
+        "waypoint_address": "Waypoint address"
+      },
+      "summary": {
+        "cargo": "Cargo",
+        "note": "Note",
+        "payment": "Payment",
+        "route": "Route",
+        "title": "Summary",
+        "transport": "Transport"
+      },
+      "transport": {
+        "height": "Height (m)",
+        "length": "Length (m)",
+        "loading_type": "Loading type",
+        "vehicle_type": "Vehicle type",
+        "volume": "Volume (m³)",
+        "weight": "Weight (tons)",
+        "width": "Width (m)"
+      },
+      "validation": {
+        "required": "Required field",
+        "select_city": "Select a city"
+      }
+    },
     "location": {
       "pick_departure": "Select pickup point",
       "pick_destination": "Select dropoff point"
     },
-    "steps": {
-      "route": "Route",
-      "transport": "Transport",
-      "payment": "Dates & payment",
-      "cargo": "Cargo & note",
-      "route_desc": "Specify pickup and dropoff points.",
-      "transport_desc": "Describe the vehicle and parameters.",
-      "payment_desc": "Choose date and payment terms.",
-      "cargo_desc": "Check details and leave a note."
+    "payment_type": {
+      "card": "To card",
+      "cash": "Cash",
+      "non_cash": "Bank transfer"
     },
-    "route_points": {
-      "title": "Route waypoints",
-      "optional": "optional",
-      "add": "Add",
-      "limit": "Limit reached",
-      "pick": "Select a waypoint"
-    },
-    "filters": {
-      "loading": {
-        "any": "Any loading type",
-        "back": "Rear",
-        "top": "Top",
-        "side": "Side",
-        "back_side_top": "Rear + side + top"
-      }
-    },
-    "creating": "Publishing…",
     "publish": "Publish",
-    "errors": {
-      "pick_departure": "Select pickup point.",
-      "pick_destination": "Select dropoff point.",
-      "weight": "Enter cargo weight in tons.",
-      "amount": "Enter the order amount.",
-      "cargo_name": "Enter cargo name.",
-      "photos": "Add at least 2 cargo photos.",
-      "transport_term": "Transport duration must be 1–7 days."
-    },
-    "same_city_note": "Both points are in the same city and were selected from the directory without a precise map pin, so please add pickup and delivery addresses so the driver knows exactly where to collect and drop off the cargo.",
     "require_departure_address": "Please specify the pickup address within the city.",
     "require_destination_address": "Please specify the delivery address within the city.",
-    "form": {
-      "route": {
-        "departure_point": "Pickup city",
-        "destination_point": "Dropoff city",
-        "departure_address": "Pickup address in the city",
-        "destination_address": "Dropoff address in the city",
-        "waypoint_address": "Waypoint address",
-        "catalog_hint": "Cities are from the directory. Add the exact address to help the driver."
-      },
-      "transport": {
-        "vehicle_type": "Vehicle type",
-        "loading_type": "Loading type",
-        "weight": "Weight (tons)",
-        "volume": "Volume (m³)",
-        "length": "Length (m)",
-        "width": "Width (m)",
-        "height": "Height (m)"
-      },
-      "payment": {
-        "transport_date": "Transport date",
-        "transport_term": "Transport duration, days (1–7)",
-        "payment_type": "Payment method"
-      },
-      "cargo": {
-        "details_title": "Cargo details",
-        "name": "Cargo name",
-        "amount": "Amount",
-        "currency": "Currency",
-        "photos": "Cargo photos",
-        "photos_hint": "Optional. JPG, PNG, HEIC supported.",
-        "additional": "Additional",
-        "note": "Note",
-        "contact_visibility_title": "Show phone number to drivers",
-        "contact_visibility_subtitle": "If off, drivers will only see the respond button. Phone number stays hidden."
-      },
-      "summary": {
-        "title": "Summary",
-        "route": "Route",
-        "transport": "Transport",
-        "cargo": "Cargo",
-        "payment": "Payment",
-        "note": "Note"
-      },
-      "validation": {
-        "select_city": "Select a city",
-        "required": "Required field"
-      },
-      "add_photo": "Add"
+    "route_points": {
+      "add": "Add",
+      "limit": "Limit reached",
+      "optional": "optional",
+      "pick": "Select a waypoint",
+      "title": "Route waypoints"
     },
-    "payment_type": {
-      "cash": "Cash",
-      "non_cash": "Bank transfer",
-      "card": "To card"
+    "same_city_note": "Both points are in the same city and were selected from the directory without a precise map pin, so please add pickup and delivery addresses so the driver knows exactly where to collect and drop off the cargo.",
+    "step_counter": "Step {} of {}",
+    "steps": {
+      "cargo": "Cargo & note",
+      "cargo_desc": "Check details and leave a note.",
+      "payment": "Dates & payment",
+      "payment_desc": "Choose date and payment terms.",
+      "route": "Route",
+      "route_desc": "Specify pickup and dropoff points.",
+      "transport": "Transport",
+      "transport_desc": "Describe the vehicle and parameters."
     },
-    "currency": {
-      "kzt": "Tenge (₸)",
-      "usd": "US Dollar ($)",
-      "eur": "Euro (€)",
-      "rub": "Ruble (₽)",
-      "kgs": "Som (c)"
-    },
+    "subtitle": "We'll fill it step by step so nothing is missed.",
     "success": {
       "created": "Listing created",
       "updated": "Changes saved"
     },
-    "errors_extra": {
-      "pick_photos": "Failed to select photos"
-    }
+    "title": "Add Cargo"
   },
-  "vehicle_type": {
-    "any": "Any transport",
-    "tent": "Curtain-side",
-    "refrigerator": "Refrigerated truck",
-    "isotherm": "Isothermal truck",
-    "covered": "Covered truck",
-    "car_carrier": "Car carrier",
-    "aerial_platform": "Aerial platform",
-    "car_transporter": "Car transporter",
-    "bulk": "Bulk carrier",
-    "fuel_tanker": "Fuel tanker",
-    "bitumen_tanker": "Bitumen tanker",
-    "flatbed": "Flatbed",
-    "shalanda": "Lowbed (shalanda)",
-    "trailer": "Trailer",
-    "bus": "Bus",
-    "semi_trailer": "Semi-trailer",
-    "container_carrier": "Container carrier",
-    "hyundai_porter": "Hyundai Porter",
-    "fish_truck": "Fish truck",
-    "chemical_tank": "Chemical tank",
-    "platform": "Platform truck",
-    "sewage": "Sewage truck",
-    "excavator": "Excavator",
-    "glass": "Glass carrier",
-    "incubator": "Incubator truck",
-    "roll_transporter": "Roll transporter",
-    "gazelle_passenger": "Gazelle passenger",
-    "gazelle_flatbed": "Gazelle flatbed",
-    "cattle_truck": "Cattle truck",
-    "garbage_truck": "Garbage truck",
-    "mega_truck": "Mega truck",
-    "diplomatic": "Diplomatic cargo",
-    "flour_truck": "Flour truck",
-    "open": "Open truck",
-    "concrete_mixer": "Concrete mixer",
-    "gas": "Gas tanker",
-    "grain": "Grain carrier",
-    "container_platform": "Container platform",
-    "feed": "Feed truck",
-    "crane": "Crane truck",
-    "log_truck": "Log truck",
-    "manipulator": "Truck with manipulator",
-    "minibus": "Minibus",
-    "chip_truck": "Woodchip truck",
-    "open_container": "Open container",
-    "panel_truck": "Panel truck",
-    "loader": "Loader",
-    "dump_truck": "Dump truck",
-    "tractor": "Tractor unit",
-    "trailer_platform": "Lowbed trailer",
-    "pipe_truck": "Pipe truck",
-    "van": "Panel van",
-    "cement_truck": "Cement tanker",
-    "food_tank": "Food tanker"
+  "dimensions": {
+    "height": "{} m height",
+    "length": "{} m length",
+    "not_specified": "Not specified",
+    "width": "{} m width"
   },
-  "home": {
-    "location": {
-      "error": {
-        "services_off": "Location services are off. Enable GPS and try again.",
-        "denied": "Location access denied. Please allow GPS for the app.",
-        "denied_forever": "Location access blocked. Enable it in device settings.",
-        "no_signal": "Could not get current location. Check GPS and try again.",
-        "timeout": "Request timed out. Check GPS and try again.",
-        "unknown": "Could not determine location."
-      }
-    },
-    "actions": {
-      "title": "Your actions",
-      "subtitle": "Choose an option to continue.",
-      "create_order_title": "Add Cargo",
-      "create_order_subtitle": "Send cargo on route",
-      "find_transport_title": "Find transport",
-      "find_transport_subtitle": "Pick a vehicle by route",
-      "my_cargo_title": "My listings",
-      "history_title": "History"
-    },
-    "active_orders": {
-      "empty": "No active orders right now",
-      "title": "Active cargo"
-    },
-    "route": {
-      "start": "Start",
-      "finish": "Finish"
-    }
-  },
-  "find_transport_filters": {
-    "pick_city": "Choose a city",
-    "request_date": "Request date"
-  },
-  "find_transport": {
-    "title": "Find transport",
-    "filters_applied": "Search filters applied",
-    "filters": {
-      "title": "Filters",
-      "departure": "Departure point",
-      "destination": "Destination",
-      "vehicle": "Vehicle type",
-      "vehicle_any": "Any vehicle",
-      "loading_title": "Loading type",
-      "loading": {
-        "any": "Any loading type",
-        "back": "Rear",
-        "top": "Top",
-        "side": "Side",
-        "back_side_top": "Rear + side + top"
-      },
-      "weight_from": "Weight from, t",
-      "weight_to": "Weight to, t",
-      "volume_from": "Volume from, m³",
-      "volume_to": "Volume to, m³",
-      "date": "Request date",
-      "apply": "Apply"
-    },
-    "available": "Available transport",
-    "search_hint": "Search by city, driver or comment",
-    "empty": "No transport found for the selected filters. Try resetting filters or adjusting your query.",
-    "card": {
-      "price_on_request": "On request",
-      "driver_placeholder": "Driver",
-      "created_at": "Created: {}",
-      "per_trip": "per trip",
-      "contact": "Contact",
-      "capacity_unit": "t",
-      "volume_unit": "m³"
-    },
-    "detail": {
-      "created_at": "Created: {}",
-      "route_title": "Route",
-      "transport_title": "Transport",
-      "cargo_title": "Cargo",
-      "status_title": "Status",
-      "show_listing": "Show listing",
-      "yes": "Yes",
-      "no": "No",
-      "vehicle": "Vehicle type",
-      "loading": "Loading type",
-      "capacity": "Capacity",
-      "volume": "Volume",
-      "comment": "Comment"
-    }
-  },
-  "history": {
-    "title": "Order history",
-    "search_hint": "Search by number, route, or company",
+  "driver_cargo_filters": {
+    "any_date": "Any date",
+    "any_vehicle": "Any vehicle",
+    "cost_from": "Cost from",
+    "cost_to": "Cost to",
+    "loading_city": "Loading city",
+    "only_with_call": "Only with available call",
+    "only_with_call_subtitle": "Show only orders where you can call the sender.",
     "reset": "Reset",
-    "filters": {
-      "all": "All",
-      "in_progress": "In progress",
-      "completed": "Completed",
-      "cancelled": "Cancelled"
-    },
-    "date_range": {
-      "select": "Select period",
-      "range": "{0} — {1}"
-    },
-    "empty": {
-      "title": "Your order history will appear here",
-      "subtitle": "Try adjusting filters or create a new order to see it in the list."
-    }
+    "route_saved": "Route saved to bookmarks",
+    "save_error": "Save error: {}",
+    "save_route": "Save route",
+    "select_city": "Select city",
+    "show_announcements": "Show announcements",
+    "title": "Filters",
+    "transport_date": "Transport date",
+    "unloading_city": "Unloading city",
+    "vehicle_type": "Vehicle type"
   },
-  "calendar": {
-    "select_date": "Select date",
-    "select_range": "Select period",
-    "hint_single": "Tap a date to select.",
-    "hint_range": "Tap two dates to set a period.",
-    "clear": "Clear",
-    "confirm": "Done"
+  "driver_contact": {
+    "call": "Call",
+    "call_error": "Unable to open the phone app",
+    "title": "Contact driver",
+    "whatsapp": "WhatsApp",
+    "whatsapp_error": "Unable to open WhatsApp"
   },
-  "order_detail": {
-    "photos": "Cargo photos",
-    "labels": {
-      "departure_date": "Departure date: {}",
-      "departure_date_title": "Departure date",
-      "status": "Status: {0}",
-      "delivery_term": "Delivery term",
-      "weight": "Weight",
-      "volume": "Volume",
-      "dimensions": "Dimensions",
-      "budget": "Budget",
-      "payment_type": "Payment type",
-      "contacts_open": "Visible to drivers",
-      "contacts_hidden": "Hidden"
-    },
-    "sections": {
-      "listing": "Listing",
-      "route": "Route",
-      "full_route": "Full route",
-      "loading": "Loading",
-      "unloading": "Unloading",
-      "cargo_params": "Cargo parameters",
-      "cost": "Cost",
-      "contacts": "Contacts",
-      "comment": "Comment"
-    },
-    "status": {
-      "title": "Trip status",
-      "current": "Current status",
-      "reason_prefix": "Reason: {0}"
-    },
-    "statuses": {
-      "waiting_driver_confirmation": "Waiting for driver confirmation",
-      "accepted": "Driver assigned",
-      "ready_for_pickup": "Driver on site",
-      "waiting_pickup_confirmation": "Waiting for pickup handoff",
-      "in_progress": "In transit",
-      "waiting_delivery_confirmation": "Waiting for delivery confirmation",
-      "delivered": "Delivered",
-      "cancelled": "Cancelled",
-      "waiting_bids": "Waiting for bids",
-      "waiting_driver_decision": "Waiting for driver decision",
-      "pending": "Pending"
-    },
-    "bid_status": {
-      "waiting_driver_decision": "Waiting for driver decision",
-      "confirmed": "Confirmed",
-      "declined": "Driver declined",
-      "rejected": "Sender rejected",
-      "new": "Bids"
-    },
-    "actions": {
-      "confirm_delivery": "Confirm delivery",
-      "confirm_pickup": "Confirm pickup",
-      "confirm_participation": "Confirm participation",
-      "decline_order": "Decline order",
-      "picked_up": "Picked up cargo",
-      "track": "Track",
-      "edit": "Edit",
-      "repeat": "Repeat",
-      "delivered": "Delivered cargo",
-      "ready_pickup": "At pickup point",
-      "send_location": "Send location",
-      "release_driver": "Decline order",
-      "cancel_title": "Cancel order",
-      "cancel_message": "The order will move to status “Cancelled”.",
-      "cancel_success": "Order cancelled",
-      "change_driver_title": "Change driver",
-      "change_driver_message": "Current driver will be notified.",
-      "driver_released": "Driver released",
-      "status_updated": "Status updated"
-    }
-  },
-  "driver_profile": {
-    "title": "Profile",
-    "error_load": "Failed to load profile",
-    "retry": "Retry",
-    "stub": "Coming soon",
-    "balance": {
-      "title": "Total balance",
-      "top_up": "Top up",
-      "transfer": "Transfer",
-      "history": "History",
-      "tariffs": "Tariffs",
-      "business": "Business services",
-      "partner": "Become a partner"
-    },
-    "referral": {
-      "title": "My referral code",
-      "copy": "Copy",
-      "unavailable": "Referral code unavailable",
-      "copied": "Code copied"
-    },
-    "settings": {
-      "profile": "Profile",
-      "wallet": "Wallet",
-      "settings": "Settings",
-      "help": "Help",
-      "terms": "Terms of use",
-      "user_agreement": "User agreement",
-      "privacy": "Privacy policy"
-    },
-    "logout": {
-      "title": "Sign out",
-      "confirm": "Are you sure you want to sign out?",
-      "cancel": "Cancel",
-      "submit": "Sign out",
-      "button": "Sign out",
-      "error": "Sign out error"
-    },
-    "app_version": "App version",
-    "support": {
-      "close": "Close",
-      "help_body": "Need help? Contact us using any option below."
-    }
-  },
-  "driver_tabs": {
-    "home": "Home",
-    "favorites": "Favorites",
-    "profile": "Profile",
-    "transport": "Transport"
+  "driver_expenses": {
+    "calculate": "Calculate",
+    "consumption": "Fuel consumption (L/100km)",
+    "error_coords": "Could not determine city coordinates",
+    "from": "From",
+    "hint_consumption": "e.g., 8.5",
+    "hint_from": "e.g., 8.5",
+    "hint_price": "e.g., 250",
+    "hint_to": "e.g., 250",
+    "price": "Fuel price (₸/L)",
+    "select_city": "Select city",
+    "stub": "Expense tracking will be available in the next update.",
+    "subtitle": "Calculate fuel costs for your route",
+    "title": "Expense Calculator",
+    "to": "To"
   },
   "driver_favorites": {
-    "title": "Favorites",
-    "error": "Failed to load favorites. Pull to refresh.",
     "empty": "Favorite orders will appear here. Add the ones you like on the Find cargo screen.",
-    "responded": "Response sent to sender"
+    "error": "Failed to load favorites. Pull to refresh.",
+    "responded": "Response sent to sender",
+    "title": "Favorites"
+  },
+  "driver_find": {
+    "empty": "No suitable cargo yet. Try again later.",
+    "empty_search": "No announcements found. Adjust search or filters.",
+    "error": "Failed to load announcements. Try again.",
+    "retry_filters": "Try again",
+    "search_hint": "Search by route or cargo",
+    "title": "Find cargo"
   },
   "driver_home": {
     "actions": {
-      "title": "Work actions",
-      "subtitle": "Track your trips and mark key events.",
-      "find_cargo": "Find cargo",
-      "loading_status": "Cargo status",
+      "ads_subtitle": "Transport announcements",
+      "companion": "See rides",
+      "create_ad": "Create announcement",
       "current_orders": "Current orders",
       "expenses": "Calculator",
-      "transport": "My transport",
-      "create_ad": "Create announcement",
       "fill_form": "Fill the form",
+      "find_cargo": "Find cargo",
       "find_transport": "Find transport",
-      "companion": "See rides",
+      "history": "History",
+      "loading_status": "Cargo status",
       "my_ads": "My announcements",
-      "ads_subtitle": "Transport announcements",
-      "history": "History"
-    }
-  },
-  "driver_transport": {
-    "title": "My transport",
-    "error_load": "Failed to load announcements",
-    "edit": "Edit",
-    "created_at": "Created {0}",
-    "deleted": "Announcement deleted",
-    "delete_title": "Delete transport?",
-    "delete_message": "Transport will be removed permanently.",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "status_active": "Active",
-    "status_hidden": "Hidden",
-    "empty": "You don't have any announcements yet.",
-    "retry": "Try again",
-    "create": {
-      "title_new": "Add transport",
-      "title_edit": "Edit transport",
-      "subtitle_new": "Fill the details to publish your transport.",
-      "subtitle_edit": "Update the data and save the changes.",
-      "step_of": "Step {} of {}",
-      "step_titles": {
-        "route": "Route",
-        "vehicle": "Vehicle",
-        "params": "Parameters"
-      },
-      "step_desc": {
-        "route": "Select departure, optional stops, and destination.",
-        "vehicle": "Choose vehicle and loading types.",
-        "params": "Set capacity, volume, and an optional comment."
-      },
-      "from": "From",
-      "to": "To",
-      "departure_point": "Departure point",
-      "destination_point": "Destination point",
-      "waypoint_title": "Waypoint",
-      "vehicle_type": "Vehicle type",
-      "loading_type": "Loading type",
-      "select_type": "Select",
-      "route_error": "Specify the route",
-      "route_required": "Please set the route",
-      "weight": "Capacity (t)",
-      "volume": "Volume (m³)",
-      "comment": "Comment",
-      "comment_hint": "Add wishes about the cargo or route (optional).",
-      "waypoints": {
-        "title": "Route points",
-        "subtitle": "optional • up to 3 points",
-        "add": "Add",
-        "limit": "Maximum"
-      },
-      "nav": {
-        "back": "Back",
-        "next": "Next",
-        "save": "Save",
-        "publish": "Publish"
-      },
-      "success": {
-        "updated": "Listing updated",
-        "published": "Listing published"
-      },
-      "validation": {
-        "number": "Enter a number",
-        "positive": "Enter a value greater than 0"
-      },
-      "loading": {
-        "any": "Any type",
-        "back": "Rear loading",
-        "top": "Top loading",
-        "side": "Side loading",
-        "back_side_top": "Any side"
-      },
-      "vehicle_types": {
-        "any": "Any transport"
-      }
-    }
-  },
-  "driver_expenses": {
-    "title": "Expense Calculator",
-    "subtitle": "Calculate fuel costs for your route",
-    "stub": "Expense tracking will be available in the next update.",
-    "from": "From",
-    "to": "To",
-    "select_city": "Select city",
-    "consumption": "Fuel consumption (L/100km)",
-    "hint_consumption": "e.g., 8.5",
-    "price": "Fuel price (₸/L)",
-    "hint_price": "e.g., 250",
-    "calculate": "Calculate",
-    "hint_from": "e.g., 8.5",
-    "hint_to": "e.g., 250",
-    "error_coords": "Could not determine city coordinates"
-  },
-  "driver_loading": {
-    "title": "Cargo status",
-    "error": "Failed to load statuses. Pull to refresh.",
-    "open": "Open",
-    "date": "Date",
-    "price_on_request": "On request",
-    "payment_per_trip": "per trip",
-    "status": {
-      "waiting_you": "Waiting for you",
-      "need_answer": "Needs your answer",
-      "to_pickup": "Heading to pickup",
-      "accepted": "Accepted",
-      "wait_pickup": "Confirm pickup",
-      "in_progress": "In transit",
-      "wait_delivery": "Confirm delivery",
-      "active": "Active"
-    },
-    "notes": {
-      "waiting_you": "Confirm to assign the order to yourself.",
-      "need_answer": "Accept or decline the order. Open details if you need clarifications.",
-      "to_pickup": "Check pickup address/time. Mark arrival when on site.",
-      "accepted": "Order accepted. Watch for pickup updates.",
-      "wait_pickup": "Confirm pickup to start the trip.",
-      "in_progress": "Follow the route and confirm delivery on arrival.",
-      "wait_delivery": "Confirm delivery to finish the trip.",
-      "active": "Status will update after your actions."
-    },
-    "empty": {
-      "title": "No active statuses",
-      "subtitle": "When the shipper accepts your response, the status card will appear here."
+      "subtitle": "Track your trips and mark key events.",
+      "title": "Work actions",
+      "transport": "My transport"
     }
   },
   "driver_home_map": {
-    "marker": {
-      "pickup": "Pickup",
-      "delivery": "Delivery"
-    },
     "error": {
-      "services_off": "Location services are off. Turn on GPS and try again.",
       "denied": "Location access denied. Allow GPS access for the app.",
       "denied_forever": "Location access blocked. Enable it in device settings.",
       "no_signal": "Failed to get current location.",
+      "services_off": "Location services are off. Turn on GPS and try again.",
       "unknown": "Unable to determine location."
     },
+    "marker": {
+      "delivery": "Delivery",
+      "pickup": "Pickup"
+    },
     "status": {
-      "waiting_driver_confirmation": "Waiting for driver confirmation",
-      "ready_for_pickup": "Driver on site",
-      "waiting_pickup_confirmation": "Waiting for pickup confirmation",
-      "waiting_delivery_confirmation": "Waiting for delivery confirmation",
-      "pending": "Pending",
-      "in_transit": "In transit",
+      "cancelled": "Cancelled",
       "completed": "Completed",
-      "cancelled": "Cancelled"
+      "in_transit": "In transit",
+      "pending": "Pending",
+      "ready_for_pickup": "Driver on site",
+      "waiting_delivery_confirmation": "Waiting for delivery confirmation",
+      "waiting_driver_confirmation": "Waiting for driver confirmation",
+      "waiting_pickup_confirmation": "Waiting for pickup confirmation"
     }
+  },
+  "driver_loading": {
+    "date": "Date",
+    "empty": {
+      "subtitle": "When the shipper accepts your response, the status card will appear here.",
+      "title": "No active statuses"
+    },
+    "error": "Failed to load statuses. Pull to refresh.",
+    "notes": {
+      "accepted": "Order accepted. Watch for pickup updates.",
+      "active": "Status will update after your actions.",
+      "in_progress": "Follow the route and confirm delivery on arrival.",
+      "need_answer": "Accept or decline the order. Open details if you need clarifications.",
+      "to_pickup": "Check pickup address/time. Mark arrival when on site.",
+      "wait_delivery": "Confirm delivery to finish the trip.",
+      "wait_pickup": "Confirm pickup to start the trip.",
+      "waiting_you": "Confirm to assign the order to yourself."
+    },
+    "open": "Open",
+    "payment_per_trip": "per trip",
+    "price_on_request": "On request",
+    "status": {
+      "accepted": "Accepted",
+      "active": "Active",
+      "in_progress": "In transit",
+      "need_answer": "Needs your answer",
+      "to_pickup": "Heading to pickup",
+      "wait_delivery": "Confirm delivery",
+      "wait_pickup": "Confirm pickup",
+      "waiting_you": "Waiting for you"
+    },
+    "title": "Cargo status"
+  },
+  "driver_order_detail": {
+    "amount": "Amount",
+    "cargo_params": "Cargo parameters",
+    "cost_and_terms": "Cost and terms",
+    "departure_date": "Departure date",
+    "loading_type": "Loading type",
+    "payment": "Payment",
+    "sender_comment": "Sender comment",
+    "status": "Status",
+    "status_cancelled": "Cancelled",
+    "status_completed": "Completed",
+    "status_in_transit": "In transit",
+    "status_pending": "Pending",
+    "vehicle_type": "Vehicle type",
+    "volume": "Volume",
+    "weight": "Weight"
   },
   "driver_orders": {
     "card": {
       "departure": "Departure",
       "favorite": "Add to favorites",
-      "unfavorite": "Remove from favorites",
       "respond": "Respond",
-      "responded": "You responded"
+      "responded": "You responded",
+      "unfavorite": "Remove from favorites"
+    },
+    "status": {
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "in_transit": "In Transit",
+      "pending": "Pending"
     }
   },
-  "driver_find": {
-    "title": "Find cargo",
-    "error": "Failed to load announcements. Try again.",
-    "search_hint": "Search by route or cargo",
-    "empty": "No suitable cargo yet. Try again later.",
-    "empty_search": "No announcements found. Adjust search or filters.",
-    "retry_filters": "Try again"
+  "driver_profile": {
+    "app_version": "Version",
+    "balance": {
+      "business": "Business Services",
+      "history": "History",
+      "partner": "Become a Partner",
+      "tariffs": "My Tariffs",
+      "title": "Balance",
+      "top_up": "Top Up"
+    },
+    "business_page": {
+      "become_partner_header": "Become a Partner",
+      "city_label": "Your City",
+      "empty_subtitle": "There are currently no registered partners in this city. Try choosing another location.",
+      "empty_title": "No partners found",
+      "header_subtitle": "GROW YOUR BUSINESS",
+      "subtitle": "Find trusted partners, service stations, and logistics companies in your city.",
+      "title": "Business Services",
+      "error_title": "Couldn't load partners"
+    },
+    "error_load": "Failed to load profile",
+    "logout": {
+      "button": "Log Out",
+      "cancel": "Cancel",
+      "confirm": "Are you sure you want to log out?",
+      "error": "Logout failed",
+      "submit": "Log Out",
+      "title": "Logout"
+    },
+    "partner_page": {
+      "fields": {
+        "activity": "Activity Type",
+        "city": "City",
+        "company_name": "Company Name",
+        "company_name_hint": "Enter company name",
+        "countries": "Countries",
+        "description": "Description",
+        "description_hint": "Describe your services...",
+        "email": "Email",
+        "logo": "Company Logo",
+        "logo_hint": "Select logo (tap to pick)",
+        "phone": "Phone Number",
+        "terms_agree": "I agree to the terms and conditions"
+      },
+      "header_subtitle": "PARTNERSHIP",
+      "submit": "Submit Application",
+      "subtitle": "Register your company to offer services to drivers on our platform.",
+      "success": "Application submitted successfully!",
+      "terms_error": "You must agree to the terms to proceed",
+      "title": "Become a Partner"
+    },
+    "referral": {
+      "copied": "Referral code copied",
+      "copy": "Copy",
+      "title": "Referral Code",
+      "unavailable": "Referral code unavailable"
+    },
+    "retry": "Retry",
+    "settings": {
+      "help": "Help & Support",
+      "privacy": "Privacy Policy",
+      "profile": "My Profile",
+      "settings": "Settings",
+      "user_agreement": "User Agreement",
+      "wallet": "Wallet"
+    },
+    "support": {
+      "close": "Close",
+      "help_body": "If you have any questions or issues, please contact our support team via WhatsApp or Telegram."
+    },
+    "title": "Profile",
+    "verification": {
+      "active_status": "Active",
+      "message": {
+        "in_review": "Your documents are being reviewed. This usually takes up to 24 hours.",
+        "rejected_default": "Please correct your documents and try again.",
+        "required": "Verify your identity to start accepting orders."
+      },
+      "status": {
+        "approved": "Identity Verified",
+        "in_review": "Verification in Progress",
+        "rejected": "Verification Rejected",
+        "required": "Verification Required"
+      }
+    }
+  },
+  "driver_tabs": {
+    "favorites": "Favorites",
+    "home": "Home",
+    "profile": "Profile",
+    "transport": "Transport"
+  },
+  "driver_transport": {
+    "cancel": "Cancel",
+    "create": {
+      "comment": "Comment",
+      "comment_hint": "Add wishes about the cargo or route (optional).",
+      "departure_point": "Departure point",
+      "destination_point": "Destination point",
+      "from": "From",
+      "loading": {
+        "any": "Any type",
+        "back": "Rear loading",
+        "back_side_top": "Any side",
+        "side": "Side loading",
+        "top": "Top loading"
+      },
+      "loading_type": "Loading type",
+      "nav": {
+        "back": "Back",
+        "next": "Next",
+        "publish": "Publish",
+        "save": "Save"
+      },
+      "route_error": "Specify the route",
+      "route_required": "Please set the route",
+      "select_type": "Select",
+      "step_desc": {
+        "params": "Set capacity, volume, and an optional comment.",
+        "route": "Select departure, optional stops, and destination.",
+        "vehicle": "Choose vehicle and loading types."
+      },
+      "step_of": "Step {} of {}",
+      "step_titles": {
+        "params": "Parameters",
+        "route": "Route",
+        "vehicle": "Vehicle"
+      },
+      "subtitle_edit": "Update the data and save the changes.",
+      "subtitle_new": "Fill the details to publish your transport.",
+      "success": {
+        "published": "Listing published",
+        "updated": "Listing updated"
+      },
+      "title_edit": "Edit transport",
+      "title_new": "Add transport",
+      "to": "To",
+      "validation": {
+        "number": "Enter a number",
+        "positive": "Enter a value greater than 0"
+      },
+      "vehicle_type": "Vehicle type",
+      "vehicle_types": {
+        "any": "Any transport"
+      },
+      "volume": "Volume (m³)",
+      "waypoint_title": "Waypoint",
+      "waypoints": {
+        "add": "Add",
+        "limit": "Maximum",
+        "subtitle": "optional • up to 3 points",
+        "title": "Route points"
+      },
+      "weight": "Capacity (t)"
+    },
+    "created_at": "Created {0}",
+    "delete": "Delete",
+    "delete_message": "Transport will be removed permanently.",
+    "delete_title": "Delete transport?",
+    "deleted": "Announcement deleted",
+    "edit": "Edit",
+    "empty": "You don't have any announcements yet.",
+    "error_load": "Failed to load announcements",
+    "retry": "Try again",
+    "status_active": "Active",
+    "status_hidden": "Hidden",
+    "title": "My transport"
+  },
+  "driver_utils": {
+    "added_favorite": "Added to favorites",
+    "authorize_as_driver": "Log in as a driver to continue",
+    "call_error": "Failed to call sender",
+    "contacts_hidden": "Sender has hidden contacts",
+    "dialer_error": "Failed to open dialer",
+    "drivers_only": "Available only for drivers",
+    "later": "Later",
+    "phone_unavailable": "Sender phone unavailable",
+    "removed_favorite": "Removed from favorites",
+    "subscription_required": "Subscription required to respond to requests",
+    "tariff_error_city_only": "Your plan is City only — requests between different cities are not allowed",
+    "tariff_error_local_forbidden": "Your plan does not cover same-city requests",
+    "update_favorite_error": "Failed to update favorites",
+    "verification_needed_body": "To respond to requests and publish transport, verify driver documents. This helps senders trust you.",
+    "verification_needed_title": "Verification needed",
+    "verify": "Verify",
+    "whatsapp_error": "Failed to open WhatsApp"
+  },
+  "favorites": {
+    "empty": "You haven't added any favorites yet.",
+    "title": "Favorites"
+  },
+  "find_transport": {
+    "available": "Available transport",
+    "card": {
+      "capacity_unit": "t",
+      "contact": "Contact",
+      "created_at": "Created: {}",
+      "driver_placeholder": "Driver",
+      "per_trip": "per trip",
+      "price_on_request": "On request",
+      "volume_unit": "m³"
+    },
+    "detail": {
+      "capacity": "Capacity",
+      "cargo_title": "Cargo",
+      "comment": "Comment",
+      "created_at": "Created: {}",
+      "loading": "Loading type",
+      "no": "No",
+      "route_title": "Route",
+      "show_listing": "Show listing",
+      "status_title": "Status",
+      "transport_title": "Transport",
+      "vehicle": "Vehicle type",
+      "volume": "Volume",
+      "yes": "Yes"
+    },
+    "empty": "No transport found for the selected filters. Try resetting filters or adjusting your query.",
+    "filters": {
+      "apply": "Apply",
+      "date": "Request date",
+      "departure": "Departure point",
+      "destination": "Destination",
+      "loading": {
+        "any": "Any loading type",
+        "back": "Rear",
+        "back_side_top": "Rear + side + top",
+        "side": "Side",
+        "top": "Top"
+      },
+      "loading_title": "Loading type",
+      "title": "Filters",
+      "vehicle": "Vehicle type",
+      "vehicle_any": "Any vehicle",
+      "volume_from": "Volume from, m³",
+      "volume_to": "Volume to, m³",
+      "weight_from": "Weight from, t",
+      "weight_to": "Weight to, t"
+    },
+    "filters_applied": "Search filters applied",
+    "search_hint": "Search by city, driver or comment",
+    "title": "Find transport"
+  },
+  "find_transport_filters": {
+    "pick_city": "Choose a city",
+    "request_date": "Request date"
+  },
+  "history": {
+    "date_range": {
+      "range": "{0} — {1}",
+      "select": "Select period"
+    },
+    "empty": {
+      "subtitle": "Try adjusting filters or create a new order to see it in the list.",
+      "title": "Your order history will appear here"
+    },
+    "filters": {
+      "all": "All",
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "in_progress": "In progress"
+    },
+    "reset": "Reset",
+    "search_hint": "Search by number, route, or company",
+    "title": "Order history"
+  },
+  "home": {
+    "actions": {
+      "create_order_subtitle": "Send cargo on route",
+      "create_order_title": "Add Cargo",
+      "find_transport_subtitle": "Pick a vehicle by route",
+      "find_transport_title": "Find transport",
+      "history_title": "History",
+      "my_cargo_title": "My listings",
+      "subtitle": "Choose an option to continue.",
+      "title": "Your actions"
+    },
+    "active_orders": {
+      "empty": "No active orders right now",
+      "title": "Active cargo"
+    },
+    "location": {
+      "error": {
+        "denied": "Location access denied. Please allow GPS for the app.",
+        "denied_forever": "Location access blocked. Enable it in device settings.",
+        "no_signal": "Could not get current location. Check GPS and try again.",
+        "services_off": "Location services are off. Enable GPS and try again.",
+        "timeout": "Request timed out. Check GPS and try again.",
+        "unknown": "Could not determine location."
+      }
+    },
+    "route": {
+      "finish": "Finish",
+      "start": "Start"
+    }
+  },
+  "loading_types": {
+    "any_type": "Any loading type",
+    "any_way": "Any way",
+    "back": "Back loading",
+    "side": "Side loading",
+    "top": "Top loading"
   },
   "locations": {
-    "search_hint": "Search city",
     "pick_on_map": "Pick on map",
+    "search_hint": "Search city",
     "search_subtitle": "Find a city or drop a pin on the map"
+  },
+  "my_cargo": {
+    "bids": {
+      "accepted": "You accepted a bid",
+      "actions": {
+        "accept": "Accept",
+        "decline": "Decline",
+        "processing": "Processing..."
+      },
+      "comment": "Comment",
+      "date_unknown": "Date unknown",
+      "declined": "Bid declined",
+      "empty": "No bids yet.",
+      "empty_subtitle": "As soon as drivers respond, you will see them here.",
+      "error_process": "Failed to process bid",
+      "offer": "Offer",
+      "offer_amount": "Bid amount: {}",
+      "order_number": "Order TD-{}",
+      "status": {
+        "cancelled": "Cancelled",
+        "confirmed": "Confirmed",
+        "declined": "Declined",
+        "driver_declined": "Driver declined",
+        "new": "New"
+      },
+      "title": "Bids"
+    },
+    "edit_title": "Edit order",
+    "error": {
+      "load": "Failed to load orders",
+      "load_detail": "Failed to load order details",
+      "load_single": "Failed to load order"
+    },
+    "filters": {
+      "active": "Active",
+      "all": "All",
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "empty": "No orders found for the selected filter."
+    },
+    "repeat_title": "Repeat order",
+    "title": "My listings"
+  },
+  "nav": {
+    "cargo": "Listings",
+    "favorites": "Favorites",
+    "order": "Order",
+    "profile": "Profile"
+  },
+  "notifications_page": {
+    "default_body": "New notification",
+    "default_title": "Notification",
+    "driver_announcement_title": "Transport published",
+    "empty_subtitle": "We will show new order and transport updates here.",
+    "empty_title": "No notifications yet",
+    "load_error": "Failed to load notifications. Pull down to retry.",
+    "order_load_error": "Failed to load the order",
+    "title": "Notifications",
+    "types": {
+      "driver_accepted": {
+        "body": "Order {0} was accepted by the driver.",
+        "title": "Driver accepted order"
+      },
+      "driver_announcement_created": {
+        "body": "Your transport listing is published. We will notify about bids.",
+        "title": "Transport published"
+      },
+      "driver_arrived": {
+        "body": "Driver arrived at pickup for order {0}.",
+        "title": "Driver arrived"
+      },
+      "driver_picked_up": {
+        "body": "Driver picked up cargo for order {0}. Please confirm handoff.",
+        "title": "Driver picked up cargo"
+      },
+      "new_order": {
+        "body": "Order {0} has been created.",
+        "title": "New order"
+      },
+      "order_accepted": {
+        "body": "Order {0} accepted.",
+        "title": "Order accepted"
+      },
+      "order_bid": {
+        "body": "New bid on order {0}.",
+        "title": "New bid"
+      },
+      "order_completed": {
+        "body": "Customer confirmed delivery of order {0}.",
+        "title": "Order completed"
+      },
+      "order_created": {
+        "body": "Order {0} is created and waiting for bids.",
+        "title": "Order created"
+      },
+      "order_delivered": {
+        "body": "Driver marked cargo {0} as delivered. Please confirm receipt.",
+        "title": "Cargo delivered"
+      },
+      "order_status": {
+        "body": "Status for order {0} has been updated.",
+        "title": "Order status updated"
+      }
+    },
+    "unknown_type": "Unknown notification type",
+    "unread": "Unread",
+    "yesterday": "Yesterday"
+  },
+  "order_detail": {
+    "actions": {
+      "cancel_message": "The order will move to status “Cancelled”.",
+      "cancel_success": "Order cancelled",
+      "cancel_title": "Cancel order",
+      "change_driver_message": "Current driver will be notified.",
+      "change_driver_title": "Change driver",
+      "confirm_delivery": "Confirm delivery",
+      "confirm_participation": "Confirm participation",
+      "confirm_pickup": "Confirm pickup",
+      "decline_order": "Decline order",
+      "delivered": "Delivered cargo",
+      "driver_released": "Driver released",
+      "edit": "Edit",
+      "picked_up": "Picked up cargo",
+      "ready_pickup": "At pickup point",
+      "release_driver": "Decline order",
+      "repeat": "Repeat",
+      "send_location": "Send location",
+      "status_updated": "Status updated",
+      "track": "Track"
+    },
+    "bid_status": {
+      "confirmed": "Confirmed",
+      "declined": "Driver declined",
+      "new": "Bids",
+      "rejected": "Sender rejected",
+      "waiting_driver_decision": "Waiting for driver decision"
+    },
+    "driver_utils": {
+      "added_favorite": "Added to favorites",
+      "authorize_as_driver": "Please authorize as a driver",
+      "call_error": "Call failed",
+      "contacts_hidden": "Contacts hidden",
+      "dialer_error": "Could not open dialer",
+      "drivers_only": "This action is available only for drivers",
+      "later": "Later",
+      "phone_unavailable": "Phone number hidden or unavailable",
+      "removed_favorite": "Removed from favorites",
+      "subscription_required": "Valid subscription required.",
+      "tariff_error_city_only": "City tariff allows orders only within the same city.",
+      "tariff_error_intercity_needed": "Intercity or International tariff required.",
+      "tariff_error_local_forbidden": "Your tariff is for Intercity/International routes. Local orders are not allowed.",
+      "update_favorite_error": "Failed to update favorites",
+      "verification_needed_body": "Verification required to perform this action.",
+      "verification_needed_title": "Verification Required",
+      "verify": "Verify",
+      "whatsapp_error": "Could not open WhatsApp"
+    },
+    "labels": {
+      "budget": "Budget",
+      "contacts_hidden": "Hidden",
+      "contacts_open": "Visible to drivers",
+      "delivery_term": "Delivery term",
+      "departure_date": "Departure date: {}",
+      "departure_date_title": "Departure date",
+      "dimensions": "Dimensions",
+      "payment_type": "Payment type",
+      "status": "Status: {0}",
+      "volume": "Volume",
+      "weight": "Weight"
+    },
+    "photos": "Cargo photos",
+    "sections": {
+      "cargo_params": "Cargo parameters",
+      "comment": "Comment",
+      "contacts": "Contacts",
+      "cost": "Cost",
+      "full_route": "Full route",
+      "listing": "Listing",
+      "loading": "Loading",
+      "route": "Route",
+      "unloading": "Unloading"
+    },
+    "status": {
+      "current": "Current status",
+      "reason_prefix": "Reason: {0}",
+      "title": "Trip status"
+    },
+    "statuses": {
+      "accepted": "Driver assigned",
+      "cancelled": "Cancelled",
+      "delivered": "Delivered",
+      "in_progress": "In transit",
+      "pending": "Pending",
+      "ready_for_pickup": "Driver on site",
+      "waiting_bids": "Waiting for bids",
+      "waiting_delivery_confirmation": "Waiting for delivery confirmation",
+      "waiting_driver_confirmation": "Waiting for driver confirmation",
+      "waiting_driver_decision": "Waiting for driver decision",
+      "waiting_pickup_confirmation": "Waiting for pickup handoff"
+    }
+  },
+  "payment_types": {
+    "agreement": "Negotiable",
+    "card": "To card",
+    "cash": "Cash",
+    "cashless_no_vat": "Bank transfer (No VAT)",
+    "cashless_vat": "Bank transfer (VAT)",
+    "prepayment": "Prepayment"
+  },
+  "profile": {
+    "contact": {
+      "email": "Email",
+      "empty": "Not specified",
+      "phone": "Phone",
+      "title": "Contact information"
+    },
+    "delete": {
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "error_empty": "Enter your password",
+      "error_failed": "Failed to delete account",
+      "password": "Password",
+      "prompt": "Enter your password to delete the account. This action cannot be undone.",
+      "success": "Account deleted",
+      "title": "Delete account"
+    },
+    "delete_account": "Delete account",
+    "error": {
+      "title": "Loading error"
+    },
+    "my_reviews": "My Reviews",
+    "role": {
+      "driver": "Driver",
+      "sender": "Sender",
+      "unknown": "Role not set"
+    },
+    "title": "Profile",
+    "unavailable": "User profile unavailable",
+    "user_placeholder": "User"
+  },
+  "profile_edit": {
+    "change_photo": "Choose photo",
+    "edit": "Edit",
+    "email": "Email",
+    "email_invalid": "Invalid email",
+    "error": "Failed to update profile",
+    "first_name": "First name",
+    "first_name_required": "Enter your first name",
+    "last_name": "Last name",
+    "no_changes": "Nothing to update",
+    "phone": "Phone",
+    "phone_required": "Enter a phone number",
+    "save": "Save",
+    "success": "Profile updated",
+    "title": "Edit profile"
+  },
+  "profile_tab": {
+    "app_version": "App version",
+    "balance_title": "Total balance",
+    "delete": {
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "error_empty": "Enter password",
+      "error_failed": "Failed to delete account",
+      "password": "Password",
+      "prompt": "Enter your password to delete your account. This action is irreversible.",
+      "success": "Account deleted",
+      "title": "Delete account"
+    },
+    "error": "Failed to load profile",
+    "history": "History",
+    "logout": "Sign out",
+    "logout_error": "Sign-out error: {0}",
+    "logout_question": "Are you sure you want to sign out?",
+    "logout_title": "Sign out",
+    "referral": {
+      "copied": "Code copied",
+      "copy": "Copy",
+      "title": "My referral code",
+      "unavailable": "Referral code unavailable"
+    },
+    "settings": {
+      "help": "Help",
+      "privacy": "Privacy policy",
+      "profile": "Profile",
+      "settings": "Settings",
+      "terms": "Terms of use",
+      "user_agreement": "User agreement",
+      "wallet": "Wallet"
+    },
+    "socials_title": "We are on social media",
+    "support": {
+      "close": "Got it",
+      "help_body": "Need help? Reach us via the contacts below.",
+      "privacy_body": "We'll add the privacy policy link soon.",
+      "terms_body": "Questions about terms? Contact our support team."
+    },
+    "title": "Profile",
+    "top_up": "Top up",
+    "transfer": "Transfer",
+    "reviews": {
+      "title": "Reviews",
+      "empty": "You don't have any reviews yet.",
+      "error": "Couldn't load reviews",
+      "retry": "Refresh",
+      "no_comment": "No comment",
+      "more": "+ {} more"
+    }
+  },
+  "repository": {
+    "driver_announcement": {
+      "create_error": "Failed to create announcement",
+      "delete_error": "Failed to delete announcement",
+      "empty_response": "Empty response from server",
+      "load_error": "Failed to load announcements",
+      "save_error": "Failed to save announcement"
+    },
+    "order": {
+      "create_error": "Failed to create order. Please try again later.",
+      "delete_error": "Failed to delete order. Please try again later.",
+      "empty_response": "Empty response from server",
+      "load_bids_error": "Failed to load bids. Please try again later.",
+      "load_locations_error": "Failed to load coordinates. Please try again later.",
+      "photos_minimum": "At least 2 photos of the cargo are required",
+      "process_bid_error": "Failed to process bid. Please try again later.",
+      "save_error": "Failed to save changes. Please try again later.",
+      "send_bid_error": "Failed to send bid. Please try again later.",
+      "send_locations_error": "Failed to send coordinates",
+      "update_error": "Failed to update order. Please try again later."
+    },
+    "partner": {
+      "fetch_error": "Failed to load partners. Please try again.",
+      "create_error": "Couldn't submit partner application. Try again.",
+      "network_error": "Network error. Check your connection and retry."
+    },
+    "profile": {
+      "fetch_empty": "Empty profile response",
+      "update_empty": "Empty response when updating profile"
+    }
+  },
+  "saved_routes": {
+    "empty": "You don't have any saved routes yet",
+    "error_loading": "Loading error",
+    "title": "Saved routes"
+  },
+  "settings": {
+    "language": {
+      "title": "Language"
+    },
+    "title": "Settings"
+  },
+  "shared": {
+    "address": {
+      "hint_city": "Address in {}",
+      "hint_default": "Street, house"
+    },
+    "common": {
+      "ok": "Got it",
+      "required_field": "This field is required"
+    },
+    "no_connection": {
+      "internet_error_body": "Check your network settings or connect to Wi-Fi and try again.",
+      "internet_error_title": "No internet connection",
+      "server_error_body": "We are working on fixing the issue. Please try again later.",
+      "server_error_title": "Server temporarily unavailable"
+    }
+  },
+  "splash": {
+    "subtitle": "Your cargo transportation"
+  },
+  "tariffs": {
+    "active": "Active",
+    "btn_connect": "Connect",
+    "btn_connected": "Connected",
+    "cards": {
+      "city": {
+        "features": {
+          "0": "Within the city only",
+          "1": "Local orders"
+        },
+        "subtitle": "Trips within one city",
+        "title": "City"
+      },
+      "intercity": {
+        "features": {
+          "0": "Intercity routes (KZ)"
+        },
+        "subtitle": "Trips between cities of Kazakhstan",
+        "title": "Intercity"
+      },
+      "international": {
+        "features": {
+          "0": "International routes",
+          "1": "Intercity routes (KZ)"
+        },
+        "subtitle": "Trips abroad and across Kazakhstan",
+        "title": "International"
+      }
+    },
+    "dialog": {
+      "body_middle": " for ",
+      "body_prefix": "You are about to connect tariff ",
+      "error_default": "Connection error",
+      "success": "Tariff connected successfully!",
+      "title": "Connect Tariff"
+    },
+    "empty": "No tariffs available",
+    "error_load": "Loading error: {}",
+    "price_month": "{} ₸ / month",
+    "title": "Tariffs"
+  },
+  "vehicle_type": {
+    "aerial_platform": "Aerial platform",
+    "any": "Any transport",
+    "bitumen_tanker": "Bitumen tanker",
+    "bulk": "Bulk carrier",
+    "bus": "Bus",
+    "car_carrier": "Car carrier",
+    "car_transporter": "Car transporter",
+    "cattle_truck": "Cattle truck",
+    "cement_truck": "Cement tanker",
+    "chemical_tank": "Chemical tank",
+    "chip_truck": "Woodchip truck",
+    "concrete_mixer": "Concrete mixer",
+    "container_carrier": "Container carrier",
+    "container_platform": "Container platform",
+    "covered": "Covered truck",
+    "crane": "Crane truck",
+    "diplomatic": "Diplomatic cargo",
+    "dump_truck": "Dump truck",
+    "excavator": "Excavator",
+    "feed": "Feed truck",
+    "fish_truck": "Fish truck",
+    "flatbed": "Flatbed",
+    "flour_truck": "Flour truck",
+    "food_tank": "Food tanker",
+    "fuel_tanker": "Fuel tanker",
+    "garbage_truck": "Garbage truck",
+    "gas": "Gas tanker",
+    "gazelle_flatbed": "Gazelle flatbed",
+    "gazelle_passenger": "Gazelle passenger",
+    "glass": "Glass carrier",
+    "grain": "Grain carrier",
+    "hyundai_porter": "Hyundai Porter",
+    "incubator": "Incubator truck",
+    "isotherm": "Isothermal truck",
+    "loader": "Loader",
+    "log_truck": "Log truck",
+    "manipulator": "Truck with manipulator",
+    "mega_truck": "Mega truck",
+    "minibus": "Minibus",
+    "open": "Open truck",
+    "open_container": "Open container",
+    "panel_truck": "Panel truck",
+    "pipe_truck": "Pipe truck",
+    "platform": "Platform truck",
+    "refrigerator": "Refrigerated truck",
+    "roll_transporter": "Roll transporter",
+    "semi_trailer": "Semi-trailer",
+    "sewage": "Sewage truck",
+    "shalanda": "Lowbed (shalanda)",
+    "tent": "Curtain-side",
+    "tractor": "Tractor unit",
+    "trailer": "Trailer",
+    "trailer_platform": "Lowbed trailer",
+    "van": "Panel van"
+  },
+  "vehicle_types": {
+    "aerial_platform": "Aerial platform",
+    "any": "Any vehicle",
+    "bitumen_tanker": "Bitumen tanker",
+    "bulk": "Bulk carrier",
+    "bus": "Bus",
+    "car_carrier": "Car carrier",
+    "car_transporter": "Car transporter",
+    "cattle_truck": "Cattle truck",
+    "cement_truck": "Cement truck",
+    "chemical_tank": "Chemical tank",
+    "chip_truck": "Chip truck",
+    "concrete_mixer": "Concrete mixer",
+    "container_carrier": "Container carrier",
+    "container_platform": "Container platform",
+    "covered": "Covered",
+    "crane": "Crane",
+    "diplomatic": "Diplomatic cargo",
+    "dump_truck": "Dump truck",
+    "excavator": "Excavator",
+    "feed": "Feed carrier",
+    "fish_truck": "Fish truck",
+    "flatbed": "Flatbed",
+    "flour_truck": "Flour truck",
+    "food_tank": "Food tank",
+    "fuel_tanker": "Fuel tanker",
+    "garbage_truck": "Garbage truck",
+    "gas": "Gas tanker",
+    "gazelle_flatbed": "Gazelle flatbed",
+    "gazelle_passenger": "Gazelle passenger",
+    "glass": "Glass carrier",
+    "grain": "Grain carrier",
+    "hyundai_porter": "Hyundai Porter",
+    "incubator": "Incubator",
+    "isotherm": "Isotherm",
+    "loader": "Loader",
+    "log_truck": "Log truck",
+    "manipulator": "Manipulator",
+    "mega_truck": "Mega truck",
+    "minibus": "Minibus",
+    "open": "Open",
+    "open_container": "Open container",
+    "panel_truck": "Panel truck",
+    "pipe_truck": "Pipe truck",
+    "platform": "Platform",
+    "ref": "Refrigerator",
+    "refrigerator": "Refrigerator",
+    "roll_transporter": "Roll transporter",
+    "semi_trailer": "Semi-trailer",
+    "sewage": "Sewage truck",
+    "shalanda": "Shalanda",
+    "tent": "Tent",
+    "tractor": "Tractor unit",
+    "trailer": "Trailer",
+    "trailer_platform": "Lowboy trailer",
+    "van": "All-metal van"
+  },
+  "wallet": {
+    "action": {
+      "soon": "Coming soon",
+      "top_up": "Top up"
+    },
+    "badge": {
+      "bonus": "Bonus top-up",
+      "unlimited": "No limits"
+    },
+    "balance": {
+      "available": "Available"
+    },
+    "error": {
+      "load": "Failed to load wallet"
+    },
+    "history": {
+      "placeholder": {
+        "subtitle": "We’ll add top-up and withdrawal details in the next update.",
+        "title": "Transaction history coming soon"
+      },
+      "title": "History"
+    },
+    "title": "Wallet"
+  },
+  "welcome": {
+    "body": "Create announcements, track statuses, and manage shipments in one app.",
+    "login": "Log in",
+    "register": "Register",
+    "subtitle": "Your logistics partner",
+    "title": "Welcome!"
   }
 }
