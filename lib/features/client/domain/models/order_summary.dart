@@ -165,10 +165,12 @@ class OrderSummary {
           hasNewBids = true;
         }
         if (previewIds.length < 5) {
-          final driverId = item['driver'];
-          if (driverId != null) {
-            previewIds.add(driverId.toString());
-          }
+          final driverName =
+              (item['driver_full_name'] as String?)?.trim() ??
+              (item['driver_phone_number'] as String?)?.trim() ??
+              (item['driver']?.toString()) ??
+              'Водитель';
+          previewIds.add(driverName);
         }
       }
     }

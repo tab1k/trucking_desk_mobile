@@ -9,6 +9,9 @@ class OrderBidInfo {
     this.statusLabel = '',
     this.comment = '',
     this.createdAt,
+    this.driverRating,
+    this.driverReviewsCount,
+    this.driverPhoto,
   });
 
   final String id;
@@ -20,6 +23,9 @@ class OrderBidInfo {
   final String statusLabel;
   final String comment;
   final DateTime? createdAt;
+  final double? driverRating;
+  final int? driverReviewsCount;
+  final String? driverPhoto;
 
   static OrderBidInfo fromJson(Map<String, dynamic> json) {
     return OrderBidInfo(
@@ -35,8 +41,21 @@ class OrderBidInfo {
       statusLabel: (json['status_display'] as String?) ?? '',
       comment: (json['comment'] as String?)?.trim() ?? '',
       createdAt: _parseDate(json['created_at'] as String?),
+      driverRating: _parseNum(json['driver_rating'])?.toDouble(),
+      driverReviewsCount: _parseInt(json['driver_reviews_count']),
+      driverPhoto: (json['driver_photo'] as String?)?.trim(),
     );
   }
+}
+
+int? _parseInt(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String && value.isNotEmpty) {
+    return int.tryParse(value);
+  }
+  return null;
 }
 
 double? _parseNum(dynamic value) {

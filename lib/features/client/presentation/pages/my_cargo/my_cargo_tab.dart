@@ -1086,11 +1086,14 @@ class _BidAvatar extends StatelessWidget {
 
   static String _avatarLabel(String value) {
     if (value.isEmpty) return '?';
-    final trimmed = value.replaceAll(RegExp(r'[^A-Za-z0-9]'), '');
-    if (trimmed.length >= 2) {
-      return trimmed.substring(trimmed.length - 2).toUpperCase();
+    final parts = value.trim().split(RegExp(r'\s+'));
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
     }
-    return trimmed.toUpperCase();
+    if (parts.isNotEmpty && parts[0].isNotEmpty) {
+      return parts[0].substring(0, parts[0].length >= 2 ? 2 : 1).toUpperCase();
+    }
+    return '?';
   }
 }
 

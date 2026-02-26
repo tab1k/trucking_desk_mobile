@@ -53,6 +53,23 @@ class ReviewRepository {
     }
   }
 
+  Future<List<Review>> getDriverReviews(String driverId) async {
+    try {
+      final response = await _dio.get('reviews/api/user/$driverId/');
+      final data = response.data;
+      if (data is List) {
+        return data.map((json) => Review.fromJson(json)).toList();
+      }
+      return [];
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+      final message = _extractErrorMessage(e);
+      throw ApiException(message, statusCode: statusCode);
+    } catch (_) {
+      throw ApiException('Не удалось загрузить отзывы водителя');
+    }
+  }
+
   String _extractErrorMessage(DioException exception) {
     final responseData = exception.response?.data;
 

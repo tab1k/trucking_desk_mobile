@@ -163,6 +163,14 @@ class PushNotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       _handleNotificationClick(message.data);
     });
+
+    // Terminated state
+    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        _handleNotificationClick(initialMessage.data);
+      });
+    }
   }
 
   static Future<void> _refreshToken() async {
@@ -355,6 +363,7 @@ class PushNotificationService {
         return 'ANDROID';
     }
   }
+
   static Future<String?> _getDeviceId() async {
     final deviceInfo = DeviceInfoPlugin();
     try {

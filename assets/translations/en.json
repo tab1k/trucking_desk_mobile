@@ -434,6 +434,9 @@
       "title": "Balance",
       "top_up": "Top Up"
     },
+    "reviews": {
+      "title": "Reviews"
+    },
     "business_page": {
       "become_partner_header": "Become a Partner",
       "city_label": "Your City",

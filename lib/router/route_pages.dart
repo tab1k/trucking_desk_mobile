@@ -14,6 +14,7 @@ import 'package:fura24.kz/features/subscriptions/presentation/view/tariffs_page.
 import 'package:fura24.kz/features/driver/view/business/business_services_page.dart';
 import 'package:fura24.kz/features/driver/view/business/become_partner_page.dart';
 import 'package:fura24.kz/features/reviews/view/my_reviews_page.dart';
+import 'package:fura24.kz/features/reviews/view/driver_reviews_page.dart';
 import 'package:fura24.kz/router/routes.dart';
 import 'package:go_router/go_router.dart';
 
@@ -84,5 +85,14 @@ final List<GoRoute> appRoutes = [
   GoRoute(
     path: '/my_reviews',
     builder: (context, state) => const MyReviewsPage(),
+  ),
+  GoRoute(
+    path: '/driver_reviews/:id',
+    builder: (context, state) {
+      final driverId = state.pathParameters['id']!;
+      final extra = state.extra as Map<String, dynamic>?;
+      final driverName = extra?['driverName'] as String? ?? 'Водитель';
+      return DriverReviewsPage(driverId: driverId, driverName: driverName);
+    },
   ),
 ];

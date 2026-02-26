@@ -432,15 +432,15 @@
       "tariffs": "费率",
       "title": "总余额",
       "top_up": "充值",
-      "transfer": "转账",
-      "reviews": {
-        "title": "评价",
-        "empty": "你还没有收到评价。",
-        "error": "无法加载评价",
-        "retry": "刷新",
-        "no_comment": "无评论",
-        "more": "+ 还有 {} 条"
-      }
+      "transfer": "转账"
+    },
+    "reviews": {
+      "title": "评价",
+      "empty": "你还没有收到评价。",
+      "error": "无法加载评价",
+      "retry": "刷新",
+      "no_comment": "无评论",
+      "more": "+ 还有 {} 条"
     },
     "business_page": {
       "become_partner_header": "成为合作伙伴",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:fura24.kz/core/exceptions/api_exception.dart';
 import 'package:fura24.kz/features/client/data/repositories/order_repository.dart';
@@ -116,14 +117,23 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                 CircleAvatar(
                   radius: 28.w,
                   backgroundColor: Colors.blueGrey.withValues(alpha: 0.15),
-                  child: Text(
-                    _initials(widget.bid.driverName),
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.blueGrey[700],
-                    ),
-                  ),
+                  backgroundImage:
+                      widget.bid.driverPhoto != null &&
+                          widget.bid.driverPhoto!.isNotEmpty
+                      ? NetworkImage(widget.bid.driverPhoto!)
+                      : null,
+                  child:
+                      widget.bid.driverPhoto != null &&
+                          widget.bid.driverPhoto!.isNotEmpty
+                      ? null
+                      : Text(
+                          _initials(widget.bid.driverName),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.blueGrey[700],
+                          ),
+                        ),
                 ),
                 SizedBox(width: 14.w),
                 Expanded(
@@ -138,8 +148,47 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      SizedBox(height: 4.h),
-                      if (widget.bid.driverPhone.isNotEmpty)
+                      if (widget.bid.driverRating != null &&
+                          widget.bid.driverRating! > 0) ...[
+                        SizedBox(height: 4.h),
+                        GestureDetector(
+                          onTap: () {
+                            context.pop(); // close the bottom sheet
+                            context.push(
+                              '/driver_reviews/${widget.bid.driverId}',
+                              extra: {'driverName': widget.bid.driverName},
+                            );
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Row(
+                            children: [
+                              Icon(Icons.star, color: Colors.amber, size: 16.w),
+                              SizedBox(width: 4.w),
+                              Text(
+                                widget.bid.driverRating!.toStringAsFixed(1),
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              if (widget.bid.driverReviewsCount != null &&
+                                  widget.bid.driverReviewsCount! > 0) ...[
+                                SizedBox(width: 4.w),
+                                Text(
+                                  '(${widget.bid.driverReviewsCount})',
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                      if (widget.bid.driverPhone.isNotEmpty) ...[
+                        SizedBox(height: 4.h),
                         Text(
                           widget.bid.driverPhone,
                           style: TextStyle(
@@ -147,6 +196,7 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                             color: Colors.black.withValues(alpha: 0.6),
                           ),
                         ),
+                      ],
                     ],
                   ),
                 ),
@@ -182,7 +232,7 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
                           ),
                         ),
                         Text(
-                          _formatAmount(widget.bid.amount!),
+                          '${_formatAmount(widget.bid.amount!)} ₸',
                           style: TextStyle(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w700,
@@ -336,13 +386,22 @@ class _ClientBidDetailSheetState extends ConsumerState<ClientBidDetailSheet> {
   }
 
   static String _initials(String name) {
+    if (name.isEmpty) return '?';
     final parts = name.trim().split(' ');
     if (parts.length >= 2) {
       final first = parts[0].isNotEmpty ? parts[0][0] : '';
       final second = parts[1].isNotEmpty ? parts[1][0] : '';
-      return (first + second).toUpperCase();
+      final initials = (first + second).toUpperCase();
+      if (!RegExp(r'[0-9]').hasMatch(initials)) {
+        return initials;
+      }
     }
-    return name.isNotEmpty ? name.substring(0, 1).toUpperCase() : '?';
+    final trimmed = name.replaceAll(RegExp(r'[^A-Za-zА-Яа-я]'), '');
+    if (trimmed.isEmpty) return 'ТК';
+    if (trimmed.length >= 2) {
+      return trimmed.substring(0, 2).toUpperCase();
+    }
+    return trimmed.substring(0, 1).toUpperCase();
   }
 
   String _formatAmount(double amount) {

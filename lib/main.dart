@@ -8,19 +8,66 @@ import 'package:fura24.kz/services/push_notification_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:fura24.kz/core/error/global_error_provider.dart';
 import 'package:fura24.kz/shared/widgets/no_connection_sheet.dart';
+import 'package:fura24.kz/features/client/data/repositories/order_repository.dart';
+import 'package:fura24.kz/features/client/domain/models/order_summary.dart';
+import 'package:fura24.kz/features/client/presentation/pages/my_cargo/widgets/client_order_detail_sheet.dart';
+import 'package:fura24.kz/features/driver/view/widgets/driver_order_detail_sheet.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
   await PushNotificationService.initialize(
-    onNotificationClick: (payload) {
+    onNotificationClick: (payload) async {
       final route = payload['route'] as String?;
-      if (route == null || route.isEmpty) return;
-      try {
-        appRouter.go(route, extra: payload);
-      } catch (_) {
-        // Если роут не найден, просто игнорируем клик по пушу.
+      if (route != null && route.isNotEmpty) {
+        try {
+          appRouter.go(route, extra: payload);
+          return;
+        } catch (_) {}
+      }
+
+      final type = payload['type'] as String?;
+      final entityId = payload['entity_id'] as String?;
+      final role = payload['role'] as String?;
+
+      if (type == 'new_order' ||
+          type == 'order_accepted' ||
+          type == 'order_delivered' ||
+          type == 'order_bid' ||
+          type == 'order_cancelled' ||
+          type == 'order_updated' ||
+          type == 'order_status' ||
+          type == 'favorite_client_new_order') {
+        if (entityId == null || entityId.isEmpty) return;
+
+        final context = appRouter.routerDelegate.navigatorKey.currentContext;
+        if (context == null || !context.mounted) return;
+
+        final isDriver = role == 'driver' || role == 'DRIVER';
+
+        if (isDriver) {
+          try {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => const Center(child: CircularProgressIndicator()),
+            );
+
+            final container = ProviderScope.containerOf(context);
+            final repo = container.read(orderRepositoryProvider);
+            final detail = await repo.fetchOrderDetail(entityId);
+            if (!context.mounted) return;
+            Navigator.of(context).pop(); // remove loader
+
+            final summary = OrderSummary.fromDetail(detail);
+            showDriverOrderDetailSheet(context, summary);
+          } catch (e) {
+            if (context.mounted) Navigator.of(context).pop();
+          }
+        } else {
+          showClientOrderDetailSheet(context, entityId);
+        }
       }
     },
   );
